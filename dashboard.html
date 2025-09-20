@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader Joe's Price Index - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Dashboard Screen -->
+    <div class="dashboard-screen visible" id="dashboardScreen">
+        <button class="back-btn" onclick="goBack()">← Back to Map</button>
+        
+        <div class="dashboard-header">
+            <h2 id="cityName">Austin</h2>
+            <p>Trader Joe's Inflation Dashboard</p>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="archetypes-section">
+                <h3>Choose Your Shopping Archetype</h3>
+                <div class="archetype-grid">
+                    <div class="archetype-card" onclick="selectArchetype(this, 'student')">
+                        <div class="archetype-avatar">🎓</div>
+                        <div class="archetype-info">
+                            <h4>UT Grad Student</h4>
+                            <p>Ramen, frozen meals, cheap wine, and bulk snacks for late-night studying</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'teacher')">
+                        <div class="archetype-avatar">👩‍🏫</div>
+                        <div class="archetype-info">
+                            <h4>Austin ISD Teacher</h4>
+                            <p>Quick breakfast items, healthy lunch options, and coffee for energy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'family')">
+                        <div class="archetype-avatar">👨‍👩‍👧‍👦</div>
+                        <div class="archetype-info">
+                            <h4>Family of 4</h4>
+                            <p>Kid-friendly snacks, family meal ingredients, and household essentials</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'fed')">
+                        <div class="archetype-avatar">🏛️</div>
+                        <div class="archetype-info">
+                            <h4>Regional Fed Chair</h4>
+                            <p>Premium items and economist-approved basket for monetary policy insights</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'cpi')">
+                        <div class="archetype-avatar">��</div>
+                        <div class="archetype-info">
+                            <h4>CPI Comparison</h4>
+                            <p>Standard TJ's basket compared to official Federal Reserve CPI data</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="custom-basket-btn" onclick="customBasket()">
+                    Create Custom Basket
+                </button>
+            </div>
+
+            <div class="results-section">
+                <h3>Inflation Results</h3>
+                <div class="inflation-display">
+                    <div class="inflation-rate" id="inflationRate">Select an archetype</div>
+                    <div class="inflation-label" id="inflationLabel">to see inflation data</div>
+                </div>
+                
+                <div class="basket-receipt" id="basketReceipt" style="display: none;">
+                    <!-- Receipt content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Initialize dashboard with city from URL parameter
+        document.addEventListener('DOMContentLoaded', function() {
+            const cityName = getQueryParam('city') || 'Austin';
+            document.getElementById('cityName').textContent = cityName;
+            updateArchetypesForCity(cityName);
+        });
+    </script>
+</body>
+</html>
