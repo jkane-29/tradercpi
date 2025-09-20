@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader Joe's Price Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #d41e36 0%, #b91c2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo {
+            text-align: center;
+            color: white;
+        }
+
+        .logo h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+        }
+
+        .logo p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* Map Screen */
+        .map-screen {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            position: relative;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .map-screen.visible {
+            opacity: 1;
+        }
+
+        .map-header {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .map-header h2 {
+            font-size: 2.5rem;
+            color: #d41e36;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .map-header p {
+            font-size: 1.2rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .map-container {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .us-map {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.1));
+        }
+
+        .city-marker {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #d41e36;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 30, 54, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .city-marker:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 25px rgba(212, 30, 54, 0.4);
+        }
+
+        .city-marker::before {
+            content: "🏪";
+            font-size: 24px;
+        }
+
+        .city-label {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            white-space: nowrap;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        /* City positions (approximate) */
+        .city-austin { top: 70%; left: 42%; }
+        .city-chicago { top: 42%; left: 57%; }
+        .city-nyc { top: 35%; left: 78%; }
+        .city-la { top: 65%; left: 12%; }
+
+        /* Dashboard Screen */
+        .dashboard-screen {
+            min-height: 100vh;
+            background: #fafafa;
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .dashboard-screen.visible {
+            display: block;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2.2rem;
+            color: #d41e36;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 0 2rem;
+        }
+
+        .archetypes-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .archetypes-section h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .archetype-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .archetype-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .archetype-card:hover {
+            border-color: #d41e36;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 30, 54, 0.1);
+        }
+
+        .archetype-card.selected {
+            border-color: #d41e36;
+            background: #fdf2f4;
+        }
+
+        .archetype-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .archetype-info h4 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .archetype-info p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .results-section h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .inflation-display {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #d41e36, #b91c2e);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .inflation-rate {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .inflation-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .basket-receipt {
+            background: white;
+            border-radius: 0;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 280px;
+            margin: 0 auto;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+            font-size: 11px;
+        }
+
+        .receipt-store-info {
+            text-align: center;
+            margin-bottom: 0.8rem;
+            font-size: 10px;
+            line-height: 1.1;
+        }
+
+        .receipt-item {
+            margin-bottom: 0.3rem;
+            font-size: 10px;
+        }
+
+        .receipt-item-name {
+            margin-bottom: 0.1rem;
+        }
+
+        .receipt-item-details {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 10px;
+            font-size: 9px;
+        }
+
+        .receipt-separator {
+            border-top: 1px dashed #000;
+            margin: 0.8rem 0;
+        }
+
+        .receipt-subtotal {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 0.2rem;
+        }
+
+        .receipt-tax {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 0.2rem;
+        }
+
+        .receipt-total {
+            border-top: 2px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .receipt-total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+
+        .receipt-change {
+            margin-top: 0.8rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #000;
+            color: #d41e36;
+            font-weight: bold;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px dashed #000;
+            font-size: 9px;
+            line-height: 1.2;
+        }
+
+        .custom-basket-btn {
+            background: #d41e36;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .custom-basket-btn:hover {
+            background: #b91c2e;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: white;
+            border: 2px solid #d41e36;
+            color: #d41e36;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: #d41e36;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+            
+            .map-header h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="logo">
+            <h1>TJ's Price Index</h1>
+            <p>Real inflation, real baskets</p>
+        </div>
+    </div>
+
+    <!-- Map Screen -->
+    <div class="map-screen" id="mapScreen">
+        <div class="map-header">
+            <h2>Choose Your City</h2>
+            <p>Explore inflation patterns across different Trader Joe's markets</p>
+        </div>
+        <div class="map-container">
+            <svg class="us-map" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+                <!-- Simplified US map outline -->
+                <path d="M 100 200 L 900 200 L 900 450 L 100 450 Z" fill="#e9ecef" stroke="#ddd" stroke-width="2"/>
+                <path d="M 150 220 L 200 180 L 300 190 L 400 170 L 500 180 L 600 160 L 700 170 L 800 180 L 850 200 L 900 220 L 900 400 L 850 420 L 800 430 L 700 420 L 600 430 L 500 440 L 400 430 L 300 440 L 200 430 L 150 420 Z" fill="#f8f9fa" stroke="#d41e36" stroke-width="1"/>
+            </svg>
+            
+            <!-- City Markers -->
+            <div class="city-marker city-austin" onclick="selectCity('Austin')">
+                <div class="city-label">Austin</div>
+            </div>
+            <div class="city-marker city-chicago" onclick="selectCity('Chicago')">
+                <div class="city-label">Chicago</div>
+            </div>
+            <div class="city-marker city-nyc" onclick="selectCity('New York')">
+                <div class="city-label">New York</div>
+            </div>
+            <div class="city-marker city-la" onclick="selectCity('Los Angeles')">
+                <div class="city-label">Los Angeles</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div class="dashboard-screen" id="dashboardScreen">
+        <button class="back-btn" onclick="goBack()">← Back to Map</button>
+        
+        <div class="dashboard-header">
+            <h2 id="cityName">Austin</h2>
+            <p>Trader Joe's Inflation Dashboard</p>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="archetypes-section">
+                <h3>Choose Your Shopping Archetype</h3>
+                <div class="archetype-grid">
+                    <div class="archetype-card" onclick="selectArchetype(this, 'student')">
+                        <div class="archetype-avatar">🎓</div>
+                        <div class="archetype-info">
+                            <h4>UT Grad Student</h4>
+                            <p>Ramen, frozen meals, cheap wine, and bulk snacks for late-night studying</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'teacher')">
+                        <div class="archetype-avatar">👩‍🏫</div>
+                        <div class="archetype-info">
+                            <h4>Austin ISD Teacher</h4>
+                            <p>Quick breakfast items, healthy lunch options, and coffee for energy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'family')">
+                        <div class="archetype-avatar">👨‍👩‍👧‍👦</div>
+                        <div class="archetype-info">
+                            <h4>Family of 4</h4>
+                            <p>Kid-friendly snacks, family meal ingredients, and household essentials</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'fed')">
+                        <div class="archetype-avatar">🏛️</div>
+                        <div class="archetype-info">
+                            <h4>Regional Fed Chair</h4>
+                            <p>Premium items and economist-approved basket for monetary policy insights</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'cpi')">
+                        <div class="archetype-avatar">📊</div>
+                        <div class="archetype-info">
+                            <h4>CPI Comparison</h4>
+                            <p>Standard TJ's basket compared to official Federal Reserve CPI data</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="custom-basket-btn" onclick="customBasket()">
+                    Create Custom Basket
+                </button>
+            </div>
+
+            <div class="results-section">
+                <h3>Inflation Results</h3>
+                <div class="inflation-display">
+                    <div class="inflation-rate" id="inflationRate">Select an archetype</div>
+                    <div class="inflation-label" id="inflationLabel">to see inflation data</div>
+                </div>
+                
+                <div class="basket-receipt" id="basketReceipt" style="display: none;">
+                    <div class="receipt-header">
+                        <strong>🛒 TRADER JOE'S RECEIPT 🛒</strong><br>
+                        <span id="receiptDate"></span>
+                    </div>
+                    <div id="receiptItems"></div>
+                    <div class="receipt-total">
+                        <div class="receipt-item">
+                            <span>TOTAL:</span>
+                            <span id="receiptTotal"></span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>YoY Change:</span>
+                            <span id="receiptChange" style="color: #d41e36;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const archetypeData = {
+            student: {
+                inflation: '4.8%',
+                label: 'Annual inflation for grad student basket',
+                items: [
+                    { name: 'TJ RAMEN CHICKEN 6PK', price: '3.49', sku: '12345', qty: '1', change: '+0.30' },
+                    { name: 'FROZEN PAD THAI', price: '4.99', sku: '23456', qty: '1', change: '+0.50' },
+                    { name: 'CHARLES SHAW RED WINE', price: '3.99', sku: '34567', qty: '1', change: '+1.00' },
+                    { name: 'PB FILLED PRETZELS', price: '2.99', sku: '45678', qty: '1', change: '+0.20' },
+                    { name: 'MARGHERITA PIZZA FRZ', price: '3.99', sku: '56789', qty: '1', change: '+0.40' }
+                ],
+                subtotal: '19.45',
+                tax: '1.56',
+                total: '21.01',
+                change: '+2.96 (16.4%)'
+            },
+            teacher: {
+                inflation: '3.2%',
+                label: 'Annual inflation for teacher basket',
+                items: [
+                    { name: 'BREAKFAST BARS 6CT', price: '4.49', sku: '67890', qty: '1', change: '+0.20' },
+                    { name: 'POWER GREENS SALAD KIT', price: '3.99', sku: '78901', qty: '1', change: '+0.30' },
+                    { name: 'COLD BREW COFFEE 32OZ', price: '7.99', sku: '89012', qty: '1', change: '+0.50' },
+                    { name: 'GREEK YOGURT 4PK', price: '4.99', sku: '90123', qty: '1', change: '+0.25' },
+                    { name: 'TRAIL MIX CRANBRRY', price: '5.99', sku: '01234', qty: '1', change: '+0.15' }
+                ],
+                subtotal: '27.45',
+                tax: '2.20',
+                total: '29.65',
+                change: '+1.40 (4.9%)'
+            },
+            family: {
+                inflation: '5.1%',
+                label: 'Annual inflation for family basket',
+                items: [
+                    { name: 'GOLDFISH CRACKERS', price: '2.99', sku: '11111', qty: '2', change: '+0.40' },
+                    { name: 'ORGANIC MILK 1/2GAL', price: '4.99', sku: '22222', qty: '1', change: '+0.60' },
+                    { name: 'CHICKEN NUGGETS FRZ', price: '6.99', sku: '33333', qty: '1', change: '+0.70' },
+                    { name: 'MANDARIN ORANGES', price: '3.49', sku: '44444', qty: '1', change: '+0.30' },
+                    { name: 'MAC & CHEESE 6PK', price: '4.99', sku: '55555', qty: '1', change: '+0.50' },
+                    { name: 'SOURDOUGH BREAD', price: '2.99', sku: '66666', qty: '1', change: '+0.35' }
+                ],
+                subtotal: '29.43',
+                tax: '2.35',
+                total: '31.78',
+                change: '+3.85 (13.8%)'
+            },
+            fed: {
+                inflation: '2.8%',
+                label: 'Federal Reserve regional basket',
+                items: [
+                    { name: 'ORGANIC EVERYTHING', price: '8.99', sku: '77777', qty: '1', change: '+0.20' },
+                    { name: 'ARTISANAL CHEESE', price: '12.99', sku: '88888', qty: '1', change: '+0.40' },
+                    { name: 'PREMIUM PINOT NOIR', price: '19.99', sku: '99999', qty: '1', change: '+0.50' },
+                    { name: 'QUINOA SALAD KIT', price: '6.99', sku: '10101', qty: '1', change: '+0.30' },
+                    { name: 'FAIR TRADE COFFEE', price: '11.99', sku: '20202', qty: '1', change: '+0.25' }
+                ],
+                subtotal: '60.95',
+                tax: '4.88',
+                total: '65.83',
+                change: '+1.65 (2.6%)'
+            },
+            cpi: {
+                inflation: '3.4%',
+                label: 'TJ\'s basket vs. Federal CPI',
+                items: [
+                    { name: 'FOOD BASKET STANDARD', price: '45.99', sku: '30303', qty: '1', change: '+1.50' },
+                    { name: 'BEVERAGES ASSORTED', price: '12.99', sku: '40404', qty: '1', change: '+0.45' },
+                    { name: 'HOUSEHOLD ITEMS', price: '18.99', sku: '50505', qty: '1', change: '+0.60' },
+                    { name: 'PERSONAL CARE', price: '8.99', sku: '60606', qty: '1', change: '+0.25' }
+                ],
+                subtotal: '86.96',
+                tax: '6.96',
+                total: '93.92',
+                change: '+2.80 (3.1%)'
+            }
+        };
+
+        // Auto-start the experience
+        setTimeout(() => {
+            document.getElementById('splashScreen').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('mapScreen').classList.add('visible');
+            }, 1500);
+        }, 2000);
+
+        function selectCity(cityName) {
+            document.getElementById('cityName').textContent = cityName;
+            document.getElementById('mapScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').classList.add('visible');
+            
+            // Update archetypes based on city
+            updateArchetypesForCity(cityName);
+        }
+
+        function updateArchetypesForCity(city) {
+            const archetypes = document.querySelectorAll('.archetype-card');
+            const studentCard = archetypes[0];
+            const teacherCard = archetypes[1];
+            
+            if (city === 'Chicago') {
+                studentCard.querySelector('h4').textContent = 'UChicago Grad Student';
+                teacherCard.querySelector('h4').textContent = 'CPS Teacher';
+            } else if (city === 'New York') {
+                studentCard.querySelector('h4').textContent = 'NYU Grad Student';
+                teacherCard.querySelector('h4').textContent = 'NYC DOE Teacher';
+            } else if (city === 'Los Angeles') {
+                studentCard.querySelector('h4').textContent = 'UCLA Grad Student';
+                teacherCard.querySelector('h4').textContent = 'LAUSD Teacher';
+            } else {
+                studentCard.querySelector('h4').textContent = 'UT Grad Student';
+                teacherCard.querySelector('h4').textContent = 'Austin ISD Teacher';
+            }
+        }
+
+        function selectArchetype(card, type) {
+            // Remove previous selection
+            document.querySelectorAll('.archetype-card').forEach(c => c.classList.remove('selected'));
+            
+            // Select current card
+            card.classList.add('selected');
+            
+            // Update results
+            const data = archetypeData[type];
+            document.getElementById('inflationRate').textContent = data.inflation;
+            document.getElementById('inflationLabel').textContent = data.label;
+            
+            // Show and populate receipt
+            const receipt = document.getElementById('basketReceipt');
+            receipt.style.display = 'block';
+            
+            const now = new Date();
+            const receiptDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            const transactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            
+            const itemsHtml = data.items.map((item, index) => 
+                `<div class="receipt-item">
+                    <div class="receipt-item-name">${item.name}</div>
+                    <div class="receipt-item-details">
+                        <span>${item.sku} QTY ${item.qty}</span>
+                        <span>${item.price}</span>
+                    </div>
+                </div>`
+            ).join('');
+            
+            receipt.innerHTML = `
+                <div class="receipt-header">
+                    <strong>TRADER JOE'S</strong><br>
+                    Thank you for shopping with us!
+                </div>
+                
+                <div class="receipt-store-info">
+                    Store #123 - ${document.getElementById('cityName').textContent}<br>
+                    ${receiptDate}<br>
+                    Trans# ${transactionId} | Cashier: ALEX
+                </div>
+                
+                ${itemsHtml}
+                
+                <div class="receipt-separator"></div>
+                
+                <div class="receipt-subtotal">
+                    <span>SUBTOTAL:</span>
+                    <span>${data.subtotal}</span>
+                </div>
+                
+                <div class="receipt-tax">
+                    <span>TAX:</span>
+                    <span>${data.tax}</span>
+                </div>
+                
+                <div class="receipt-total">
+                    <div class="receipt-total-line">
+                        <span>TOTAL:</span>
+                        <span>${data.total}</span>
+                    </div>
+                    <div class="receipt-total-line">
+                        <span>CREDIT CARD:</span>
+                        <span>${data.total}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-change">
+                    <div class="receipt-total-line">
+                        <span>YoY INFLATION:</span>
+                        <span>${data.change}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-footer">
+                    Visit us at traderjoes.com<br>
+                    Follow @TraderJoesList<br><br>
+                    INFLATION TRACKER<br>
+                    Data as of ${now.toLocaleDateString()}
+                </div>
+            `;
+        }
+
+        function customBasket() {
+            alert('Custom basket builder coming soon! This would allow you to create your own personalized inflation basket.');
+        }
+
+        function goBack() {
+            document.getElementById('dashboardScreen').classList.remove('visible');
+            document.getElementById('mapScreen').style.display = 'block';
+            
+            // Reset selections
+            document.querySelectorAll('.archetype-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('basketReceipt').style.display = 'none';
+            document.getElementById('inflationRate').textContent = 'Select an archetype';
+            document.getElementById('inflationLabel').textContent = 'to see inflation data';
+        }
+    </script>
+</body>
+</html>
