@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logo Debug</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0; 
+        }
+        .test-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+        }
+        .test-box { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 2px solid #ddd; 
+            border-radius: 5px; 
+            text-align: center; 
+        }
+        .logo-test { 
+            max-width: 200px; 
+            height: auto; 
+            margin: 10px; 
+        }
+        .color-info { 
+            margin: 10px 0; 
+            font-family: monospace; 
+            font-size: 12px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Logo Color Debug</h1>
+        
+        <div class="test-box">
+            <h3>1. Logo on Pure Black (#000000)</h3>
+            <div style="background: #000000; padding: 20px;">
+                <img src="black logo 2.png" class="logo-test" alt="Logo on black">
+            </div>
+            <div class="color-info">Background: #000000 (pure black)</div>
+        </div>
+        
+        <div class="test-box">
+            <h3>2. Logo on Dark Gray (#111111)</h3>
+            <div style="background: #111111; padding: 20px;">
+                <img src="black logo 2.png" class="logo-test" alt="Logo on dark gray">
+            </div>
+            <div class="color-info">Background: #111111 (dark gray)</div>
+        </div>
+        
+        <div class="test-box">
+            <h3>3. Logo on Very Dark Gray (#0a0a0a)</h3>
+            <div style="background: #0a0a0a; padding: 20px;">
+                <img src="black logo 2.png" class="logo-test" alt="Logo on very dark gray">
+            </div>
+            <div class="color-info">Background: #0a0a0a (very dark gray)</div>
+        </div>
+        
+        <div class="test-box">
+            <h3>4. Logo on White (to see contrast)</h3>
+            <div style="background: #ffffff; padding: 20px;">
+                <img src="black logo 2.png" class="logo-test" alt="Logo on white">
+            </div>
+            <div class="color-info">Background: #ffffff (white)</div>
+        </div>
+        
+        <div class="test-box">
+            <h3>5. Logo with CSS filter to make it pure black</h3>
+            <div style="background: #000000; padding: 20px;">
+                <img src="black logo 2.png" class="logo-test" style="filter: brightness(0);" alt="Logo filtered to black">
+            </div>
+            <div class="color-info">Logo with filter: brightness(0) to make it pure black</div>
+        </div>
+    </div>
+</body>
+</html>
