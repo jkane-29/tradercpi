@@ -59,10 +59,15 @@
         /* Map Screen */
         .map-screen {
             min-height: 100vh;
-            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            background: 
+                linear-gradient(to right, rgba(0, 61, 122, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 61, 122, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, #f5f7fa, #fafbfc);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
             position: relative;
             opacity: 0;
             transition: opacity 1s ease-in;
+            padding: 4rem 0;
         }
 
         .map-screen.visible {
@@ -71,7 +76,7 @@
 
         .map-header {
             text-align: center;
-            padding: 3rem 2rem 2rem;
+            padding: 0 2rem 2rem;
             max-width: 800px;
             margin: 0 auto;
         }
@@ -167,7 +172,7 @@
         }
 
         .dashboard-header h2 {
-            font-size: 2.2rem;
+            font-size: 2.6rem;
             color: #d41e36;
             margin-bottom: 0.5rem;
         }
@@ -228,14 +233,14 @@
         }
 
         .archetype-avatar {
-            width: 60px;
-            height: 60px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: linear-gradient(45deg, #d41e36, #b91c2e);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 30px;
             font-weight: 700;
             color: white;
             flex-shrink: 0;
@@ -297,72 +302,72 @@
         .basket-receipt {
             background: white;
             border-radius: 0;
-            padding: 1.5rem;
+            padding: 2rem;
             font-family: 'Courier New', monospace;
             border: none;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 280px;
+            max-width: 450px;
             margin: 0 auto;
-            font-size: 12px;
-            line-height: 1.2;
+            font-size: 16px;
+            line-height: 1.4;
         }
 
         .receipt-header {
             text-align: center;
             border-bottom: 1px dashed #000;
-            padding-bottom: 0.8rem;
-            margin-bottom: 0.8rem;
-            font-size: 11px;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            font-size: 15px;
         }
 
         .receipt-store-info {
             text-align: center;
-            margin-bottom: 0.8rem;
-            font-size: 10px;
-            line-height: 1.1;
+            margin-bottom: 1rem;
+            font-size: 13px;
+            line-height: 1.4;
         }
 
         .receipt-item {
-            margin-bottom: 0.3rem;
-            font-size: 10px;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
         }
 
         .receipt-item-name {
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.3rem;
         }
 
         .receipt-item-details {
             display: flex;
             justify-content: space-between;
-            padding-left: 10px;
-            font-size: 9px;
+            padding-left: 15px;
+            font-size: 13px;
         }
 
         .receipt-separator {
             border-top: 1px dashed #000;
-            margin: 0.8rem 0;
+            margin: 1rem 0;
         }
 
         .receipt-subtotal {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
-            margin-bottom: 0.2rem;
+            font-size: 14px;
+            margin-bottom: 0.3rem;
         }
 
         .receipt-tax {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
-            margin-bottom: 0.2rem;
+            font-size: 14px;
+            margin-bottom: 0.3rem;
         }
 
         .receipt-total {
             border-top: 2px solid #000;
-            padding-top: 0.5rem;
-            margin-top: 0.5rem;
+            padding-top: 0.7rem;
+            margin-top: 0.7rem;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 16px;
         }
 
         .receipt-total-line {
@@ -381,11 +386,11 @@
 
         .receipt-footer {
             text-align: center;
-            margin-top: 1rem;
-            padding-top: 0.8rem;
+            margin-top: 1.2rem;
+            padding-top: 1rem;
             border-top: 1px dashed #000;
-            font-size: 9px;
-            line-height: 1.2;
+            font-size: 12px;
+            line-height: 1.4;
         }
 
         .custom-basket-btn {
@@ -800,7 +805,7 @@
         
         <div class="dashboard-header">
             <h2 id="cityName">Austin</h2>
-            <p>Trader Joe's Inflation Dashboard</p>
+            <p id="storeInfo">Seaholm (Store #452)</p>
         </div>
 
         <div class="dashboard-content">
@@ -1275,6 +1280,16 @@
         function selectCity(cityName) {
             currentCity = cityName;
             document.getElementById('cityName').textContent = cityName;
+            
+            // Update store info based on city
+            const storeInfo = {
+                'Austin': 'Seaholm (Store #452)',
+                'Chicago': 'South Loop (Store #701)',
+                'New York': 'East Village (Store #546)',
+                'Los Angeles': 'La Brea (Store #31)'
+            };
+            document.getElementById('storeInfo').textContent = storeInfo[cityName] || '';
+            
             document.getElementById('mapScreen').style.display = 'none';
             document.getElementById('dashboardScreen').classList.add('visible');
             
