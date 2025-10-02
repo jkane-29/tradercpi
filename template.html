@@ -241,6 +241,13 @@
             flex-shrink: 0;
         }
 
+        .archetype-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
         .archetype-info h4 {
             font-size: 1.1rem;
             color: #333;
@@ -825,7 +832,9 @@
                     </div>
                     
                     <div class="archetype-card" onclick="selectArchetype(this, 'fed')">
-                        <div class="archetype-avatar">FC</div>
+                        <div class="archetype-avatar">
+                            <img src="Chicago Fed Shopping.png" alt="Regional Fed Chair">
+                        </div>
                         <div class="archetype-info">
                             <h4>Regional Fed Chair</h4>
                             <p>Premium items and economist-approved basket for monetary policy insights</p>
@@ -833,7 +842,9 @@
                     </div>
                     
                     <div class="archetype-card" onclick="selectArchetype(this, 'cpi')">
-                        <div class="archetype-avatar">CPI</div>
+                        <div class="archetype-avatar">
+                            <img src="black-logo.png" alt="Trader Joe's CPI">
+                        </div>
                         <div class="archetype-info">
                             <h4>Trader Joe's CPI</h4>
                             <p>Standardized basket of goods following BLS food CPI methodology</p>
@@ -1275,19 +1286,55 @@
             const archetypes = document.querySelectorAll('.archetype-card');
             const studentCard = archetypes[0];
             const teacherCard = archetypes[1];
+            const familyCard = archetypes[2];
+            const fedCard = archetypes[3];
+            
+            // Get or create img elements in avatars
+            const studentAvatar = studentCard.querySelector('.archetype-avatar');
+            const teacherAvatar = teacherCard.querySelector('.archetype-avatar');
+            const familyAvatar = familyCard.querySelector('.archetype-avatar');
+            const fedAvatar = fedCard.querySelector('.archetype-avatar');
             
             if (city === 'Chicago') {
                 studentCard.querySelector('h4').textContent = 'UChicago Grad Student';
                 teacherCard.querySelector('h4').textContent = 'CPS Teacher';
+                fedCard.querySelector('h4').textContent = 'Fed Chair Goolsbee';
+                
+                // Update avatar images for Chicago
+                studentAvatar.innerHTML = '<img src="uchicago grad student Chicago.png" alt="UChicago Grad Student">';
+                teacherAvatar.innerHTML = '<img src="cps teacher.png" alt="CPS Teacher">';
+                familyAvatar.innerHTML = '<img src="family of four chicago.png" alt="Family of 4">';
+                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="Fed Chair Goolsbee">';
             } else if (city === 'New York') {
                 studentCard.querySelector('h4').textContent = 'NYU Grad Student';
                 teacherCard.querySelector('h4').textContent = 'NYC DOE Teacher';
+                fedCard.querySelector('h4').textContent = 'John C Williams';
+                
+                // Reset to default text avatars for New York (no specific images yet)
+                studentAvatar.innerHTML = 'GS';
+                teacherAvatar.innerHTML = 'T';
+                familyAvatar.innerHTML = 'F4';
+                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="John C Williams">';
             } else if (city === 'Los Angeles') {
                 studentCard.querySelector('h4').textContent = 'UCLA Grad Student';
                 teacherCard.querySelector('h4').textContent = 'LAUSD Teacher';
+                fedCard.querySelector('h4').textContent = 'Carl Chang';
+                
+                // Reset to default text avatars for LA (no specific images yet)
+                studentAvatar.innerHTML = 'GS';
+                teacherAvatar.innerHTML = 'T';
+                familyAvatar.innerHTML = 'F4';
+                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="Carl Chang">';
             } else {
                 studentCard.querySelector('h4').textContent = 'UT Grad Student';
                 teacherCard.querySelector('h4').textContent = 'Austin ISD Teacher';
+                fedCard.querySelector('h4').textContent = 'Guhan Venkatu';
+                
+                // Reset to default text avatars for Austin except Fed
+                studentAvatar.innerHTML = 'GS';
+                teacherAvatar.innerHTML = 'T';
+                familyAvatar.innerHTML = 'F4';
+                fedAvatar.innerHTML = '<img src="Guhan Venkatu Austin.png" alt="Guhan Venkatu">';
             }
         }
 
