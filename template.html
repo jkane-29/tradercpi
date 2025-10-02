@@ -113,31 +113,11 @@
             z-index: 1;
         }
 
-        /* Custom Leaflet marker styles */
-        .leaflet-marker-icon.custom-marker {
-            background: #d41e36 !important;
-            border-radius: 50% !important;
-            width: 50px !important;
-            height: 50px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            font-size: 24px !important;
-            cursor: pointer !important;
-            box-shadow: 0 4px 15px rgba(212, 30, 54, 0.4) !important;
-            animation: pulse 2s infinite !important;
-            border: 3px solid white !important;
-            margin-left: -25px !important;
-            margin-top: -25px !important;
-        }
-
-        .leaflet-marker-icon.custom-marker:hover {
-            transform: scale(1.1) !important;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        /* Custom marker hover effect */
+        .leaflet-marker-icon:hover {
+            filter: brightness(1.1) drop-shadow(0 4px 8px rgba(212, 30, 54, 0.5));
+            transform: scale(1.05);
+            transition: all 0.2s ease;
         }
 
         .leaflet-popup-content-wrapper {
@@ -259,11 +239,13 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            background: linear-gradient(45deg, #d41e36, #b91c2e);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
             flex-shrink: 0;
         }
 
@@ -424,6 +406,318 @@
             background: #b91c2e;
         }
 
+        .fred-compare-btn {
+            background: #003d7a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fred-compare-btn:hover {
+            background: #002a54;
+            transform: translateX(3px);
+        }
+
+        /* FRED Comparison Screen */
+        .fred-screen {
+            min-height: 100vh;
+            background: #f8f9fa;
+            display: none;
+            padding: 0;
+        }
+
+        .fred-screen.visible {
+            display: block;
+        }
+
+        .fred-header {
+            background: #003d7a;
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 3px solid #002a54;
+        }
+
+        .fred-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .fred-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .fred-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .fred-breadcrumb {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .fred-breadcrumb a {
+            color: #003d7a;
+            text-decoration: none;
+        }
+
+        .fred-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .fred-data-section {
+            background: white;
+            border-radius: 4px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .fred-data-section h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .fred-metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fred-metric {
+            border-left: 4px solid #003d7a;
+            padding-left: 1rem;
+        }
+
+        .fred-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #003d7a;
+            margin-bottom: 0.3rem;
+        }
+
+        .fred-metric-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+
+        .fred-metric-date {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .fred-chart-placeholder {
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 3rem;
+            text-align: center;
+            color: #666;
+            margin: 1.5rem 0;
+        }
+
+        .fred-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .fred-table th {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.9rem;
+        }
+
+        .fred-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.9rem;
+        }
+
+        .fred-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .fred-source {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .fred-source strong {
+            color: #333;
+        }
+
+        /* Sandbox Screen */
+        .sandbox-screen {
+            min-height: 100vh;
+            background: #fafafa;
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .sandbox-screen.visible {
+            display: block;
+        }
+
+        .sandbox-header {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
+        }
+
+        .sandbox-header h2 {
+            font-size: 2.2rem;
+            color: #d41e36;
+            margin-bottom: 0.5rem;
+        }
+
+        .sandbox-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .sandbox-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .query-builder {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .query-sentence {
+            font-size: 1.4rem;
+            line-height: 2.5;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .query-variable {
+            display: inline-block;
+            position: relative;
+        }
+
+        .query-select {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #d41e36;
+            background: #fdf2f4;
+            border: 2px solid #d41e36;
+            border-radius: 6px;
+            padding: 4px 32px 4px 12px;
+            cursor: pointer;
+            appearance: none;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d41e36' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+        }
+
+        .query-select:hover {
+            background-color: #fce8ec;
+            transform: translateY(-1px);
+        }
+
+        .query-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(212, 30, 54, 0.1);
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #d41e36, #b91c2e);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 30, 54, 0.3);
+            width: 100%;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 30, 54, 0.4);
+        }
+
+        .sandbox-results {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: none;
+        }
+
+        .sandbox-results.visible {
+            display: block;
+        }
+
+        .sandbox-results h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-left: 4px solid #d41e36;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .insight-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #d41e36;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .insight-description {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
         .back-btn {
             position: fixed;
             top: 2rem;
@@ -463,12 +757,21 @@
                 padding: 0 1rem;
             }
 
-            .leaflet-marker-icon.custom-marker {
-                width: 40px !important;
-                height: 40px !important;
-                font-size: 20px !important;
-                margin-left: -20px !important;
-                margin-top: -20px !important;
+            .query-sentence {
+                font-size: 1.1rem;
+                line-height: 2.2;
+            }
+
+            .query-select {
+                font-size: 1.1rem;
+            }
+
+            .query-builder {
+                padding: 1.5rem;
+            }
+
+            .insight-value {
+                font-size: 2rem;
             }
         }
     </style>
@@ -507,7 +810,7 @@
                 <h3>Choose Your Shopping Archetype</h3>
                 <div class="archetype-grid">
                     <div class="archetype-card" onclick="selectArchetype(this, 'student')">
-                        <div class="archetype-avatar">🎓</div>
+                        <div class="archetype-avatar">GS</div>
                         <div class="archetype-info">
                             <h4>UT Grad Student</h4>
                             <p>Ramen, frozen meals, cheap wine, and bulk snacks for late-night studying</p>
@@ -515,7 +818,7 @@
                     </div>
                     
                     <div class="archetype-card" onclick="selectArchetype(this, 'teacher')">
-                        <div class="archetype-avatar">👩‍🏫</div>
+                        <div class="archetype-avatar">T</div>
                         <div class="archetype-info">
                             <h4>Austin ISD Teacher</h4>
                             <p>Quick breakfast items, healthy lunch options, and coffee for energy</p>
@@ -523,7 +826,7 @@
                     </div>
                     
                     <div class="archetype-card" onclick="selectArchetype(this, 'family')">
-                        <div class="archetype-avatar">👨‍👩‍👧‍👦</div>
+                        <div class="archetype-avatar">F4</div>
                         <div class="archetype-info">
                             <h4>Family of 4</h4>
                             <p>Kid-friendly snacks, family meal ingredients, and household essentials</p>
@@ -531,7 +834,7 @@
                     </div>
                     
                     <div class="archetype-card" onclick="selectArchetype(this, 'fed')">
-                        <div class="archetype-avatar">🏛️</div>
+                        <div class="archetype-avatar">FC</div>
                         <div class="archetype-info">
                             <h4>Regional Fed Chair</h4>
                             <p>Premium items and economist-approved basket for monetary policy insights</p>
@@ -539,21 +842,26 @@
                     </div>
                     
                     <div class="archetype-card" onclick="selectArchetype(this, 'cpi')">
-                        <div class="archetype-avatar">📊</div>
+                        <div class="archetype-avatar">CPI</div>
                         <div class="archetype-info">
-                            <h4>CPI Comparison</h4>
-                            <p>Standard TJ's basket compared to official Federal Reserve CPI data</p>
+                            <h4>Trader Joe's CPI</h4>
+                            <p>Standardized basket of goods following BLS food CPI methodology</p>
                         </div>
                     </div>
                 </div>
                 
-                <button class="custom-basket-btn" onclick="customBasket()">
-                    Create Custom Basket
+                <button class="custom-basket-btn" onclick="openSandbox()">
+                    Open Sandbox
                 </button>
             </div>
 
             <div class="results-section">
-                <h3>Inflation Results</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 style="margin: 0;">Inflation Results</h3>
+                    <button class="fred-compare-btn" id="fredCompareBtn" style="display: none;" onclick="openFredComparison()">
+                        Compare to FRED →
+                    </button>
+                </div>
                 <div class="inflation-display">
                     <div class="inflation-rate" id="inflationRate">Select an archetype</div>
                     <div class="inflation-label" id="inflationLabel">to see inflation data</div>
@@ -561,7 +869,7 @@
                 
                 <div class="basket-receipt" id="basketReceipt" style="display: none;">
                     <div class="receipt-header">
-                        <strong>🛒 TRADER JOE'S RECEIPT 🛒</strong><br>
+                        <strong>TRADER JOE'S RECEIPT</strong><br>
                         <span id="receiptDate"></span>
                     </div>
                     <div id="receiptItems"></div>
@@ -576,6 +884,191 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FRED Comparison Screen -->
+    <div class="fred-screen" id="fredScreen">
+        <div class="fred-header">
+            <h2>Food at Home - Comparative Analysis</h2>
+            <p>Trader Joe's CPI vs. Federal Reserve Economic Data</p>
+        </div>
+
+        <div class="fred-content">
+            <div class="fred-breadcrumb">
+                <a href="#" onclick="goBackFromFred(); return false;">← Back to Dashboard</a> / Economic Data / Consumer Price Index
+            </div>
+
+            <div class="fred-data-section">
+                <h3>Current Indicators</h3>
+                <div class="fred-metric-grid">
+                    <div class="fred-metric">
+                        <div class="fred-metric-value" id="fredTjValue">3.4%</div>
+                        <div class="fred-metric-label">Trader Joe's CPI (Food)</div>
+                        <div class="fred-metric-date" id="fredTjDate">As of Oct 2025</div>
+                    </div>
+                    <div class="fred-metric">
+                        <div class="fred-metric-value" id="fredBLSValue">3.2%</div>
+                        <div class="fred-metric-label">Food at Home (US City Average)</div>
+                        <div class="fred-metric-date">BLS - Sep 2025</div>
+                    </div>
+                    <div class="fred-metric">
+                        <div class="fred-metric-value" id="fredDiffValue">+0.2%</div>
+                        <div class="fred-metric-label">Difference (TJ's vs BLS)</div>
+                        <div class="fred-metric-date">Percentage Points</div>
+                    </div>
+                </div>
+
+                <div class="fred-chart-placeholder">
+                    <strong>Time Series Comparison Chart</strong><br>
+                    <span style="font-size: 0.9rem;">Visual comparison of Trader Joe's CPI vs. BLS Food at Home Index</span>
+                </div>
+            </div>
+
+            <div class="fred-data-section">
+                <h3>Comparative Data Series</h3>
+                <table class="fred-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Trader Joe's CPI</th>
+                            <th>BLS Food at Home</th>
+                            <th>Difference</th>
+                            <th>% Variance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fredTableBody">
+                        <tr>
+                            <td>Oct 2025</td>
+                            <td>3.4%</td>
+                            <td>3.2%</td>
+                            <td>+0.2 pp</td>
+                            <td>+6.3%</td>
+                        </tr>
+                        <tr>
+                            <td>Sep 2025</td>
+                            <td>3.6%</td>
+                            <td>3.3%</td>
+                            <td>+0.3 pp</td>
+                            <td>+9.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Aug 2025</td>
+                            <td>3.5%</td>
+                            <td>3.4%</td>
+                            <td>+0.1 pp</td>
+                            <td>+2.9%</td>
+                        </tr>
+                        <tr>
+                            <td>Jul 2025</td>
+                            <td>3.7%</td>
+                            <td>3.5%</td>
+                            <td>+0.2 pp</td>
+                            <td>+5.7%</td>
+                        </tr>
+                        <tr>
+                            <td>Jun 2025</td>
+                            <td>3.8%</td>
+                            <td>3.6%</td>
+                            <td>+0.2 pp</td>
+                            <td>+5.6%</td>
+                        </tr>
+                        <tr>
+                            <td>May 2025</td>
+                            <td>3.9%</td>
+                            <td>3.7%</td>
+                            <td>+0.2 pp</td>
+                            <td>+5.4%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="fred-source">
+                    <strong>Sources:</strong><br>
+                    • Trader Joe's CPI: Standardized basket following BLS food CPI methodology, <span id="fredCityName">Austin</span> Store Data<br>
+                    • Food at Home: U.S. Bureau of Labor Statistics, Consumer Price Index for All Urban Consumers: Food at Home in U.S. City Average [CUSR0000SAF11]<br>
+                    • Methodology: Year-over-year percentage change, seasonally adjusted
+                </div>
+            </div>
+
+            <div class="fred-data-section">
+                <h3>Methodology Notes</h3>
+                <p style="color: #666; line-height: 1.6; margin-bottom: 1rem;">
+                    The Trader Joe's CPI uses a standardized basket of goods designed to mirror the Bureau of Labor Statistics' 
+                    food at home category. This allows for direct comparison with official federal inflation metrics while 
+                    providing localized, store-specific insights.
+                </p>
+                <p style="color: #666; line-height: 1.6;">
+                    <strong>Basket Composition:</strong> Includes representative items across categories such as cereals, 
+                    meats, dairy, fruits, vegetables, and nonalcoholic beverages, weighted according to BLS expenditure shares.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sandbox Screen -->
+    <div class="sandbox-screen" id="sandboxScreen">
+        <button class="back-btn" onclick="goBackFromSandbox()">← Back to Dashboard</button>
+        
+        <div class="sandbox-header">
+            <h2>Data Sandbox</h2>
+            <p>Explore custom queries with real-time insights</p>
+        </div>
+
+        <div class="sandbox-content">
+            <div class="query-builder">
+                <div class="query-sentence">
+                    I want to know the 
+                    <span class="query-variable">
+                        <select class="query-select" id="metricType">
+                            <option value="price">current price</option>
+                            <option value="inflation">annual inflation</option>
+                            <option value="change">price change</option>
+                            <option value="trend">price trend</option>
+                        </select>
+                    </span>
+                    for
+                    <span class="query-variable">
+                        <select class="query-select" id="itemType">
+                            <option value="basket">standard basket</option>
+                            <option value="produce">produce items</option>
+                            <option value="frozen">frozen foods</option>
+                            <option value="snacks">snacks & treats</option>
+                            <option value="beverages">beverages</option>
+                            <option value="dairy">dairy products</option>
+                            <option value="pantry">pantry staples</option>
+                        </select>
+                    </span>
+                    in
+                    <span class="query-variable">
+                        <select class="query-select" id="storeLocation">
+                            <option value="austin">Austin (Seaholm)</option>
+                            <option value="chicago">Chicago (South Loop)</option>
+                            <option value="newyork">New York (East Village)</option>
+                            <option value="la">Los Angeles (La Brea)</option>
+                        </select>
+                    </span>
+                    over the last
+                    <span class="query-variable">
+                        <select class="query-select" id="timePeriod">
+                            <option value="month">month</option>
+                            <option value="quarter">quarter</option>
+                            <option value="6months">6 months</option>
+                            <option value="year">year</option>
+                            <option value="2years">2 years</option>
+                        </select>
+                    </span>.
+                </div>
+                
+                <button class="generate-btn" onclick="generateInsights()">
+                    Generate Insights
+                </button>
+            </div>
+
+            <div class="sandbox-results" id="sandboxResults">
+                <h3>Your Insights</h3>
+                <div id="insightCards"></div>
             </div>
         </div>
     </div>
@@ -644,8 +1137,9 @@
                 change: '+1.65 (2.6%)'
             },
             cpi: {
+                // Default Austin data
                 inflation: '3.4%',
-                label: 'TJ\'s basket vs. Federal CPI',
+                label: 'Trader Joe\'s CPI - Austin',
                 items: [
                     { name: 'FOOD BASKET STANDARD', price: '45.99', sku: '30303', qty: '1', change: '+1.50' },
                     { name: 'BEVERAGES ASSORTED', price: '12.99', sku: '40404', qty: '1', change: '+0.45' },
@@ -656,6 +1150,42 @@
                 tax: '6.96',
                 total: '93.92',
                 change: '+2.80 (3.1%)'
+            }
+        };
+
+        // City-specific CPI data
+        const cpiByCity = {
+            'Austin': {
+                inflation: '3.4%',
+                label: 'Trader Joe\'s CPI - Austin (Seaholm)',
+                subtotal: '86.96',
+                tax: '6.96',
+                total: '93.92',
+                change: '+2.80 (3.1%)'
+            },
+            'Chicago': {
+                inflation: '3.6%',
+                label: 'Trader Joe\'s CPI - Chicago (South Loop)',
+                subtotal: '88.15',
+                tax: '7.05',
+                total: '95.20',
+                change: '+3.15 (3.4%)'
+            },
+            'New York': {
+                inflation: '4.1%',
+                label: 'Trader Joe\'s CPI - New York (East Village)',
+                subtotal: '92.50',
+                tax: '7.40',
+                total: '99.90',
+                change: '+3.85 (4.0%)'
+            },
+            'Los Angeles': {
+                inflation: '3.8%',
+                label: 'Trader Joe\'s CPI - Los Angeles (La Brea)',
+                subtotal: '89.80',
+                tax: '7.18',
+                total: '96.98',
+                change: '+3.40 (3.6%)'
             }
         };
 
@@ -680,35 +1210,39 @@
 
             // City data with precise coordinates (city centers)
             const cities = [
-                { name: 'Austin', lat: 30.2672, lng: -97.7431 },
-                { name: 'Chicago', lat: 41.8781, lng: -87.6298 },
-                { name: 'New York', lat: 40.7128, lng: -74.0060 },
-                { name: 'Los Angeles', lat: 34.0522, lng: -118.2437 }
+                { name: 'Austin', location: 'Seaholm', storeCode: '452', lat: 30.2672, lng: -97.7431 },
+                { name: 'Chicago', location: 'South Loop', storeCode: '701', lat: 41.8781, lng: -87.6298 },
+                { name: 'New York', location: 'East Village', storeCode: '546', lat: 40.7128, lng: -74.0060 },
+                { name: 'Los Angeles', location: 'La Brea', storeCode: '31', lat: 34.0522, lng: -118.2437 }
             ];
 
             // Add markers for each city
             cities.forEach(city => {
                 console.log('Adding marker for:', city.name, 'at', city.lat, city.lng);
                 
-                // Create custom icon
-                const customIcon = L.divIcon({
-                    className: 'leaflet-marker-icon custom-marker',
-                    html: '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">🏪</div>',
-                    iconSize: [50, 50],
-                    iconAnchor: [25, 25],
-                    popupAnchor: [0, -30]
+                // Create custom red icon
+                const redIcon = L.icon({
+                    iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="40" height="60">
+                            <path fill="#d41e36" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 5.25 9 18 9 18s9-12.75 9-18c0-4.97-4.03-9-9-9z"/>
+                            <circle fill="#fff" cx="12" cy="9" r="4"/>
+                        </svg>
+                    `),
+                    iconSize: [40, 60],
+                    iconAnchor: [20, 60],
+                    popupAnchor: [0, -60]
                 });
 
                 // Create marker
                 const marker = L.marker([city.lat, city.lng], { 
-                    icon: customIcon,
+                    icon: redIcon,
                     title: city.name
                 }).addTo(map);
 
                 // Create popup content
                 const popupContent = `
                     <div class="popup-city-name">${city.name}</div>
-                    <p style="color: #666; margin-bottom: 8px;">Explore Trader Joe's inflation data</p>
+                    <p style="color: #666; margin: 8px 0; font-size: 0.95rem;">${city.location} (Store ${city.storeCode})</p>
                     <button class="popup-action" onclick="selectCity('${city.name}')">View Dashboard</button>
                 `;
 
@@ -737,6 +1271,7 @@
         }, 2000);
 
         function selectCity(cityName) {
+            currentCity = cityName;
             document.getElementById('cityName').textContent = cityName;
             document.getElementById('mapScreen').style.display = 'none';
             document.getElementById('dashboardScreen').classList.add('visible');
@@ -772,8 +1307,30 @@
             // Select current card
             card.classList.add('selected');
             
-            // Update results
-            const data = archetypeData[type];
+            // Show/hide FRED compare button
+            const fredBtn = document.getElementById('fredCompareBtn');
+            if (type === 'cpi') {
+                fredBtn.style.display = 'block';
+            } else {
+                fredBtn.style.display = 'none';
+            }
+            
+            // Update results - use city-specific CPI data if available
+            let data = archetypeData[type];
+            
+            if (type === 'cpi' && cpiByCity[currentCity]) {
+                const cityData = cpiByCity[currentCity];
+                data = {
+                    ...data,
+                    inflation: cityData.inflation,
+                    label: cityData.label,
+                    subtotal: cityData.subtotal,
+                    tax: cityData.tax,
+                    total: cityData.total,
+                    change: cityData.change
+                };
+            }
+            
             document.getElementById('inflationRate').textContent = data.inflation;
             document.getElementById('inflationLabel').textContent = data.label;
             
@@ -848,8 +1405,230 @@
             `;
         }
 
-        function customBasket() {
-            alert('Custom basket builder coming soon! This would allow you to create your own personalized inflation basket.');
+        let currentCity = 'Austin';
+
+        function openSandbox() {
+            document.getElementById('dashboardScreen').classList.remove('visible');
+            document.getElementById('sandboxScreen').classList.add('visible');
+            
+            // Set the store location to match current city
+            const cityMap = {
+                'Austin': 'austin',
+                'Chicago': 'chicago',
+                'New York': 'newyork',
+                'Los Angeles': 'la'
+            };
+            document.getElementById('storeLocation').value = cityMap[currentCity] || 'austin';
+        }
+
+        function goBackFromSandbox() {
+            document.getElementById('sandboxScreen').classList.remove('visible');
+            document.getElementById('dashboardScreen').classList.add('visible');
+            document.getElementById('sandboxResults').classList.remove('visible');
+        }
+
+        function generateInsights() {
+            const metric = document.getElementById('metricType').value;
+            const item = document.getElementById('itemType').value;
+            const location = document.getElementById('storeLocation').value;
+            const time = document.getElementById('timePeriod').value;
+            
+            // Mock data generation based on selections
+            const insights = generateMockInsights(metric, item, location, time);
+            
+            // Display results
+            const resultsDiv = document.getElementById('sandboxResults');
+            const cardsDiv = document.getElementById('insightCards');
+            
+            cardsDiv.innerHTML = insights.map(insight => `
+                <div class="insight-card">
+                    <div class="insight-value">${insight.value}</div>
+                    <div class="insight-label">${insight.label}</div>
+                    <div class="insight-description">${insight.description}</div>
+                </div>
+            `).join('');
+            
+            resultsDiv.classList.add('visible');
+            
+            // Smooth scroll to results
+            setTimeout(() => {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function generateMockInsights(metric, item, location, time) {
+            const locationNames = {
+                'austin': 'Austin (Seaholm)',
+                'chicago': 'Chicago (South Loop)',
+                'newyork': 'New York (East Village)',
+                'la': 'Los Angeles (La Brea)'
+            };
+            
+            const itemNames = {
+                'basket': 'Standard Basket',
+                'produce': 'Produce Items',
+                'frozen': 'Frozen Foods',
+                'snacks': 'Snacks & Treats',
+                'beverages': 'Beverages',
+                'dairy': 'Dairy Products',
+                'pantry': 'Pantry Staples'
+            };
+            
+            const timeLabels = {
+                'month': '1 month',
+                'quarter': '3 months',
+                '6months': '6 months',
+                'year': '1 year',
+                '2years': '2 years'
+            };
+            
+            // Generate realistic mock data
+            const baseInflation = Math.random() * 3 + 2; // 2-5%
+            const basePrice = Math.random() * 20 + 15; // $15-35
+            const priceChange = Math.random() * 4 - 1; // -$1 to $3
+            
+            if (metric === 'inflation') {
+                return [
+                    {
+                        value: `${baseInflation.toFixed(1)}%`,
+                        label: `Annual Inflation Rate`,
+                        description: `${itemNames[item]} in ${locationNames[location]} over the last ${timeLabels[time]}`
+                    },
+                    {
+                        value: baseInflation > 3.5 ? 'Above Average' : 'Below Average',
+                        label: 'Comparison to National CPI',
+                        description: `National CPI is currently at 3.2% annually`
+                    },
+                    {
+                        value: `$${(basePrice * (baseInflation/100)).toFixed(2)}`,
+                        label: 'Estimated Cost Increase',
+                        description: `Based on average basket value of $${basePrice.toFixed(2)}`
+                    }
+                ];
+            } else if (metric === 'price') {
+                return [
+                    {
+                        value: `$${basePrice.toFixed(2)}`,
+                        label: 'Current Average Price',
+                        description: `${itemNames[item]} in ${locationNames[location]}`
+                    },
+                    {
+                        value: `$${(basePrice * 0.92).toFixed(2)} - $${(basePrice * 1.08).toFixed(2)}`,
+                        label: 'Price Range',
+                        description: `Based on ${timeLabels[time]} of data`
+                    },
+                    {
+                        value: (Math.random() * 100).toFixed(0) + ' items',
+                        label: 'Sample Size',
+                        description: `Products tracked in this category`
+                    }
+                ];
+            } else if (metric === 'change') {
+                return [
+                    {
+                        value: `${priceChange >= 0 ? '+' : ''}$${priceChange.toFixed(2)}`,
+                        label: `Price Change (${timeLabels[time]})`,
+                        description: `${itemNames[item]} in ${locationNames[location]}`
+                    },
+                    {
+                        value: `${((priceChange / basePrice) * 100).toFixed(1)}%`,
+                        label: 'Percentage Change',
+                        description: `Relative to baseline price of $${basePrice.toFixed(2)}`
+                    },
+                    {
+                        value: priceChange > 1 ? 'Significant Increase' : priceChange < -0.5 ? 'Notable Decrease' : 'Stable',
+                        label: 'Trend Assessment',
+                        description: `Market volatility indicator`
+                    }
+                ];
+            } else { // trend
+                return [
+                    {
+                        value: Math.random() > 0.5 ? 'Upward' : 'Downward',
+                        label: 'Overall Trend',
+                        description: `${itemNames[item]} in ${locationNames[location]} over ${timeLabels[time]}`
+                    },
+                    {
+                        value: `${(Math.random() * 2).toFixed(1)}%`,
+                        label: 'Monthly Volatility',
+                        description: `Average month-over-month variation`
+                    },
+                    {
+                        value: Math.random() > 0.6 ? 'Seasonal' : 'Consistent',
+                        label: 'Pattern Type',
+                        description: `Based on historical price movements`
+                    }
+                ];
+            }
+        }
+
+        function openFredComparison() {
+            document.getElementById('dashboardScreen').classList.remove('visible');
+            document.getElementById('fredScreen').classList.add('visible');
+            
+            // Get city-specific data
+            const cityName = document.getElementById('cityName').textContent;
+            const cityData = cpiByCity[currentCity] || cpiByCity['Austin'];
+            
+            // Update city name in FRED screen
+            document.getElementById('fredCityName').textContent = cityData.label.replace('Trader Joe\'s CPI - ', '');
+            
+            // Update TJ's CPI value from current city
+            const tjCPI = cityData.inflation;
+            document.getElementById('fredTjValue').textContent = tjCPI;
+            
+            // Calculate difference
+            const tjValue = parseFloat(tjCPI);
+            const blsValue = 3.2;
+            const difference = (tjValue - blsValue).toFixed(1);
+            document.getElementById('fredDiffValue').textContent = (difference >= 0 ? '+' : '') + difference + '%';
+            
+            // Update date
+            document.getElementById('fredTjDate').textContent = `${cityName} - Oct 2025`;
+            
+            // Update historical comparison table with city-specific data
+            updateFredTable(currentCity, tjValue);
+        }
+
+        function updateFredTable(city, currentRate) {
+            // Generate city-specific historical data
+            const baseVariance = {
+                'Austin': 0,
+                'Chicago': 0.2,
+                'New York': 0.7,
+                'Los Angeles': 0.4
+            };
+            
+            const variance = baseVariance[city] || 0;
+            const blsData = [3.2, 3.3, 3.4, 3.5, 3.6, 3.7];
+            
+            const tableBody = document.getElementById('fredTableBody');
+            const months = ['Oct 2025', 'Sep 2025', 'Aug 2025', 'Jul 2025', 'Jun 2025', 'May 2025'];
+            
+            let html = '';
+            for (let i = 0; i < 6; i++) {
+                const tjRate = (currentRate - (i * 0.1) + (Math.random() * 0.2 - 0.1)).toFixed(1);
+                const blsRate = blsData[i];
+                const diff = (tjRate - blsRate).toFixed(1);
+                const percentVar = ((diff / blsRate) * 100).toFixed(1);
+                
+                html += `
+                    <tr>
+                        <td>${months[i]}</td>
+                        <td>${tjRate}%</td>
+                        <td>${blsRate}%</td>
+                        <td>${diff >= 0 ? '+' : ''}${diff} pp</td>
+                        <td>${percentVar >= 0 ? '+' : ''}${percentVar}%</td>
+                    </tr>
+                `;
+            }
+            
+            tableBody.innerHTML = html;
+        }
+
+        function goBackFromFred() {
+            document.getElementById('fredScreen').classList.remove('visible');
+            document.getElementById('dashboardScreen').classList.add('visible');
         }
 
         function goBack() {
@@ -861,6 +1640,7 @@
             document.getElementById('basketReceipt').style.display = 'none';
             document.getElementById('inflationRate').textContent = 'Select an archetype';
             document.getElementById('inflationLabel').textContent = 'to see inflation data';
+            document.getElementById('fredCompareBtn').style.display = 'none';
         }
     </script>
 </body>

@@ -1,0 +1,72 @@
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Markers</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        #map { height: 600px; width: 100%; }
+        #debug { margin-top: 20px; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Marker Debug Test</h1>
+    <div id="map"></div>
+    <div id="debug">
+        <h3>Debug Info:</h3>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        // Create map
+        const map = L.map('map').setView([39.8283, -98.5795], 4);
+        
+        // Add tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        
+        output.innerHTML += '<p>Map initialized successfully</p>';
+        
+        // Cities
+        const cities = [
+            { name: 'Austin', lat: 30.2672, lng: -97.7431 },
+            { name: 'Chicago', lat: 41.8781, lng: -87.6298 },
+            { name: 'New York', lat: 40.7128, lng: -74.0060 },
+            { name: 'Los Angeles', lat: 34.0522, lng: -118.2437 }
+        ];
+        
+        output.innerHTML += `<p>Total cities to map: ${cities.length}</p>`;
+        
+        let markerCount = 0;
+        
+        // Add markers
+        cities.forEach((city, index) => {
+            try {
+                const marker = L.marker([city.lat, city.lng]).addTo(map);
+                marker.bindPopup(`<b>${city.name}</b><br>Lat: ${city.lat}<br>Lng: ${city.lng}`);
+                markerCount++;
+                output.innerHTML += `<p style="color: green;">✓ Marker ${index + 1}: ${city.name} added at [${city.lat}, ${city.lng}]</p>`;
+            } catch (e) {
+                output.innerHTML += `<p style="color: red;">✗ Error adding ${city.name}: ${e.message}</p>`;
+            }
+        });
+        
+        output.innerHTML += `<p><strong>Total markers added: ${markerCount} / ${cities.length}</strong></p>`;
+        
+        // Get all markers on map
+        setTimeout(() => {
+            let layerCount = 0;
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    layerCount++;
+                }
+            });
+            output.innerHTML += `<p>Markers found on map: ${layerCount}</p>`;
+        }, 1000);
+    </script>
+</body>
+</html> 
