@@ -13,6 +13,13 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
     <style>
+        @font-face {
+            font-family: 'Trader Joes';
+            src: url('TraderJoes-JYrx.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -24,6 +31,11 @@
             background: #000;
             color: #333;
             overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Trader Joes', cursive;
+            font-weight: normal;
         }
 
         /* Splash Screen */
@@ -67,39 +79,92 @@
             position: relative;
             opacity: 0;
             transition: opacity 1s ease-in;
-            padding: 4rem 0;
+            padding: 0;
         }
 
         .map-screen.visible {
             opacity: 1;
         }
 
-        .map-header {
+        .top-banner {
+            background: #d41e36;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .top-banner h1 {
+            font-family: 'Trader Joes', cursive;
+            font-size: 3rem;
+            color: white;
+            font-weight: normal;
+            margin: 0;
             text-align: center;
-            padding: 0 2rem 2rem;
-            max-width: 800px;
-            margin: 0 auto;
         }
 
-        .map-header h2 {
-            font-size: 2.5rem;
-            color: #d41e36;
-            margin-bottom: 1rem;
-            font-weight: 700;
+        .top-banner .banner-with-location {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        .map-header p {
-            font-size: 1.2rem;
-            color: #666;
-            line-height: 1.6;
+        .top-banner .location-info {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .top-banner-blue {
+            background: #003d7a;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .top-banner-blue h1 {
+            font-family: 'Trader Joes', cursive;
+            font-size: 3rem;
+            color: white;
+            font-weight: normal;
+            margin: 0;
+            text-align: center;
         }
 
         .map-container {
             position: relative;
-            max-width: 1000px;
-            height: 600px;
-            margin: 0 auto;
-            padding: 0 2rem;
+            max-width: 1400px;
+            height: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem 2rem;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(212, 30, 54, 0.2);
+            border: 2px solid #d41e36;
+            pointer-events: none;
+        }
+
+        .map-overlay h2 {
+            font-size: 2.5rem;
+            color: #d41e36;
+            margin: 0;
+            font-weight: normal;
         }
 
         #map {
@@ -156,7 +221,7 @@
             min-height: 100vh;
             background: #fafafa;
             display: none;
-            padding: 2rem 0;
+            padding: 0;
         }
 
         .dashboard-screen.visible {
@@ -165,21 +230,33 @@
 
         .dashboard-header {
             text-align: center;
-            padding: 2rem;
-            background: white;
-            border-bottom: 2px solid #e9ecef;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(to bottom, #ffffff, #fafafa);
+            border-bottom: 1px solid #e9ecef;
             margin-bottom: 2rem;
         }
 
+        .dashboard-header .city-label {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
         .dashboard-header h2 {
-            font-size: 2.6rem;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 2rem;
             color: #d41e36;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
         }
 
         .dashboard-header p {
-            color: #666;
-            font-size: 1.1rem;
+            color: #888;
+            font-size: 0.95rem;
         }
 
         .dashboard-content {
@@ -199,6 +276,7 @@
         }
 
         .archetypes-section h3 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.5rem;
             color: #333;
             margin-bottom: 1.5rem;
@@ -254,9 +332,11 @@
         }
 
         .archetype-info h4 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.1rem;
             color: #333;
             margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .archetype-info p {
@@ -273,6 +353,7 @@
         }
 
         .results-section h3 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.5rem;
             color: #333;
             margin-bottom: 1.5rem;
@@ -447,6 +528,7 @@
         }
 
         .fred-header h2 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.8rem;
             margin-bottom: 0.3rem;
             font-weight: 600;
@@ -460,7 +542,7 @@
         .fred-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2rem 2rem 3rem;
         }
 
         .fred-breadcrumb {
@@ -487,6 +569,7 @@
         }
 
         .fred-data-section h3 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.3rem;
             color: #333;
             margin-bottom: 1rem;
@@ -577,7 +660,7 @@
             min-height: 100vh;
             background: #fafafa;
             display: none;
-            padding: 2rem 0;
+            padding: 0;
         }
 
         .sandbox-screen.visible {
@@ -593,9 +676,11 @@
         }
 
         .sandbox-header h2 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 2.2rem;
             color: #d41e36;
             margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
         .sandbox-header p {
@@ -606,7 +691,7 @@
         .sandbox-content {
             max-width: 900px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 2rem 2rem;
         }
 
         .query-builder {
@@ -631,7 +716,7 @@
 
         .query-select {
             font-size: 1.4rem;
-            font-weight: 600;
+            font-weight: normal;
             color: #d41e36;
             background: #fdf2f4;
             border: 2px solid #d41e36;
@@ -639,7 +724,7 @@
             padding: 4px 32px 4px 12px;
             cursor: pointer;
             appearance: none;
-            font-family: inherit;
+            font-family: 'Trader Joes', cursive;
             transition: all 0.2s ease;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d41e36' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
@@ -690,9 +775,11 @@
         }
 
         .sandbox-results h3 {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 1.5rem;
             color: #333;
             margin-bottom: 1.5rem;
+            font-weight: 600;
         }
 
         .insight-card {
@@ -752,13 +839,27 @@
                 font-size: 2.5rem;
             }
             
-            .map-header h2 {
-                font-size: 2rem;
+            .top-banner h1, .top-banner-blue h1 {
+                font-size: 1.5rem;
+            }
+
+            .top-banner .location-info {
+                font-size: 0.85rem;
+            }
+            
+            .map-overlay {
+                top: 1rem;
+                padding: 1rem 2rem;
+            }
+            
+            .map-overlay h2 {
+                font-size: 1.8rem;
             }
 
             .map-container {
-                height: 500px;
-                padding: 0 1rem;
+                height: 550px;
+                padding: 0 1rem 1rem;
+                margin: 1rem auto;
             }
 
             .query-sentence {
@@ -790,9 +891,8 @@
 
     <!-- Map Screen -->
     <div class="map-screen" id="mapScreen">
-        <div class="map-header">
-            <h2>Choose Your City</h2>
-            <p>Explore inflation patterns across different Trader Joe's markets</p>
+        <div class="top-banner">
+            <h1>Trader Joe's Price Index</h1>
         </div>
         <div class="map-container">
             <div id="map"></div>
@@ -803,9 +903,11 @@
     <div class="dashboard-screen" id="dashboardScreen">
         <button class="back-btn" onclick="goBack()">← Back to Map</button>
         
-        <div class="dashboard-header">
-            <h2 id="cityName">Austin</h2>
-            <p id="storeInfo">Seaholm (Store #452)</p>
+        <div class="top-banner">
+            <div class="banner-with-location">
+                <h1>Trader Joe's Price Index</h1>
+                <span class="location-info" id="bannerLocationInfo">Austin - Seaholm (Store #452)</span>
+            </div>
         </div>
 
         <div class="dashboard-content">
@@ -897,9 +999,8 @@
 
     <!-- FRED Comparison Screen -->
     <div class="fred-screen" id="fredScreen">
-        <div class="fred-header">
-            <h2>Food at Home - Comparative Analysis</h2>
-            <p>Trader Joe's CPI vs. Federal Reserve Economic Data</p>
+        <div class="top-banner-blue">
+            <h1>Trader Joe's Price Index</h1>
         </div>
 
         <div class="fred-content">
@@ -908,6 +1009,9 @@
             </div>
 
             <div class="fred-data-section">
+                <h3>Food at Home - Comparative Analysis</h3>
+                <p style="color: #666; margin-bottom: 1.5rem;">Trader Joe's CPI vs. Federal Reserve Economic Data</p>
+                
                 <h3>Current Indicators</h3>
                 <div class="fred-metric-grid">
                     <div class="fred-metric">
@@ -1018,9 +1122,8 @@
     <div class="sandbox-screen" id="sandboxScreen">
         <button class="back-btn" onclick="goBackFromSandbox()">← Back to Dashboard</button>
         
-        <div class="sandbox-header">
-            <h2>Data Sandbox</h2>
-            <p>Explore custom queries with real-time insights</p>
+        <div class="top-banner">
+            <h1>Trader Joe's Price Index</h1>
         </div>
 
         <div class="sandbox-content">
@@ -1279,7 +1382,6 @@
 
         function selectCity(cityName) {
             currentCity = cityName;
-            document.getElementById('cityName').textContent = cityName;
             
             // Update store info based on city
             const storeInfo = {
@@ -1288,7 +1390,9 @@
                 'New York': 'East Village (Store #546)',
                 'Los Angeles': 'La Brea (Store #31)'
             };
-            document.getElementById('storeInfo').textContent = storeInfo[cityName] || '';
+            
+            // Update banner location info
+            document.getElementById('bannerLocationInfo').textContent = `${cityName} - ${storeInfo[cityName] || ''}`;
             
             document.getElementById('mapScreen').style.display = 'none';
             document.getElementById('dashboardScreen').classList.add('visible');
@@ -1325,11 +1429,11 @@
                 teacherCard.querySelector('h4').textContent = 'NYC DOE Teacher';
                 fedCard.querySelector('h4').textContent = 'John C Williams';
                 
-                // Reset to default text avatars for New York (no specific images yet)
-                studentAvatar.innerHTML = 'GS';
-                teacherAvatar.innerHTML = 'T';
-                familyAvatar.innerHTML = 'F4';
-                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="John C Williams">';
+                // Update avatar images for New York
+                studentAvatar.innerHTML = '<img src="NYU Grad Student - NYC.png" alt="NYU Grad Student">';
+                teacherAvatar.innerHTML = '<img src="Public School Teacher - NYC.png" alt="NYC DOE Teacher">';
+                familyAvatar.innerHTML = '<img src="Family of Four - NYC.png" alt="Family of 4">';
+                fedAvatar.innerHTML = '<img src="John C Williams - NYC.png" alt="John C Williams">';
             } else if (city === 'Los Angeles') {
                 studentCard.querySelector('h4').textContent = 'UCLA Grad Student';
                 teacherCard.querySelector('h4').textContent = 'LAUSD Teacher';
@@ -1412,7 +1516,7 @@
                 </div>
                 
                 <div class="receipt-store-info">
-                    Store #123 - ${document.getElementById('cityName').textContent}<br>
+                    Store #123 - ${currentCity}<br>
                     ${receiptDate}<br>
                     Trans# ${transactionId} | Cashier: ALEX
                 </div>
@@ -1620,7 +1724,6 @@
             document.getElementById('fredScreen').classList.add('visible');
             
             // Get city-specific data
-            const cityName = document.getElementById('cityName').textContent;
             const cityData = cpiByCity[currentCity] || cpiByCity['Austin'];
             
             // Update city name in FRED screen
@@ -1637,7 +1740,7 @@
             document.getElementById('fredDiffValue').textContent = (difference >= 0 ? '+' : '') + difference + '%';
             
             // Update date
-            document.getElementById('fredTjDate').textContent = `${cityName} - Oct 2025`;
+            document.getElementById('fredTjDate').textContent = `${currentCity} - Oct 2025`;
             
             // Update historical comparison table with city-specific data
             updateFredTable(currentCity, tjValue);
