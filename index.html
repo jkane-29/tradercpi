@@ -4,25 +4,1682 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trader Joe's Price Index</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #bb3a39;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo {
+            text-align: center;
+        }
+
+        .logo img {
+            max-width: 600px;
+            width: 80%;
+            height: auto;
+        }
+
+        /* Map Screen */
+        .map-screen {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            position: relative;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .map-screen.visible {
+            opacity: 1;
+        }
+
+        .map-header {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .map-header h2 {
+            font-size: 2.5rem;
+            color: #d41e36;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .map-header p {
+            font-size: 1.2rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .map-container {
+            position: relative;
+            max-width: 1000px;
+            height: 600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1;
+        }
+
+        /* Custom marker hover effect */
+        .leaflet-marker-icon:hover {
+            filter: brightness(1.1) drop-shadow(0 4px 8px rgba(212, 30, 54, 0.5));
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .leaflet-popup-content {
+            margin: 16px;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .popup-city-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #d41e36;
+            margin-bottom: 8px;
+        }
+
+        .popup-action {
+            background: #d41e36;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .popup-action:hover {
+            background: #b91c2e;
+        }
+
+        /* Dashboard Screen */
+        .dashboard-screen {
+            min-height: 100vh;
+            background: #fafafa;
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .dashboard-screen.visible {
+            display: block;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2.2rem;
+            color: #d41e36;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 0 2rem;
+        }
+
+        .archetypes-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .archetypes-section h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .archetype-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .archetype-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .archetype-card:hover {
+            border-color: #d41e36;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 30, 54, 0.1);
+        }
+
+        .archetype-card.selected {
+            border-color: #d41e36;
+            background: #fdf2f4;
+        }
+
+        .archetype-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #d41e36, #b91c2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .archetype-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .archetype-info h4 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .archetype-info p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .results-section h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .inflation-display {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #d41e36, #b91c2e);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .inflation-rate {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .inflation-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .basket-receipt {
+            background: white;
+            border-radius: 0;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 280px;
+            margin: 0 auto;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+            font-size: 11px;
+        }
+
+        .receipt-store-info {
+            text-align: center;
+            margin-bottom: 0.8rem;
+            font-size: 10px;
+            line-height: 1.1;
+        }
+
+        .receipt-item {
+            margin-bottom: 0.3rem;
+            font-size: 10px;
+        }
+
+        .receipt-item-name {
+            margin-bottom: 0.1rem;
+        }
+
+        .receipt-item-details {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 10px;
+            font-size: 9px;
+        }
+
+        .receipt-separator {
+            border-top: 1px dashed #000;
+            margin: 0.8rem 0;
+        }
+
+        .receipt-subtotal {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 0.2rem;
+        }
+
+        .receipt-tax {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 0.2rem;
+        }
+
+        .receipt-total {
+            border-top: 2px solid #000;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .receipt-total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+
+        .receipt-change {
+            margin-top: 0.8rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #000;
+            color: #d41e36;
+            font-weight: bold;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px dashed #000;
+            font-size: 9px;
+            line-height: 1.2;
+        }
+
+        .custom-basket-btn {
+            background: #d41e36;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .custom-basket-btn:hover {
+            background: #b91c2e;
+        }
+
+        .fred-compare-btn {
+            background: #003d7a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fred-compare-btn:hover {
+            background: #002a54;
+            transform: translateX(3px);
+        }
+
+        /* FRED Comparison Screen */
+        .fred-screen {
+            min-height: 100vh;
+            background: #f8f9fa;
+            display: none;
+            padding: 0;
+        }
+
+        .fred-screen.visible {
+            display: block;
+        }
+
+        .fred-header {
+            background: #003d7a;
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 3px solid #002a54;
+        }
+
+        .fred-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .fred-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .fred-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .fred-breadcrumb {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .fred-breadcrumb a {
+            color: #003d7a;
+            text-decoration: none;
+        }
+
+        .fred-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .fred-data-section {
+            background: white;
+            border-radius: 4px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .fred-data-section h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .fred-metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fred-metric {
+            border-left: 4px solid #003d7a;
+            padding-left: 1rem;
+        }
+
+        .fred-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #003d7a;
+            margin-bottom: 0.3rem;
+        }
+
+        .fred-metric-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.2rem;
+        }
+
+        .fred-metric-date {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .fred-chart-placeholder {
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 3rem;
+            text-align: center;
+            color: #666;
+            margin: 1.5rem 0;
+        }
+
+        .fred-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .fred-table th {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.9rem;
+        }
+
+        .fred-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.9rem;
+        }
+
+        .fred-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .fred-source {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .fred-source strong {
+            color: #333;
+        }
+
+        /* Sandbox Screen */
+        .sandbox-screen {
+            min-height: 100vh;
+            background: #fafafa;
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .sandbox-screen.visible {
+            display: block;
+        }
+
+        .sandbox-header {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
+        }
+
+        .sandbox-header h2 {
+            font-size: 2.2rem;
+            color: #d41e36;
+            margin-bottom: 0.5rem;
+        }
+
+        .sandbox-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .sandbox-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .query-builder {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .query-sentence {
+            font-size: 1.4rem;
+            line-height: 2.5;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .query-variable {
+            display: inline-block;
+            position: relative;
+        }
+
+        .query-select {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #d41e36;
+            background: #fdf2f4;
+            border: 2px solid #d41e36;
+            border-radius: 6px;
+            padding: 4px 32px 4px 12px;
+            cursor: pointer;
+            appearance: none;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d41e36' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+        }
+
+        .query-select:hover {
+            background-color: #fce8ec;
+            transform: translateY(-1px);
+        }
+
+        .query-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(212, 30, 54, 0.1);
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #d41e36, #b91c2e);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 30, 54, 0.3);
+            width: 100%;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 30, 54, 0.4);
+        }
+
+        .sandbox-results {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: none;
+        }
+
+        .sandbox-results.visible {
+            display: block;
+        }
+
+        .sandbox-results h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-left: 4px solid #d41e36;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .insight-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #d41e36;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .insight-description {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: white;
+            border: 2px solid #d41e36;
+            color: #d41e36;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            background: #d41e36;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+            
+            .map-header h2 {
+                font-size: 2rem;
+            }
+
+            .map-container {
+                height: 500px;
+                padding: 0 1rem;
+            }
+
+            .query-sentence {
+                font-size: 1.1rem;
+                line-height: 2.2;
+            }
+
+            .query-select {
+                font-size: 1.1rem;
+            }
+
+            .query-builder {
+                padding: 1.5rem;
+            }
+
+            .insight-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Splash Screen -->
     <div class="splash-screen" id="splashScreen">
         <div class="logo">
-            <img src="black-logo.png" alt="Trader Joe's Price Index" class="logo-image">
+            <img src="red logo crop.png" alt="Trader Joe's Price Index">
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <!-- Map Screen -->
+    <div class="map-screen" id="mapScreen">
+        <div class="map-header">
+            <h2>Choose Your City</h2>
+            <p>Explore inflation patterns across different Trader Joe's markets</p>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div class="dashboard-screen" id="dashboardScreen">
+        <button class="back-btn" onclick="goBack()">← Back to Map</button>
+        
+        <div class="dashboard-header">
+            <h2 id="cityName">Austin</h2>
+            <p>Trader Joe's Inflation Dashboard</p>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="archetypes-section">
+                <h3>Choose Your Shopping Archetype</h3>
+                <div class="archetype-grid">
+                    <div class="archetype-card" onclick="selectArchetype(this, 'student')">
+                        <div class="archetype-avatar">GS</div>
+                        <div class="archetype-info">
+                            <h4>UT Grad Student</h4>
+                            <p>Ramen, frozen meals, cheap wine, and bulk snacks for late-night studying</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'teacher')">
+                        <div class="archetype-avatar">T</div>
+                        <div class="archetype-info">
+                            <h4>Austin ISD Teacher</h4>
+                            <p>Quick breakfast items, healthy lunch options, and coffee for energy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'family')">
+                        <div class="archetype-avatar">F4</div>
+                        <div class="archetype-info">
+                            <h4>Family of 4</h4>
+                            <p>Kid-friendly snacks, family meal ingredients, and household essentials</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'fed')">
+                        <div class="archetype-avatar">
+                            <img src="Chicago Fed Shopping.png" alt="Regional Fed Chair">
+                        </div>
+                        <div class="archetype-info">
+                            <h4>Regional Fed Chair</h4>
+                            <p>Premium items and economist-approved basket for monetary policy insights</p>
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-card" onclick="selectArchetype(this, 'cpi')">
+                        <div class="archetype-avatar">
+                            <img src="black-logo.png" alt="Trader Joe's CPI">
+                        </div>
+                        <div class="archetype-info">
+                            <h4>Trader Joe's CPI</h4>
+                            <p>Standardized basket of goods following BLS food CPI methodology</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="custom-basket-btn" onclick="openSandbox()">
+                    Open Sandbox
+                </button>
+            </div>
+
+            <div class="results-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 style="margin: 0;">Inflation Results</h3>
+                    <button class="fred-compare-btn" id="fredCompareBtn" style="display: none;" onclick="openFredComparison()">
+                        Compare to FRED →
+                    </button>
+                </div>
+                <div class="inflation-display">
+                    <div class="inflation-rate" id="inflationRate">Select an archetype</div>
+                    <div class="inflation-label" id="inflationLabel">to see inflation data</div>
+                </div>
+                
+                <div class="basket-receipt" id="basketReceipt" style="display: none;">
+                    <div class="receipt-header">
+                        <strong>TRADER JOE'S RECEIPT</strong><br>
+                        <span id="receiptDate"></span>
+                    </div>
+                    <div id="receiptItems"></div>
+                    <div class="receipt-total">
+                        <div class="receipt-item">
+                            <span>TOTAL:</span>
+                            <span id="receiptTotal"></span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>YoY Change:</span>
+                            <span id="receiptChange" style="color: #d41e36;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FRED Comparison Screen -->
+    <div class="fred-screen" id="fredScreen">
+        <div class="fred-header">
+            <h2>Food at Home - Comparative Analysis</h2>
+            <p>Trader Joe's CPI vs. Federal Reserve Economic Data</p>
+        </div>
+
+        <div class="fred-content">
+            <div class="fred-breadcrumb">
+                <a href="#" onclick="goBackFromFred(); return false;">← Back to Dashboard</a> / Economic Data / Consumer Price Index
+            </div>
+
+            <div class="fred-data-section">
+                <h3>Current Indicators</h3>
+                <div class="fred-metric-grid">
+                    <div class="fred-metric">
+                        <div class="fred-metric-value" id="fredTjValue">3.4%</div>
+                        <div class="fred-metric-label">Trader Joe's CPI (Food)</div>
+                        <div class="fred-metric-date" id="fredTjDate">As of Oct 2025</div>
+                    </div>
+                    <div class="fred-metric">
+                        <div class="fred-metric-value" id="fredBLSValue">3.2%</div>
+                        <div class="fred-metric-label">Food at Home (US City Average)</div>
+                        <div class="fred-metric-date">BLS - Sep 2025</div>
+                    </div>
+                    <div class="fred-metric">
+                        <div class="fred-metric-value" id="fredDiffValue">+0.2%</div>
+                        <div class="fred-metric-label">Difference (TJ's vs BLS)</div>
+                        <div class="fred-metric-date">Percentage Points</div>
+                    </div>
+                </div>
+
+                <div class="fred-chart-placeholder">
+                    <strong>Time Series Comparison Chart</strong><br>
+                    <span style="font-size: 0.9rem;">Visual comparison of Trader Joe's CPI vs. BLS Food at Home Index</span>
+                </div>
+            </div>
+
+            <div class="fred-data-section">
+                <h3>Comparative Data Series</h3>
+                <table class="fred-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Trader Joe's CPI</th>
+                            <th>BLS Food at Home</th>
+                            <th>Difference</th>
+                            <th>% Variance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fredTableBody">
+                        <tr>
+                            <td>Oct 2025</td>
+                            <td>3.4%</td>
+                            <td>3.2%</td>
+                            <td>+0.2 pp</td>
+                            <td>+6.3%</td>
+                        </tr>
+                        <tr>
+                            <td>Sep 2025</td>
+                            <td>3.6%</td>
+                            <td>3.3%</td>
+                            <td>+0.3 pp</td>
+                            <td>+9.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Aug 2025</td>
+                            <td>3.5%</td>
+                            <td>3.4%</td>
+                            <td>+0.1 pp</td>
+                            <td>+2.9%</td>
+                        </tr>
+                        <tr>
+                            <td>Jul 2025</td>
+                            <td>3.7%</td>
+                            <td>3.5%</td>
+                            <td>+0.2 pp</td>
+                            <td>+5.7%</td>
+                        </tr>
+                        <tr>
+                            <td>Jun 2025</td>
+                            <td>3.8%</td>
+                            <td>3.6%</td>
+                            <td>+0.2 pp</td>
+                            <td>+5.6%</td>
+                        </tr>
+                        <tr>
+                            <td>May 2025</td>
+                            <td>3.9%</td>
+                            <td>3.7%</td>
+                            <td>+0.2 pp</td>
+                            <td>+5.4%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="fred-source">
+                    <strong>Sources:</strong><br>
+                    • Trader Joe's CPI: Standardized basket following BLS food CPI methodology, <span id="fredCityName">Austin</span> Store Data<br>
+                    • Food at Home: U.S. Bureau of Labor Statistics, Consumer Price Index for All Urban Consumers: Food at Home in U.S. City Average [CUSR0000SAF11]<br>
+                    • Methodology: Year-over-year percentage change, seasonally adjusted
+                </div>
+            </div>
+
+            <div class="fred-data-section">
+                <h3>Methodology Notes</h3>
+                <p style="color: #666; line-height: 1.6; margin-bottom: 1rem;">
+                    The Trader Joe's CPI uses a standardized basket of goods designed to mirror the Bureau of Labor Statistics' 
+                    food at home category. This allows for direct comparison with official federal inflation metrics while 
+                    providing localized, store-specific insights.
+                </p>
+                <p style="color: #666; line-height: 1.6;">
+                    <strong>Basket Composition:</strong> Includes representative items across categories such as cereals, 
+                    meats, dairy, fruits, vegetables, and nonalcoholic beverages, weighted according to BLS expenditure shares.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sandbox Screen -->
+    <div class="sandbox-screen" id="sandboxScreen">
+        <button class="back-btn" onclick="goBackFromSandbox()">← Back to Dashboard</button>
+        
+        <div class="sandbox-header">
+            <h2>Data Sandbox</h2>
+            <p>Explore custom queries with real-time insights</p>
+        </div>
+
+        <div class="sandbox-content">
+            <div class="query-builder">
+                <div class="query-sentence">
+                    I want to know the 
+                    <span class="query-variable">
+                        <select class="query-select" id="metricType">
+                            <option value="price">current price</option>
+                            <option value="inflation">annual inflation</option>
+                            <option value="change">price change</option>
+                            <option value="trend">price trend</option>
+                        </select>
+                    </span>
+                    for
+                    <span class="query-variable">
+                        <select class="query-select" id="itemType">
+                            <option value="basket">standard basket</option>
+                            <option value="produce">produce items</option>
+                            <option value="frozen">frozen foods</option>
+                            <option value="snacks">snacks & treats</option>
+                            <option value="beverages">beverages</option>
+                            <option value="dairy">dairy products</option>
+                            <option value="pantry">pantry staples</option>
+                        </select>
+                    </span>
+                    in
+                    <span class="query-variable">
+                        <select class="query-select" id="storeLocation">
+                            <option value="austin">Austin (Seaholm)</option>
+                            <option value="chicago">Chicago (South Loop)</option>
+                            <option value="newyork">New York (East Village)</option>
+                            <option value="la">Los Angeles (La Brea)</option>
+                        </select>
+                    </span>
+                    over the last
+                    <span class="query-variable">
+                        <select class="query-select" id="timePeriod">
+                            <option value="month">month</option>
+                            <option value="quarter">quarter</option>
+                            <option value="6months">6 months</option>
+                            <option value="year">year</option>
+                            <option value="2years">2 years</option>
+                        </select>
+                    </span>.
+                </div>
+                
+                <button class="generate-btn" onclick="generateInsights()">
+                    Generate Insights
+                </button>
+            </div>
+
+            <div class="sandbox-results" id="sandboxResults">
+                <h3>Your Insights</h3>
+                <div id="insightCards"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Auto-start the experience - transition to map after 2 seconds
+        const archetypeData = {
+            student: {
+                inflation: '4.8%',
+                label: 'Annual inflation for grad student basket',
+                items: [
+                    { name: 'TJ RAMEN CHICKEN 6PK', price: '3.49', sku: '12345', qty: '1', change: '+0.30' },
+                    { name: 'FROZEN PAD THAI', price: '4.99', sku: '23456', qty: '1', change: '+0.50' },
+                    { name: 'CHARLES SHAW RED WINE', price: '3.99', sku: '34567', qty: '1', change: '+1.00' },
+                    { name: 'PB FILLED PRETZELS', price: '2.99', sku: '45678', qty: '1', change: '+0.20' },
+                    { name: 'MARGHERITA PIZZA FRZ', price: '3.99', sku: '56789', qty: '1', change: '+0.40' }
+                ],
+                subtotal: '19.45',
+                tax: '1.56',
+                total: '21.01',
+                change: '+2.96 (16.4%)'
+            },
+            teacher: {
+                inflation: '3.2%',
+                label: 'Annual inflation for teacher basket',
+                items: [
+                    { name: 'BREAKFAST BARS 6CT', price: '4.49', sku: '67890', qty: '1', change: '+0.20' },
+                    { name: 'POWER GREENS SALAD KIT', price: '3.99', sku: '78901', qty: '1', change: '+0.30' },
+                    { name: 'COLD BREW COFFEE 32OZ', price: '7.99', sku: '89012', qty: '1', change: '+0.50' },
+                    { name: 'GREEK YOGURT 4PK', price: '4.99', sku: '90123', qty: '1', change: '+0.25' },
+                    { name: 'TRAIL MIX CRANBRRY', price: '5.99', sku: '01234', qty: '1', change: '+0.15' }
+                ],
+                subtotal: '27.45',
+                tax: '2.20',
+                total: '29.65',
+                change: '+1.40 (4.9%)'
+            },
+            family: {
+                inflation: '5.1%',
+                label: 'Annual inflation for family basket',
+                items: [
+                    { name: 'GOLDFISH CRACKERS', price: '2.99', sku: '11111', qty: '2', change: '+0.40' },
+                    { name: 'ORGANIC MILK 1/2GAL', price: '4.99', sku: '22222', qty: '1', change: '+0.60' },
+                    { name: 'CHICKEN NUGGETS FRZ', price: '6.99', sku: '33333', qty: '1', change: '+0.70' },
+                    { name: 'MANDARIN ORANGES', price: '3.49', sku: '44444', qty: '1', change: '+0.30' },
+                    { name: 'MAC & CHEESE 6PK', price: '4.99', sku: '55555', qty: '1', change: '+0.50' },
+                    { name: 'SOURDOUGH BREAD', price: '2.99', sku: '66666', qty: '1', change: '+0.35' }
+                ],
+                subtotal: '29.43',
+                tax: '2.35',
+                total: '31.78',
+                change: '+3.85 (13.8%)'
+            },
+            fed: {
+                inflation: '2.8%',
+                label: 'Federal Reserve regional basket',
+                items: [
+                    { name: 'ORGANIC EVERYTHING', price: '8.99', sku: '77777', qty: '1', change: '+0.20' },
+                    { name: 'ARTISANAL CHEESE', price: '12.99', sku: '88888', qty: '1', change: '+0.40' },
+                    { name: 'PREMIUM PINOT NOIR', price: '19.99', sku: '99999', qty: '1', change: '+0.50' },
+                    { name: 'QUINOA SALAD KIT', price: '6.99', sku: '10101', qty: '1', change: '+0.30' },
+                    { name: 'FAIR TRADE COFFEE', price: '11.99', sku: '20202', qty: '1', change: '+0.25' }
+                ],
+                subtotal: '60.95',
+                tax: '4.88',
+                total: '65.83',
+                change: '+1.65 (2.6%)'
+            },
+            cpi: {
+                // Default Austin data
+                inflation: '3.4%',
+                label: 'Trader Joe\'s CPI - Austin',
+                items: [
+                    { name: 'FOOD BASKET STANDARD', price: '45.99', sku: '30303', qty: '1', change: '+1.50' },
+                    { name: 'BEVERAGES ASSORTED', price: '12.99', sku: '40404', qty: '1', change: '+0.45' },
+                    { name: 'HOUSEHOLD ITEMS', price: '18.99', sku: '50505', qty: '1', change: '+0.60' },
+                    { name: 'PERSONAL CARE', price: '8.99', sku: '60606', qty: '1', change: '+0.25' }
+                ],
+                subtotal: '86.96',
+                tax: '6.96',
+                total: '93.92',
+                change: '+2.80 (3.1%)'
+            }
+        };
+
+        // City-specific CPI data
+        const cpiByCity = {
+            'Austin': {
+                inflation: '3.4%',
+                label: 'Trader Joe\'s CPI - Austin (Seaholm)',
+                subtotal: '86.96',
+                tax: '6.96',
+                total: '93.92',
+                change: '+2.80 (3.1%)'
+            },
+            'Chicago': {
+                inflation: '3.6%',
+                label: 'Trader Joe\'s CPI - Chicago (South Loop)',
+                subtotal: '88.15',
+                tax: '7.05',
+                total: '95.20',
+                change: '+3.15 (3.4%)'
+            },
+            'New York': {
+                inflation: '4.1%',
+                label: 'Trader Joe\'s CPI - New York (East Village)',
+                subtotal: '92.50',
+                tax: '7.40',
+                total: '99.90',
+                change: '+3.85 (4.0%)'
+            },
+            'Los Angeles': {
+                inflation: '3.8%',
+                label: 'Trader Joe\'s CPI - Los Angeles (La Brea)',
+                subtotal: '89.80',
+                tax: '7.18',
+                total: '96.98',
+                change: '+3.40 (3.6%)'
+            }
+        };
+
+        // Initialize map
+        let map;
+        let cityMarkers = [];
+
+        function initializeMap() {
+            // Create map centered on US
+            map = L.map('map', {
+                center: [39.8283, -98.5795], // Center of USA
+                zoom: 4,
+                minZoom: 3,
+                maxZoom: 18
+            });
+
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // City data with precise coordinates (city centers)
+            const cities = [
+                { name: 'Austin', location: 'Seaholm', storeCode: '452', lat: 30.2672, lng: -97.7431 },
+                { name: 'Chicago', location: 'South Loop', storeCode: '701', lat: 41.8781, lng: -87.6298 },
+                { name: 'New York', location: 'East Village', storeCode: '546', lat: 40.7128, lng: -74.0060 },
+                { name: 'Los Angeles', location: 'La Brea', storeCode: '31', lat: 34.0522, lng: -118.2437 }
+            ];
+
+            // Add markers for each city
+            cities.forEach(city => {
+                console.log('Adding marker for:', city.name, 'at', city.lat, city.lng);
+                
+                // Create custom red icon
+                const redIcon = L.icon({
+                    iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="40" height="60">
+                            <path fill="#d41e36" stroke="#fff" stroke-width="2" d="M12 0C7.03 0 3 4.03 3 9c0 5.25 9 18 9 18s9-12.75 9-18c0-4.97-4.03-9-9-9z"/>
+                            <circle fill="#fff" cx="12" cy="9" r="4"/>
+                        </svg>
+                    `),
+                    iconSize: [40, 60],
+                    iconAnchor: [20, 60],
+                    popupAnchor: [0, -60]
+                });
+
+                // Create marker
+                const marker = L.marker([city.lat, city.lng], { 
+                    icon: redIcon,
+                    title: city.name
+                }).addTo(map);
+
+                // Create popup content
+                const popupContent = `
+                    <div class="popup-city-name">${city.name}</div>
+                    <p style="color: #666; margin: 8px 0; font-size: 0.95rem;">${city.location} (Store ${city.storeCode})</p>
+                    <button class="popup-action" onclick="selectCity('${city.name}')">View Dashboard</button>
+                `;
+
+                marker.bindPopup(popupContent);
+                
+                // Add click handler to marker
+                marker.on('click', function() {
+                    this.openPopup();
+                });
+
+                cityMarkers.push(marker);
+                console.log('Marker added successfully for:', city.name);
+            });
+        }
+
+        // Auto-start the experience
         setTimeout(() => {
             document.getElementById('splashScreen').classList.add('fade-out');
             setTimeout(() => {
-                goToMap();
+                document.getElementById('mapScreen').classList.add('visible');
+                // Initialize map after screen is visible
+                setTimeout(() => {
+                    initializeMap();
+                }, 100);
             }, 1500);
         }, 2000);
+
+        function selectCity(cityName) {
+            currentCity = cityName;
+            document.getElementById('cityName').textContent = cityName;
+            document.getElementById('mapScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').classList.add('visible');
+            
+            // Update archetypes based on city
+            updateArchetypesForCity(cityName);
+        }
+
+        function updateArchetypesForCity(city) {
+            const archetypes = document.querySelectorAll('.archetype-card');
+            const studentCard = archetypes[0];
+            const teacherCard = archetypes[1];
+            const familyCard = archetypes[2];
+            const fedCard = archetypes[3];
+            
+            // Get or create img elements in avatars
+            const studentAvatar = studentCard.querySelector('.archetype-avatar');
+            const teacherAvatar = teacherCard.querySelector('.archetype-avatar');
+            const familyAvatar = familyCard.querySelector('.archetype-avatar');
+            const fedAvatar = fedCard.querySelector('.archetype-avatar');
+            
+            if (city === 'Chicago') {
+                studentCard.querySelector('h4').textContent = 'UChicago Grad Student';
+                teacherCard.querySelector('h4').textContent = 'CPS Teacher';
+                fedCard.querySelector('h4').textContent = 'Fed Chair Goolsbee';
+                
+                // Update avatar images for Chicago
+                studentAvatar.innerHTML = '<img src="uchicago grad student Chicago.png" alt="UChicago Grad Student">';
+                teacherAvatar.innerHTML = '<img src="cps teacher.png" alt="CPS Teacher">';
+                familyAvatar.innerHTML = '<img src="family of four chicago.png" alt="Family of 4">';
+                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="Fed Chair Goolsbee">';
+            } else if (city === 'New York') {
+                studentCard.querySelector('h4').textContent = 'NYU Grad Student';
+                teacherCard.querySelector('h4').textContent = 'NYC DOE Teacher';
+                fedCard.querySelector('h4').textContent = 'John C Williams';
+                
+                // Reset to default text avatars for New York (no specific images yet)
+                studentAvatar.innerHTML = 'GS';
+                teacherAvatar.innerHTML = 'T';
+                familyAvatar.innerHTML = 'F4';
+                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="John C Williams">';
+            } else if (city === 'Los Angeles') {
+                studentCard.querySelector('h4').textContent = 'UCLA Grad Student';
+                teacherCard.querySelector('h4').textContent = 'LAUSD Teacher';
+                fedCard.querySelector('h4').textContent = 'Carl Chang';
+                
+                // Reset to default text avatars for LA (no specific images yet)
+                studentAvatar.innerHTML = 'GS';
+                teacherAvatar.innerHTML = 'T';
+                familyAvatar.innerHTML = 'F4';
+                fedAvatar.innerHTML = '<img src="Chicago Fed Shopping.png" alt="Carl Chang">';
+            } else {
+                studentCard.querySelector('h4').textContent = 'UT Grad Student';
+                teacherCard.querySelector('h4').textContent = 'Austin ISD Teacher';
+                fedCard.querySelector('h4').textContent = 'Guhan Venkatu';
+                
+                // Reset to default text avatars for Austin except Fed
+                studentAvatar.innerHTML = 'GS';
+                teacherAvatar.innerHTML = 'T';
+                familyAvatar.innerHTML = 'F4';
+                fedAvatar.innerHTML = '<img src="Guhan Venkatu Austin.png" alt="Guhan Venkatu">';
+            }
+        }
+
+        function selectArchetype(card, type) {
+            // Remove previous selection
+            document.querySelectorAll('.archetype-card').forEach(c => c.classList.remove('selected'));
+            
+            // Select current card
+            card.classList.add('selected');
+            
+            // Show/hide FRED compare button
+            const fredBtn = document.getElementById('fredCompareBtn');
+            if (type === 'cpi') {
+                fredBtn.style.display = 'block';
+            } else {
+                fredBtn.style.display = 'none';
+            }
+            
+            // Update results - use city-specific CPI data if available
+            let data = archetypeData[type];
+            
+            if (type === 'cpi' && cpiByCity[currentCity]) {
+                const cityData = cpiByCity[currentCity];
+                data = {
+                    ...data,
+                    inflation: cityData.inflation,
+                    label: cityData.label,
+                    subtotal: cityData.subtotal,
+                    tax: cityData.tax,
+                    total: cityData.total,
+                    change: cityData.change
+                };
+            }
+            
+            document.getElementById('inflationRate').textContent = data.inflation;
+            document.getElementById('inflationLabel').textContent = data.label;
+            
+            // Show and populate receipt
+            const receipt = document.getElementById('basketReceipt');
+            receipt.style.display = 'block';
+            
+            const now = new Date();
+            const receiptDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            const transactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            
+            const itemsHtml = data.items.map((item, index) => 
+                `<div class="receipt-item">
+                    <div class="receipt-item-name">${item.name}</div>
+                    <div class="receipt-item-details">
+                        <span>${item.sku} QTY ${item.qty}</span>
+                        <span>${item.price}</span>
+                    </div>
+                </div>`
+            ).join('');
+            
+            receipt.innerHTML = `
+                <div class="receipt-header">
+                    <strong>TRADER JOE'S</strong><br>
+                    Thank you for shopping with us!
+                </div>
+                
+                <div class="receipt-store-info">
+                    Store #123 - ${document.getElementById('cityName').textContent}<br>
+                    ${receiptDate}<br>
+                    Trans# ${transactionId} | Cashier: ALEX
+                </div>
+                
+                ${itemsHtml}
+                
+                <div class="receipt-separator"></div>
+                
+                <div class="receipt-subtotal">
+                    <span>SUBTOTAL:</span>
+                    <span>${data.subtotal}</span>
+                </div>
+                
+                <div class="receipt-tax">
+                    <span>TAX:</span>
+                    <span>${data.tax}</span>
+                </div>
+                
+                <div class="receipt-total">
+                    <div class="receipt-total-line">
+                        <span>TOTAL:</span>
+                        <span>${data.total}</span>
+                    </div>
+                    <div class="receipt-total-line">
+                        <span>CREDIT CARD:</span>
+                        <span>${data.total}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-change">
+                    <div class="receipt-total-line">
+                        <span>YoY INFLATION:</span>
+                        <span>${data.change}</span>
+                    </div>
+                </div>
+                
+                <div class="receipt-footer">
+                    Visit us at traderjoes.com<br>
+                    Follow @TraderJoesList<br><br>
+                    INFLATION TRACKER<br>
+                    Data as of ${now.toLocaleDateString()}
+                </div>
+            `;
+        }
+
+        let currentCity = 'Austin';
+
+        function openSandbox() {
+            document.getElementById('dashboardScreen').classList.remove('visible');
+            document.getElementById('sandboxScreen').classList.add('visible');
+            
+            // Set the store location to match current city
+            const cityMap = {
+                'Austin': 'austin',
+                'Chicago': 'chicago',
+                'New York': 'newyork',
+                'Los Angeles': 'la'
+            };
+            document.getElementById('storeLocation').value = cityMap[currentCity] || 'austin';
+        }
+
+        function goBackFromSandbox() {
+            document.getElementById('sandboxScreen').classList.remove('visible');
+            document.getElementById('dashboardScreen').classList.add('visible');
+            document.getElementById('sandboxResults').classList.remove('visible');
+        }
+
+        function generateInsights() {
+            const metric = document.getElementById('metricType').value;
+            const item = document.getElementById('itemType').value;
+            const location = document.getElementById('storeLocation').value;
+            const time = document.getElementById('timePeriod').value;
+            
+            // Mock data generation based on selections
+            const insights = generateMockInsights(metric, item, location, time);
+            
+            // Display results
+            const resultsDiv = document.getElementById('sandboxResults');
+            const cardsDiv = document.getElementById('insightCards');
+            
+            cardsDiv.innerHTML = insights.map(insight => `
+                <div class="insight-card">
+                    <div class="insight-value">${insight.value}</div>
+                    <div class="insight-label">${insight.label}</div>
+                    <div class="insight-description">${insight.description}</div>
+                </div>
+            `).join('');
+            
+            resultsDiv.classList.add('visible');
+            
+            // Smooth scroll to results
+            setTimeout(() => {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function generateMockInsights(metric, item, location, time) {
+            const locationNames = {
+                'austin': 'Austin (Seaholm)',
+                'chicago': 'Chicago (South Loop)',
+                'newyork': 'New York (East Village)',
+                'la': 'Los Angeles (La Brea)'
+            };
+            
+            const itemNames = {
+                'basket': 'Standard Basket',
+                'produce': 'Produce Items',
+                'frozen': 'Frozen Foods',
+                'snacks': 'Snacks & Treats',
+                'beverages': 'Beverages',
+                'dairy': 'Dairy Products',
+                'pantry': 'Pantry Staples'
+            };
+            
+            const timeLabels = {
+                'month': '1 month',
+                'quarter': '3 months',
+                '6months': '6 months',
+                'year': '1 year',
+                '2years': '2 years'
+            };
+            
+            // Generate realistic mock data
+            const baseInflation = Math.random() * 3 + 2; // 2-5%
+            const basePrice = Math.random() * 20 + 15; // $15-35
+            const priceChange = Math.random() * 4 - 1; // -$1 to $3
+            
+            if (metric === 'inflation') {
+                return [
+                    {
+                        value: `${baseInflation.toFixed(1)}%`,
+                        label: `Annual Inflation Rate`,
+                        description: `${itemNames[item]} in ${locationNames[location]} over the last ${timeLabels[time]}`
+                    },
+                    {
+                        value: baseInflation > 3.5 ? 'Above Average' : 'Below Average',
+                        label: 'Comparison to National CPI',
+                        description: `National CPI is currently at 3.2% annually`
+                    },
+                    {
+                        value: `$${(basePrice * (baseInflation/100)).toFixed(2)}`,
+                        label: 'Estimated Cost Increase',
+                        description: `Based on average basket value of $${basePrice.toFixed(2)}`
+                    }
+                ];
+            } else if (metric === 'price') {
+                return [
+                    {
+                        value: `$${basePrice.toFixed(2)}`,
+                        label: 'Current Average Price',
+                        description: `${itemNames[item]} in ${locationNames[location]}`
+                    },
+                    {
+                        value: `$${(basePrice * 0.92).toFixed(2)} - $${(basePrice * 1.08).toFixed(2)}`,
+                        label: 'Price Range',
+                        description: `Based on ${timeLabels[time]} of data`
+                    },
+                    {
+                        value: (Math.random() * 100).toFixed(0) + ' items',
+                        label: 'Sample Size',
+                        description: `Products tracked in this category`
+                    }
+                ];
+            } else if (metric === 'change') {
+                return [
+                    {
+                        value: `${priceChange >= 0 ? '+' : ''}$${priceChange.toFixed(2)}`,
+                        label: `Price Change (${timeLabels[time]})`,
+                        description: `${itemNames[item]} in ${locationNames[location]}`
+                    },
+                    {
+                        value: `${((priceChange / basePrice) * 100).toFixed(1)}%`,
+                        label: 'Percentage Change',
+                        description: `Relative to baseline price of $${basePrice.toFixed(2)}`
+                    },
+                    {
+                        value: priceChange > 1 ? 'Significant Increase' : priceChange < -0.5 ? 'Notable Decrease' : 'Stable',
+                        label: 'Trend Assessment',
+                        description: `Market volatility indicator`
+                    }
+                ];
+            } else { // trend
+                return [
+                    {
+                        value: Math.random() > 0.5 ? 'Upward' : 'Downward',
+                        label: 'Overall Trend',
+                        description: `${itemNames[item]} in ${locationNames[location]} over ${timeLabels[time]}`
+                    },
+                    {
+                        value: `${(Math.random() * 2).toFixed(1)}%`,
+                        label: 'Monthly Volatility',
+                        description: `Average month-over-month variation`
+                    },
+                    {
+                        value: Math.random() > 0.6 ? 'Seasonal' : 'Consistent',
+                        label: 'Pattern Type',
+                        description: `Based on historical price movements`
+                    }
+                ];
+            }
+        }
+
+        function openFredComparison() {
+            document.getElementById('dashboardScreen').classList.remove('visible');
+            document.getElementById('fredScreen').classList.add('visible');
+            
+            // Get city-specific data
+            const cityName = document.getElementById('cityName').textContent;
+            const cityData = cpiByCity[currentCity] || cpiByCity['Austin'];
+            
+            // Update city name in FRED screen
+            document.getElementById('fredCityName').textContent = cityData.label.replace('Trader Joe\'s CPI - ', '');
+            
+            // Update TJ's CPI value from current city
+            const tjCPI = cityData.inflation;
+            document.getElementById('fredTjValue').textContent = tjCPI;
+            
+            // Calculate difference
+            const tjValue = parseFloat(tjCPI);
+            const blsValue = 3.2;
+            const difference = (tjValue - blsValue).toFixed(1);
+            document.getElementById('fredDiffValue').textContent = (difference >= 0 ? '+' : '') + difference + '%';
+            
+            // Update date
+            document.getElementById('fredTjDate').textContent = `${cityName} - Oct 2025`;
+            
+            // Update historical comparison table with city-specific data
+            updateFredTable(currentCity, tjValue);
+        }
+
+        function updateFredTable(city, currentRate) {
+            // Generate city-specific historical data
+            const baseVariance = {
+                'Austin': 0,
+                'Chicago': 0.2,
+                'New York': 0.7,
+                'Los Angeles': 0.4
+            };
+            
+            const variance = baseVariance[city] || 0;
+            const blsData = [3.2, 3.3, 3.4, 3.5, 3.6, 3.7];
+            
+            const tableBody = document.getElementById('fredTableBody');
+            const months = ['Oct 2025', 'Sep 2025', 'Aug 2025', 'Jul 2025', 'Jun 2025', 'May 2025'];
+            
+            let html = '';
+            for (let i = 0; i < 6; i++) {
+                const tjRate = (currentRate - (i * 0.1) + (Math.random() * 0.2 - 0.1)).toFixed(1);
+                const blsRate = blsData[i];
+                const diff = (tjRate - blsRate).toFixed(1);
+                const percentVar = ((diff / blsRate) * 100).toFixed(1);
+                
+                html += `
+                    <tr>
+                        <td>${months[i]}</td>
+                        <td>${tjRate}%</td>
+                        <td>${blsRate}%</td>
+                        <td>${diff >= 0 ? '+' : ''}${diff} pp</td>
+                        <td>${percentVar >= 0 ? '+' : ''}${percentVar}%</td>
+                    </tr>
+                `;
+            }
+            
+            tableBody.innerHTML = html;
+        }
+
+        function goBackFromFred() {
+            document.getElementById('fredScreen').classList.remove('visible');
+            document.getElementById('dashboardScreen').classList.add('visible');
+        }
+
+        function goBack() {
+            document.getElementById('dashboardScreen').classList.remove('visible');
+            document.getElementById('mapScreen').style.display = 'block';
+            
+            // Reset selections
+            document.querySelectorAll('.archetype-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('basketReceipt').style.display = 'none';
+            document.getElementById('inflationRate').textContent = 'Select an archetype';
+            document.getElementById('inflationLabel').textContent = 'to see inflation data';
+            document.getElementById('fredCompareBtn').style.display = 'none';
+        }
     </script>
 </body>
 </html>
