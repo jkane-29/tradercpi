@@ -113,7 +113,6 @@
         /* Content Sections */
         .content-section {
             display: none;
-            max-width: 1200px;
             margin: 0 auto;
             padding: 3rem 2rem;
         }
@@ -123,33 +122,38 @@
         }
 
         /* Item Search */
+        .search-controls-wrapper {
+            display: grid;
+            grid-template-columns: 65% 35%;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .search-controls {
             background: white;
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
+        }
+
+        .logo-box {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             display: flex;
-            gap: 2rem;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: center;
         }
 
-        .search-controls-form {
-            flex: 1;
-        }
-
-        .controls-logo {
-            width: 180px;
-            height: 180px;
-            opacity: 0.25;
-            flex-shrink: 0;
-        }
-
-        .controls-logo img {
+        .logo-box img {
+            max-width: 300px;
             width: 100%;
-            height: 100%;
+            height: auto;
             object-fit: contain;
-            filter: grayscale(20%) contrast(1.1);
         }
 
         .control-row {
@@ -157,10 +161,6 @@
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
-        }
-
-        .control-row.narrow {
-            max-width: 75%;
         }
 
         .control-group {
@@ -344,6 +344,9 @@
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .chart-container h3 {
@@ -378,6 +381,9 @@
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .overlay-list h3 {
@@ -435,41 +441,43 @@
         }
 
         /* Basket Builder */
+        .basket-controls-wrapper {
+            display: grid;
+            grid-template-columns: 65% 35%;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .basket-controls {
             background: white;
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 2rem;
-            align-items: flex-start;
-        }
-
-        .basket-controls-form {
-            flex: 1;
         }
 
         .basket-add-section {
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            max-width: 75%;
         }
 
         .basket-add-row {
             display: grid;
-            grid-template-columns: auto 1fr;
             gap: 1rem;
-            align-items: end;
         }
 
         .basket-results {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 600px 600px;
             gap: 2rem;
             margin-bottom: 2rem;
-            align-items: stretch;
+            align-items: start;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .basket-attribution {
@@ -498,6 +506,15 @@
             font-family: 'Courier New', monospace;
             max-width: 600px;
             width: 100%;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .basket-items > div {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .receipt-header {
@@ -551,16 +568,18 @@
         .basket-item-remove {
             background: none;
             border: none;
-            color: #999;
+            color: #d41e36;
             font-size: 0.9rem;
             cursor: pointer;
             padding: 0;
             margin-left: 0.5rem;
             font-family: Arial, sans-serif;
+            font-weight: bold;
         }
 
         .basket-item-remove:hover {
-            color: #d41e36;
+            color: #b91c2e;
+            transform: scale(1.1);
         }
 
         .receipt-separator {
@@ -592,6 +611,11 @@
         /* Historical Receipt */
         .historical-receipt {
             justify-self: end;
+            min-width: 600px;
+        }
+
+        .historical-receipt .basket-items {
+            min-height: 400px;
         }
 
         .historical-receipt .basket-item-remove {
@@ -693,25 +717,32 @@
                 padding: 1rem 1.5rem;
                 font-size: 1rem;
             }
+
+            .search-controls-wrapper,
+            .basket-controls-wrapper {
+                grid-template-columns: 1fr;
+            }
             
             .control-row {
                 grid-template-columns: 1fr;
             }
-            
-            .control-row.narrow {
-                max-width: 100%;
-            }
-            
-            .basket-add-section {
-                max-width: 100%;
-            }
 
             .basket-add-row {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
 
             .basket-results {
                 grid-template-columns: 1fr;
+                justify-content: stretch;
+            }
+
+            .basket-items {
+                max-width: 100%;
+                min-height: 350px;
+            }
+
+            .historical-receipt {
+                min-width: auto;
             }
 
             .attribution-item {
@@ -741,8 +772,12 @@
                 max-height: 400px;
             }
 
-            .controls-logo {
-                display: none;
+            .logo-box {
+                min-height: 150px;
+            }
+
+            .logo-box img {
+                max-width: 200px;
             }
         }
     </style>
@@ -770,9 +805,9 @@
 
         <!-- Item Search Section -->
         <section class="content-section active" id="itemSearchSection">
-            <div class="search-controls">
-                <div class="search-controls-form">
-                    <div class="control-row narrow" style="grid-template-columns: 1fr;">
+            <div class="search-controls-wrapper">
+                <div class="search-controls">
+                    <div class="control-row" style="grid-template-columns: 1fr;">
                         <div class="control-group">
                             <label for="searchStore">Store Location</label>
                             <select id="searchStore">
@@ -795,9 +830,9 @@
                         <button class="btn-secondary" onclick="addToOverlay()">Add to Comparison</button>
                     </div>
                 </div>
-                
-                <div class="controls-logo">
-                    <img src="white logo.png" alt="">
+
+                <div class="logo-box">
+                    <img src="white logo.png" alt="Trader Joe's Logo">
                 </div>
             </div>
             
@@ -819,9 +854,9 @@
 
         <!-- Basket Builder Section -->
         <section class="content-section" id="basketBuilderSection">
-            <div class="basket-controls">
-                <div class="basket-controls-form">
-                    <div class="control-row narrow" style="grid-template-columns: 1fr; margin-bottom: 1.5rem;">
+            <div class="basket-controls-wrapper">
+                <div class="basket-controls">
+                    <div class="control-row" style="grid-template-columns: 1fr; margin-bottom: 1.5rem;">
                         <div class="control-group">
                             <label for="basketStore">Store Location</label>
                             <select id="basketStore">
@@ -840,7 +875,7 @@
                                 <div class="search-suggestions" id="basketItemSuggestions"></div>
                             </div>
                         </div>
-                        <div class="basket-add-row">
+                        <div class="basket-add-row" style="grid-template-columns: auto auto 1fr; align-items: end;">
                             <div class="control-group">
                                 <label for="basketQuantity">Quantity</label>
                                 <select id="basketQuantity">
@@ -851,17 +886,14 @@
                                     <option value="5">5</option>
                                 </select>
                             </div>
-                            <button class="btn-primary" onclick="addToBasket()" style="align-self: end; padding: 0.75rem 2.5rem;">Add Item</button>
+                            <button class="btn-primary" onclick="addToBasket()" style="padding: 0.75rem 2.5rem;">Add Item</button>
+                            <button class="btn-secondary" onclick="loadCPIBasket()" style="justify-self: end;">Load CPI Basket</button>
                         </div>
-                    </div>
-                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e9ecef;">
-                        <p style="color: #666; margin-bottom: 1rem; font-size: 0.95rem;">Or load a pre-built basket:</p>
-                        <button class="btn-secondary" onclick="loadCPIBasket()">Load Trader Joe's CPI Basket</button>
                     </div>
                 </div>
 
-                <div class="controls-logo">
-                    <img src="white logo.png" alt="">
+                <div class="logo-box">
+                    <img src="white logo.png" alt="Trader Joe's Logo">
                 </div>
             </div>
 
@@ -956,18 +988,18 @@
 
         // Setup autocomplete for search inputs
         function setupSearchInputs() {
-            setupAutocomplete('searchItem', 'searchItemSuggestions');
-            setupAutocomplete('basketItem', 'basketItemSuggestions');
+            setupAutocomplete('searchItem', 'searchItemSuggestions', false); // Use regular items
+            setupAutocomplete('basketItem', 'basketItemSuggestions', true); // Use basket essentials
         }
 
-        function setupAutocomplete(inputId, suggestionsId) {
+        function setupAutocomplete(inputId, suggestionsId, useBasketItems = false) {
             const input = document.getElementById(inputId);
             const suggestions = document.getElementById(suggestionsId);
             let selectedIndex = -1;
 
             input.addEventListener('input', (e) => {
                 const query = e.target.value;
-                const results = searchItems(query);
+                const results = searchItems(query, useBasketItems);
                 
                 if (results.length === 0 && query.length >= 2) {
                     suggestions.innerHTML = '<div class="search-no-results">No items found</div>';
@@ -1469,4 +1501,5 @@
     </script>
 </body>
 </html>
+
 
