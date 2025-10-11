@@ -1,0 +1,66 @@
+[
+  {
+    "code": "31",
+    "reason": "NYC area - known different pricing"
+  },
+  {
+    "code": "78",
+    "reason": "East Coast - same region as 31"
+  },
+  {
+    "code": "150",
+    "reason": "Mid-range code"
+  },
+  {
+    "code": "200",
+    "reason": "Round number, mid-range"
+  },
+  {
+    "code": "546",
+    "reason": "Midwest/Chicago - known different pricing"
+  },
+  {
+    "code": "452",
+    "reason": "West Coast - known different pricing"
+  },
+  {
+    "code": "701",
+    "reason": "West Coast/LA - known different pricing"
+  },
+  {
+    "code": "564",
+    "reason": "Super store (1922 products)"
+  },
+  {
+    "code": "575",
+    "reason": "Smaller store (291 products)"
+  },
+  {
+    "code": "625",
+    "reason": "Specialty store (503 products)"
+  },
+  {
+    "code": "100",
+    "reason": "Range 100 (1247 products)"
+  },
+  {
+    "code": "250",
+    "reason": "Range 250 (1257 products)"
+  },
+  {
+    "code": "350",
+    "reason": "Range 350 (1257 products)"
+  },
+  {
+    "code": "400",
+    "reason": "Range 400 (1249 products)"
+  },
+  {
+    "code": "500",
+    "reason": "Range 500 (1352 products)"
+  },
+  {
+    "code": "600",
+    "reason": "Range 600 (1230 products)"
+  }
+]
