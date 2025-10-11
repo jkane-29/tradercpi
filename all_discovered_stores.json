@@ -1,0 +1,3247 @@
+[
+  {
+    "code": "1",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "2",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "3",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "4",
+    "products": 1420,
+    "valid": true
+  },
+  {
+    "code": "5",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "6",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "7",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "8",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "9",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "10",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "11",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "12",
+    "products": 171,
+    "valid": true
+  },
+  {
+    "code": "13",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "14",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "15",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "16",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "17",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "18",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "19",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "20",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "21",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "22",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "23",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "24",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "25",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "26",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "27",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "28",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "29",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "30",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "31",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "32",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "33",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "34",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "35",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "36",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "37",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "38",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "39",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "40",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "41",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "42",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "43",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "44",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "45",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "46",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "47",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "48",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "49",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "50",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "51",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "52",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "53",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "54",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "55",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "56",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "57",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "58",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "59",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "60",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "61",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "62",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "63",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "64",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "65",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "66",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "67",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "68",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "69",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "70",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "71",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "72",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "73",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "74",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "75",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "76",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "77",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "78",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "79",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "80",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "81",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "82",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "83",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "84",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "85",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "86",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "87",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "88",
+    "products": 1252,
+    "valid": true
+  },
+  {
+    "code": "89",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "90",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "91",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "92",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "93",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "94",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "95",
+    "products": 1252,
+    "valid": true
+  },
+  {
+    "code": "96",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "97",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "98",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "99",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "100",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "101",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "102",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "103",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "104",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "105",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "106",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "107",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "108",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "109",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "110",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "111",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "112",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "113",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "114",
+    "products": 1260,
+    "valid": true
+  },
+  {
+    "code": "115",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "116",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "117",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "118",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "119",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "120",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "121",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "122",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "123",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "124",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "125",
+    "products": 1260,
+    "valid": true
+  },
+  {
+    "code": "126",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "127",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "128",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "129",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "130",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "131",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "132",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "133",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "134",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "135",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "136",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "137",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "138",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "139",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "140",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "141",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "142",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "143",
+    "products": 1221,
+    "valid": true
+  },
+  {
+    "code": "144",
+    "products": 1222,
+    "valid": true
+  },
+  {
+    "code": "145",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "146",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "147",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "148",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "149",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "150",
+    "products": 1221,
+    "valid": true
+  },
+  {
+    "code": "151",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "152",
+    "products": 1222,
+    "valid": true
+  },
+  {
+    "code": "153",
+    "products": 1220,
+    "valid": true
+  },
+  {
+    "code": "154",
+    "products": 1222,
+    "valid": true
+  },
+  {
+    "code": "155",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "156",
+    "products": 1222,
+    "valid": true
+  },
+  {
+    "code": "157",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "158",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "159",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "160",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "161",
+    "products": 1643,
+    "valid": true
+  },
+  {
+    "code": "162",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "163",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "164",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "165",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "166",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "167",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "168",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "169",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "170",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "171",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "172",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "173",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "174",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "175",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "176",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "177",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "178",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "179",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "180",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "181",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "182",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "183",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "184",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "185",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "186",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "187",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "188",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "189",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "190",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "191",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "192",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "193",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "194",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "195",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "196",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "197",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "198",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "199",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "200",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "201",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "202",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "203",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "204",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "205",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "206",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "207",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "208",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "209",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "210",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "211",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "212",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "213",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "214",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "215",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "216",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "217",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "218",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "219",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "220",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "221",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "222",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "223",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "224",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "225",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "226",
+    "products": 1400,
+    "valid": true
+  },
+  {
+    "code": "227",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "228",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "229",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "230",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "231",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "232",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "233",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "234",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "235",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "236",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "237",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "238",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "239",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "240",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "241",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "242",
+    "products": 1295,
+    "valid": true
+  },
+  {
+    "code": "243",
+    "products": 1260,
+    "valid": true
+  },
+  {
+    "code": "244",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "245",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "246",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "247",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "248",
+    "products": 1259,
+    "valid": true
+  },
+  {
+    "code": "249",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "250",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "251",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "252",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "253",
+    "products": 1258,
+    "valid": true
+  },
+  {
+    "code": "254",
+    "products": 1256,
+    "valid": true
+  },
+  {
+    "code": "255",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "256",
+    "products": 1264,
+    "valid": true
+  },
+  {
+    "code": "257",
+    "products": 1420,
+    "valid": true
+  },
+  {
+    "code": "258",
+    "products": 1412,
+    "valid": true
+  },
+  {
+    "code": "259",
+    "products": 1421,
+    "valid": true
+  },
+  {
+    "code": "260",
+    "products": 1415,
+    "valid": true
+  },
+  {
+    "code": "261",
+    "products": 1416,
+    "valid": true
+  },
+  {
+    "code": "262",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "263",
+    "products": 1419,
+    "valid": true
+  },
+  {
+    "code": "264",
+    "products": 1447,
+    "valid": true
+  },
+  {
+    "code": "265",
+    "products": 1423,
+    "valid": true
+  },
+  {
+    "code": "266",
+    "products": 1409,
+    "valid": true
+  },
+  {
+    "code": "267",
+    "products": 1420,
+    "valid": true
+  },
+  {
+    "code": "268",
+    "products": 1483,
+    "valid": true
+  },
+  {
+    "code": "269",
+    "products": 1444,
+    "valid": true
+  },
+  {
+    "code": "270",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "271",
+    "products": 1373,
+    "valid": true
+  },
+  {
+    "code": "272",
+    "products": 1390,
+    "valid": true
+  },
+  {
+    "code": "273",
+    "products": 1411,
+    "valid": true
+  },
+  {
+    "code": "274",
+    "products": 1412,
+    "valid": true
+  },
+  {
+    "code": "275",
+    "products": 1388,
+    "valid": true
+  },
+  {
+    "code": "276",
+    "products": 1469,
+    "valid": true
+  },
+  {
+    "code": "277",
+    "products": 1480,
+    "valid": true
+  },
+  {
+    "code": "278",
+    "products": 1410,
+    "valid": true
+  },
+  {
+    "code": "279",
+    "products": 1415,
+    "valid": true
+  },
+  {
+    "code": "280",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "281",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "282",
+    "products": 1253,
+    "valid": true
+  },
+  {
+    "code": "283",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "284",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "285",
+    "products": 1252,
+    "valid": true
+  },
+  {
+    "code": "286",
+    "products": 1250,
+    "valid": true
+  },
+  {
+    "code": "287",
+    "products": 1417,
+    "valid": true
+  },
+  {
+    "code": "288",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "289",
+    "products": 490,
+    "valid": true
+  },
+  {
+    "code": "290",
+    "products": 1376,
+    "valid": true
+  },
+  {
+    "code": "291",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "292",
+    "products": 490,
+    "valid": true
+  },
+  {
+    "code": "293",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "294",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "295",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "296",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "297",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "298",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "299",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "300",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "301",
+    "products": 1243,
+    "valid": true
+  },
+  {
+    "code": "302",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "303",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "304",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "305",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "306",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "307",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "308",
+    "products": 1452,
+    "valid": true
+  },
+  {
+    "code": "309",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "310",
+    "products": 512,
+    "valid": true
+  },
+  {
+    "code": "311",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "312",
+    "products": 1441,
+    "valid": true
+  },
+  {
+    "code": "313",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "314",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "315",
+    "products": 752,
+    "valid": true
+  },
+  {
+    "code": "316",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "317",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "318",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "319",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "320",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "321",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "322",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "323",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "324",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "325",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "326",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "327",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "328",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "329",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "330",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "331",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "332",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "333",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "334",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "335",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "336",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "337",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "338",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "339",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "340",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "341",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "342",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "343",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "344",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "345",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "346",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "347",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "348",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "349",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "350",
+    "products": 1257,
+    "valid": true
+  },
+  {
+    "code": "351",
+    "products": 1254,
+    "valid": true
+  },
+  {
+    "code": "352",
+    "products": 1255,
+    "valid": true
+  },
+  {
+    "code": "353",
+    "products": 1282,
+    "valid": true
+  },
+  {
+    "code": "354",
+    "products": 1420,
+    "valid": true
+  },
+  {
+    "code": "355",
+    "products": 1387,
+    "valid": true
+  },
+  {
+    "code": "356",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "357",
+    "products": 1389,
+    "valid": true
+  },
+  {
+    "code": "358",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "359",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "360",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "361",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "362",
+    "products": 1389,
+    "valid": true
+  },
+  {
+    "code": "363",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "364",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "365",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "366",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "367",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "368",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "369",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "370",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "371",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "372",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "373",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "374",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "375",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "376",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "377",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "378",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "379",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "380",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "381",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "382",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "383",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "384",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "385",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "386",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "387",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "388",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "389",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "390",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "391",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "392",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "393",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "394",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "395",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "396",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "397",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "398",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "399",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "400",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "401",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "402",
+    "products": 1243,
+    "valid": true
+  },
+  {
+    "code": "403",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "404",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "405",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "406",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "407",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "408",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "409",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "410",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "411",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "412",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "413",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "414",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "415",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "416",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "417",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "418",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "419",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "420",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "421",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "422",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "423",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "424",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "425",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "426",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "427",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "428",
+    "products": 1249,
+    "valid": true
+  },
+  {
+    "code": "429",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "430",
+    "products": 1409,
+    "valid": true
+  },
+  {
+    "code": "431",
+    "products": 1243,
+    "valid": true
+  },
+  {
+    "code": "432",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "433",
+    "products": 1376,
+    "valid": true
+  },
+  {
+    "code": "434",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "435",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "436",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "437",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "438",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "439",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "440",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "441",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "442",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "443",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "444",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "445",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "446",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "447",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "448",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "449",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "450",
+    "products": 1478,
+    "valid": true
+  },
+  {
+    "code": "451",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "452",
+    "products": 1246,
+    "valid": true
+  },
+  {
+    "code": "453",
+    "products": 1243,
+    "valid": true
+  },
+  {
+    "code": "454",
+    "products": 1247,
+    "valid": true
+  },
+  {
+    "code": "455",
+    "products": 1248,
+    "valid": true
+  },
+  {
+    "code": "456",
+    "products": 1406,
+    "valid": true
+  },
+  {
+    "code": "457",
+    "products": 490,
+    "valid": true
+  },
+  {
+    "code": "458",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "459",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "460",
+    "products": 1244,
+    "valid": true
+  },
+  {
+    "code": "461",
+    "products": 1241,
+    "valid": true
+  },
+  {
+    "code": "462",
+    "products": 490,
+    "valid": true
+  },
+  {
+    "code": "463",
+    "products": 1494,
+    "valid": true
+  },
+  {
+    "code": "464",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "465",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "466",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "467",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "468",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "469",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "470",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "471",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "472",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "473",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "474",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "475",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "476",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "477",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "478",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "479",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "480",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "481",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "482",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "483",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "484",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "485",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "486",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "487",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "488",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "489",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "490",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "491",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "492",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "493",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "494",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "495",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "496",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "497",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "498",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "499",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "500",
+    "products": 1352,
+    "valid": true
+  },
+  {
+    "code": "501",
+    "products": 1224,
+    "valid": true
+  },
+  {
+    "code": "502",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "503",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "504",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "505",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "506",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "507",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "508",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "509",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "510",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "511",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "512",
+    "products": 1223,
+    "valid": true
+  },
+  {
+    "code": "513",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "514",
+    "products": 1230,
+    "valid": true
+  },
+  {
+    "code": "515",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "516",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "517",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "518",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "519",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "520",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "521",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "522",
+    "products": 1230,
+    "valid": true
+  },
+  {
+    "code": "523",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "524",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "525",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "526",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "527",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "528",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "529",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "530",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "531",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "532",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "533",
+    "products": 1225,
+    "valid": true
+  },
+  {
+    "code": "534",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "535",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "536",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "537",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "538",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "539",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "540",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "542",
+    "products": 1239,
+    "valid": true
+  },
+  {
+    "code": "543",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "544",
+    "products": 1241,
+    "valid": true
+  },
+  {
+    "code": "545",
+    "products": 1235,
+    "valid": true
+  },
+  {
+    "code": "546",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "547",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "548",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "549",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "550",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "551",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "552",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "553",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "554",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "555",
+    "products": 1240,
+    "valid": true
+  },
+  {
+    "code": "556",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "557",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "558",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "559",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "560",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "561",
+    "products": 1230,
+    "valid": true
+  },
+  {
+    "code": "562",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "563",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "564",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "565",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "566",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "567",
+    "products": 1240,
+    "valid": true
+  },
+  {
+    "code": "568",
+    "products": 1228,
+    "valid": true
+  },
+  {
+    "code": "569",
+    "products": 1243,
+    "valid": true
+  },
+  {
+    "code": "570",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "571",
+    "products": 1239,
+    "valid": true
+  },
+  {
+    "code": "572",
+    "products": 1245,
+    "valid": true
+  },
+  {
+    "code": "573",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "574",
+    "products": 1226,
+    "valid": true
+  },
+  {
+    "code": "575",
+    "products": 291,
+    "valid": true
+  },
+  {
+    "code": "576",
+    "products": 1391,
+    "valid": true
+  },
+  {
+    "code": "577",
+    "products": 272,
+    "valid": true
+  },
+  {
+    "code": "578",
+    "products": 1304,
+    "valid": true
+  },
+  {
+    "code": "579",
+    "products": 233,
+    "valid": true
+  },
+  {
+    "code": "580",
+    "products": 1457,
+    "valid": true
+  },
+  {
+    "code": "581",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "582",
+    "products": 1396,
+    "valid": true
+  },
+  {
+    "code": "583",
+    "products": 291,
+    "valid": true
+  },
+  {
+    "code": "584",
+    "products": 237,
+    "valid": true
+  },
+  {
+    "code": "585",
+    "products": 1403,
+    "valid": true
+  },
+  {
+    "code": "586",
+    "products": 1251,
+    "valid": true
+  },
+  {
+    "code": "587",
+    "products": 272,
+    "valid": true
+  },
+  {
+    "code": "588",
+    "products": 260,
+    "valid": true
+  },
+  {
+    "code": "589",
+    "products": 1427,
+    "valid": true
+  },
+  {
+    "code": "590",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "591",
+    "products": 1354,
+    "valid": true
+  },
+  {
+    "code": "592",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "593",
+    "products": 215,
+    "valid": true
+  },
+  {
+    "code": "594",
+    "products": 267,
+    "valid": true
+  },
+  {
+    "code": "595",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "596",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "597",
+    "products": 291,
+    "valid": true
+  },
+  {
+    "code": "598",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "599",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "600",
+    "products": 1230,
+    "valid": true
+  },
+  {
+    "code": "601",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "602",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "603",
+    "products": 1240,
+    "valid": true
+  },
+  {
+    "code": "604",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "605",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "606",
+    "products": 1239,
+    "valid": true
+  },
+  {
+    "code": "607",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "608",
+    "products": 1242,
+    "valid": true
+  },
+  {
+    "code": "609",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "610",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "611",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "612",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "613",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "614",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "615",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "616",
+    "products": 1922,
+    "valid": true
+  },
+  {
+    "code": "617",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "618",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "619",
+    "products": 1235,
+    "valid": true
+  },
+  {
+    "code": "620",
+    "products": 1233,
+    "valid": true
+  },
+  {
+    "code": "621",
+    "products": 1230,
+    "valid": true
+  },
+  {
+    "code": "622",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "623",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "624",
+    "products": 1231,
+    "valid": true
+  },
+  {
+    "code": "625",
+    "products": 503,
+    "valid": true
+  },
+  {
+    "code": "626",
+    "products": 503,
+    "valid": true
+  },
+  {
+    "code": "627",
+    "products": 1231,
+    "valid": true
+  },
+  {
+    "code": "628",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "629",
+    "products": 1240,
+    "valid": true
+  },
+  {
+    "code": "630",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "631",
+    "products": 1235,
+    "valid": true
+  },
+  {
+    "code": "632",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "633",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "634",
+    "products": 1236,
+    "valid": true
+  },
+  {
+    "code": "635",
+    "products": 1239,
+    "valid": true
+  },
+  {
+    "code": "636",
+    "products": 1232,
+    "valid": true
+  },
+  {
+    "code": "637",
+    "products": 1237,
+    "valid": true
+  },
+  {
+    "code": "638",
+    "products": 1230,
+    "valid": true
+  },
+  {
+    "code": "639",
+    "products": 1238,
+    "valid": true
+  },
+  {
+    "code": "640",
+    "products": 1232,
+    "valid": true
+  },
+  {
+    "code": "641",
+    "products": 1232,
+    "valid": true
+  },
+  {
+    "code": "642",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "643",
+    "products": 1232,
+    "valid": true
+  },
+  {
+    "code": "644",
+    "products": 1234,
+    "valid": true
+  },
+  {
+    "code": "645",
+    "products": 1232,
+    "valid": true
+  },
+  {
+    "code": "646",
+    "products": 1234,
+    "valid": true
+  },
+  {
+    "code": "647",
+    "products": 1234,
+    "valid": true
+  },
+  {
+    "code": "648",
+    "products": 1229,
+    "valid": true
+  },
+  {
+    "code": "649",
+    "products": 1227,
+    "valid": true
+  },
+  {
+    "code": "650",
+    "products": 1231,
+    "valid": true
+  }
+]
