@@ -1,10 +1,15 @@
 # Large data files
 traderjoes-dump-3.csv
 *.db
+traderjoes_inflation_tracker.csv
 
 # Log files
 *.log
 nohup.out
+logs/
+
+# Backups
+backups/
 
 # Temporary/test files
 fetch_log.txt
