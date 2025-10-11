@@ -50,9 +50,9 @@ CATEGORIES = [
 ]
 
 GRAPHQL_QUERY = """
-query SearchProducts($categoryId: String, $currentPage: Int, $pageSize: Int, $storeCode: String = "701", $availability: String = "1", $published: String = "1") {
+query SearchProducts($categoryId: String, $currentPage: Int, $pageSize: Int, $storeCode: String = "701", $published: String = "1") {
   products(
-    filter: {store_code: {eq: $storeCode}, published: {eq: $published}, availability: {match: $availability}, category_id: {eq: $categoryId}}
+    filter: {store_code: {eq: $storeCode}, published: {eq: $published}, category_id: {eq: $categoryId}}
     currentPage: $currentPage
     pageSize: $pageSize
   ) {
@@ -61,6 +61,7 @@ query SearchProducts($categoryId: String, $currentPage: Int, $pageSize: Int, $st
       item_title
       sales_size
       sales_uom_description
+      availability
       price_range {
         minimum_price {
           final_price {
@@ -91,7 +92,6 @@ async def fetch_store(page, code):
         while current_page <= total_pages:
             variables = {
                 "storeCode": str(code),
-                "availability": "1",
                 "published": "1",
                 "categoryId": int(category['id']),
                 "currentPage": current_page,
@@ -125,17 +125,17 @@ async def fetch_store(page, code):
                         total_pages = page_info.get('totalPages', 1)
                     
                     for item in items:
-                        product = {
-                            'sku': item.get('sku', ''),
-                            'item_title': item.get('item_title', ''),
-                            'retail_price': item.get('retail_price', ''),
-                            'sales_size': item.get('sales_size', ''),
-                            'sales_uom_description': item.get('sales_uom_description', ''),
-                            'inserted_at': timestamp,
-                            'store_code': str(code),
-                            'availability': '1',
-                            'published': '1'
-                        }
+                            product = {
+                                'sku': item.get('sku', ''),
+                                'item_title': item.get('item_title', ''),
+                                'retail_price': item.get('retail_price', ''),
+                                'sales_size': item.get('sales_size', ''),
+                                'sales_uom_description': item.get('sales_uom_description', ''),
+                                'inserted_at': timestamp,
+                                'store_code': str(code),
+                                'availability': item.get('availability', ''),  # Now capturing actual status
+                                'published': '1'
+                            }
                         
                         if not product['retail_price'] and 'price_range' in item:
                             try:
