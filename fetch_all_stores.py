@@ -47,9 +47,9 @@ CATEGORIES = [
 ]
 
 GRAPHQL_QUERY = """
-query SearchProducts($categoryId: String, $currentPage: Int, $pageSize: Int, $storeCode: String = "701", $published: String = "1") {
+query SearchProducts($categoryId: String, $currentPage: Int, $pageSize: Int, $storeCode: String = "701") {
   products(
-    filter: {store_code: {eq: $storeCode}, published: {eq: $published}, category_id: {eq: $categoryId}}
+    filter: {store_code: {eq: $storeCode}, category_id: {eq: $categoryId}}
     currentPage: $currentPage
     pageSize: $pageSize
   ) {
@@ -59,6 +59,7 @@ query SearchProducts($categoryId: String, $currentPage: Int, $pageSize: Int, $st
       sales_size
       sales_uom_description
       availability
+      published
       price_range {
         minimum_price {
           final_price {
@@ -103,7 +104,6 @@ async def fetch_store(page, store_code, store_name):
         while current_page <= total_pages:
             variables = {
                 "storeCode": store_code,
-                "published": "1",
                 "categoryId": int(category['id']),
                 "currentPage": current_page,
                 "pageSize": 15
@@ -147,7 +147,7 @@ async def fetch_store(page, store_code, store_name):
                             'inserted_at': timestamp,
                             'store_code': store_code,
                             'availability': item.get('availability', ''),
-                            'published': '1'
+                            'published': item.get('published', '')
                         }
                         
                         if not product['retail_price'] and 'price_range' in item:

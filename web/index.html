@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trader Joe's Price Index</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1"></script>
     <style>
         @font-face {
             font-family: 'Trader Joes';
@@ -124,7 +125,7 @@
         /* Item Search */
         .search-controls-wrapper {
             display: grid;
-            grid-template-columns: 65% 35%;
+            grid-template-columns: 780px 400px;
             gap: 2rem;
             margin-bottom: 2rem;
             max-width: 1200px;
@@ -344,7 +345,7 @@
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-bottom: 2rem;
-            max-width: 1200px;
+            max-width: 1212px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -381,7 +382,7 @@
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            max-width: 1200px;
+            max-width: 1212px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -443,7 +444,7 @@
         /* Basket Builder */
         .basket-controls-wrapper {
             display: grid;
-            grid-template-columns: 65% 35%;
+            grid-template-columns: 780px 400px;
             gap: 2rem;
             margin-bottom: 2rem;
             max-width: 1200px;
@@ -471,11 +472,11 @@
 
         .basket-results {
             display: grid;
-            grid-template-columns: 600px 600px;
+            grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
             align-items: start;
-            max-width: 1200px;
+            max-width: 1212px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -504,7 +505,6 @@
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             font-family: 'Courier New', monospace;
-            max-width: 600px;
             width: 100%;
             min-height: 400px;
             display: flex;
@@ -543,8 +543,8 @@
             color: #000;
             margin-bottom: 0.2rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            min-height: 1.2rem;
         }
 
         .basket-item-name-text {
@@ -572,9 +572,11 @@
             font-size: 0.9rem;
             cursor: pointer;
             padding: 0;
-            margin-left: 0.5rem;
+            margin-right: 0.3rem;
             font-family: Arial, sans-serif;
             font-weight: bold;
+            flex-shrink: 0;
+            line-height: 1;
         }
 
         .basket-item-remove:hover {
@@ -610,8 +612,7 @@
 
         /* Historical Receipt */
         .historical-receipt {
-            justify-self: end;
-            min-width: 600px;
+            width: 100%;
         }
 
         .historical-receipt .basket-items {
@@ -690,7 +691,7 @@
         }
 
         .attribution-item-bar.negative {
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            background: linear-gradient(90deg, #333, #000);
         }
 
         .attribution-item-change {
@@ -705,7 +706,7 @@
         }
 
         .attribution-item-change.negative {
-            color: #2ecc71;
+            color: #000;
         }
 
         @media (max-width: 768px) {
@@ -786,7 +787,7 @@
     <!-- Splash Screen -->
     <div class="splash-screen" id="splashScreen">
         <div class="logo">
-            <img src="red logo crop.png" alt="Trader Joe's Price Index">
+            <img src="images/red logo crop.png" alt="Trader Joe's Price Index">
         </div>
     </div>
 
@@ -832,17 +833,33 @@
                 </div>
 
                 <div class="logo-box">
-                    <img src="white logo.png" alt="Trader Joe's Logo">
+                    <img src="images/white logo.png" alt="Trader Joe's Logo">
                 </div>
             </div>
             
             <div class="chart-container">
-                <h3>Price History</h3>
+                <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1.5rem;">
+                    <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">
+                        Show Full History
+                    </button>
+                </div>
                 <div id="chartContent">
-                    <div class="chart-empty">
-                        <p>Select an item to view price trends</p>
-                        <small>Search for an item above to see its price history over time</small>
+                    <div class="chart-empty" style="background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); border: 2px dashed #e0e0e0; border-radius: 8px; padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
+                        <svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom: 2rem; opacity: 0.3;">
+                            <path d="M10,90 L30,60 L50,70 L70,40 L90,50 L110,20" stroke="#d41e36" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="10" cy="90" r="4" fill="#d41e36"/>
+                            <circle cx="30" cy="60" r="4" fill="#d41e36"/>
+                            <circle cx="50" cy="70" r="4" fill="#d41e36"/>
+                            <circle cx="70" cy="40" r="4" fill="#d41e36"/>
+                            <circle cx="90" cy="50" r="4" fill="#d41e36"/>
+                            <circle cx="110" cy="20" r="4" fill="#d41e36"/>
+                        </svg>
                     </div>
+                </div>
+                <div id="chartFootnote" style="display: none; margin-top: 1rem; padding: 0.75rem; background: #f8f9fa; border-left: 3px solid rgba(200, 200, 200, 0.5); font-size: 0.85rem; color: #666; font-style: italic;">
+                    <span style="display: inline-block; width: 12px; height: 12px; background: rgba(200, 200, 200, 0.3); border: 1px solid rgba(200, 200, 200, 0.5); margin-right: 0.5rem; vertical-align: middle;"></span>
+                    Shaded period reflects period where price data was amended
                 </div>
             </div>
             
@@ -893,21 +910,18 @@
                 </div>
 
                 <div class="logo-box">
-                    <img src="white logo.png" alt="Trader Joe's Logo">
+                    <img src="images/white logo.png" alt="Trader Joe's Logo">
                 </div>
             </div>
 
             <div class="basket-results">
                 <div class="basket-items">
                     <div id="basketItemsList">
-                        <div class="basket-empty">
-                            <p>Your basket is empty</p>
-                            <small>Add items above to start building your basket</small>
-                        </div>
+                        <!-- Receipt will be populated on load -->
                     </div>
                 </div>
 
-                <div class="historical-receipt" id="historicalReceipt" style="display: none;">
+                <div class="historical-receipt" id="historicalReceipt">
                     <div class="basket-items">
                         <div id="historicalReceiptContent"></div>
                     </div>
@@ -937,6 +951,28 @@
         let attributionChart = null;
         let overlayData = [];
         let basketItems = [];
+        let showFullHistory = false; // Toggle between 1 year and full history
+        
+        // Quirky cashier names for receipts
+        const cashierNames = [
+            'ZIGGY', 'MAPLE', 'DASH', 'CLOVER', 'JUNIPER', 'RIVER', 'SCOUT', 'PEPPER', 
+            'SAGE', 'FINN', 'LUNA', 'COSMO', 'INDIE', 'REMY', 'NOVA', 'PHOENIX',
+            'WILLOW', 'JASPER', 'RUBY', 'FELIX', 'CLEO', 'MILES', 'HAZEL', 'OTTO',
+            'OLIVE', 'MILO', 'IRIS', 'THEO', 'PEARL', 'LEO', 'IVY', 'SASHA',
+            'SUNNY', 'AUGUST', 'SKYE', 'ORION', 'JADE', 'QUINN', 'RAIN', 'PHOENIX',
+            'BASIL', 'WREN', 'ASH', 'BLAZE', 'CORAL', 'LEAF', 'STORM', 'ECHO',
+            'ZEPHYR', 'ATLAS', 'AURORA', 'River', 'AUTUMN', 'WINTER', 'SUMMER', 'SPRING',
+            'BIRCH', 'CEDAR', 'CYPRESS', 'FORREST', 'GROVE', 'LAKE', 'MEADOW', 'RIDGE',
+            'BROOK', 'CLIFF', 'DALE', 'FERN', 'GLEN', 'HILL', 'MARSH', 'MOSS',
+            'PEAK', 'REED', 'SAND', 'STAR', 'TIDE', 'VALE', 'WAVE', 'WIND',
+            'BAY', 'CLOUD', 'DEW', 'FOG', 'FROST', 'GALE', 'HAIL', 'ICE',
+            'MIST', 'RAIN', 'SNOW', 'SUN', 'MOON', 'COMET', 'PLANET', 'SPACE',
+            'ARROW', 'BEAR', 'CROW', 'DEER', 'EAGLE', 'FOX', 'HAWK', 'LYNX'
+        ];
+        
+        function getRandomCashier() {
+            return cashierNames[Math.floor(Math.random() * cashierNames.length)];
+        }
 
         // Initialize app - load data first
         async function initializeApp() {
@@ -949,6 +985,9 @@
                     
                     // Setup search inputs with autocomplete
                     setupSearchInputs();
+                    
+                    // Initialize basket display with empty receipts
+                    updateBasketDisplay();
                     
                     console.log('App initialized with real data');
                     console.log('Loaded items:', Object.keys(priceData.austin || {}).length);
@@ -1005,15 +1044,15 @@
                     suggestions.innerHTML = '<div class="search-no-results">No items found</div>';
                     suggestions.classList.add('visible');
                 } else if (results.length > 0) {
-                    suggestions.innerHTML = results.map((item, index) => `
+                    suggestions.innerHTML = results.map((item, index) => {
+                        const priceHtml = item.current_price ? 
+                            `<div class="suggestion-meta"><span class="suggestion-price">$${item.current_price.toFixed(2)}</span></div>` : '';
+                        return `
                         <div class="suggestion-item" data-sku="${item.sku}" data-index="${index}">
                             <div class="suggestion-title">${item.title}</div>
-                            <div class="suggestion-meta">
-                                <span class="suggestion-category">${item.category}</span>
-                                <span class="suggestion-price">$${item.avg_price.toFixed(2)}</span>
-                            </div>
+                            ${priceHtml}
                         </div>
-                    `).join('');
+                    `}).join('');
                     suggestions.classList.add('visible');
                     selectedIndex = -1;
                     
@@ -1083,6 +1122,11 @@
             
             const prices = priceData[store][item];
             
+            // Reset to 1 year view
+            showFullHistory = false;
+            const btn = document.getElementById('toggleHistoryBtn');
+            btn.textContent = 'Show Full History';
+            
             // Clear previous chart
             overlayData = [{
                 store: store,
@@ -1125,10 +1169,20 @@
             overlayData.splice(index, 1);
             if (overlayData.length === 0) {
                 document.getElementById('overlayList').style.display = 'none';
+                document.getElementById('toggleHistoryBtn').style.display = 'none';
+                document.getElementById('chartFootnote').style.display = 'none';
                 document.getElementById('chartContent').innerHTML = `
-                    <div class="chart-empty">
-                        <p>Select an item to view price trends</p>
-                        <small>Search for an item above to see its price history over time</small>
+                    <div class="chart-empty" style="background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); border: 2px dashed #e0e0e0; border-radius: 8px; padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
+                        <svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom: 2rem; opacity: 0.3;">
+                            <path d="M10,90 L30,60 L50,70 L70,40 L90,50 L110,20" stroke="#d41e36" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="10" cy="90" r="4" fill="#d41e36"/>
+                            <circle cx="30" cy="60" r="4" fill="#d41e36"/>
+                            <circle cx="50" cy="70" r="4" fill="#d41e36"/>
+                            <circle cx="70" cy="40" r="4" fill="#d41e36"/>
+                            <circle cx="90" cy="50" r="4" fill="#d41e36"/>
+                            <circle cx="110" cy="20" r="4" fill="#d41e36"/>
+                        </svg>
                     </div>
                 `;
                 if (priceChart) {
@@ -1141,8 +1195,18 @@
             }
         }
 
+        function toggleHistoryView() {
+            showFullHistory = !showFullHistory;
+            const btn = document.getElementById('toggleHistoryBtn');
+            btn.textContent = showFullHistory ? 'Show Last Year' : 'Show Full History';
+            renderChart();
+        }
+
         function renderChart() {
             if (overlayData.length === 0) return;
+            
+            // Show the toggle button
+            document.getElementById('toggleHistoryBtn').style.display = 'block';
             
             document.getElementById('chartContent').innerHTML = '<canvas id="priceChart"></canvas>';
             
@@ -1152,21 +1216,94 @@
                 priceChart.destroy();
             }
             
-            const datasets = overlayData.map(data => ({
-                label: `${itemNames[data.item]} - ${storeNames[data.store]}`,
-                data: data.prices,
-                borderColor: data.color,
-                backgroundColor: data.color + '20',
-                borderWidth: 2,
-                tension: 0.4,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }));
+            // Get appropriate data based on view mode
+            const currentRawMonths = showFullHistory ? rawMonthsFull : rawMonths;
+            const currentMonths = showFullHistory ? getMonthLabels(true) : months;
+            const currentPriceData = showFullHistory ? priceDataFull : priceData;
+            
+            
+            // Find the earliest start index across all items
+            let earliestStartIndex = currentMonths.length;
+            
+            const datasets = overlayData.map(data => {
+                // Get prices for the current view
+                let prices;
+                if (showFullHistory) {
+                    prices = currentPriceData[data.store][data.item];
+                } else {
+                    prices = data.prices;
+                }
+                
+                // Find first non-null price index
+                let startIndex = 0;
+                if (showFullHistory) {
+                    for (let i = 0; i < prices.length; i++) {
+                        if (prices[i] !== null) {
+                            startIndex = i;
+                            break;
+                        }
+                    }
+                    earliestStartIndex = Math.min(earliestStartIndex, startIndex);
+                }
+                
+                return {
+                    label: `${itemNames[data.item]} - ${storeNames[data.store]}`,
+                    data: prices,
+                    borderColor: data.color,
+                    backgroundColor: data.color + '20',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    spanGaps: true, // Connect across null values
+                    startIndex: startIndex
+                };
+            });
+            
+            // If showing full history, trim all datasets and labels from the earliest start
+            let chartLabels = currentMonths;
+            let trimmedRawMonths = currentRawMonths;
+            
+            if (showFullHistory && earliestStartIndex > 0) {
+                chartLabels = currentMonths.slice(earliestStartIndex);
+                trimmedRawMonths = currentRawMonths.slice(earliestStartIndex);
+                
+                // Trim all datasets
+                datasets.forEach(dataset => {
+                    dataset.data = dataset.data.slice(earliestStartIndex);
+                });
+            }
+            
+            // Find July, August, September 2025 indices for shading (after trimming)
+            const july2025Index = trimmedRawMonths.indexOf('2025-07');
+            const sept2025Index = trimmedRawMonths.indexOf('2025-09');
+            
+            // Create annotation plugin for grey shading (aligned with data points)
+            // Shade from start of July to end of September (3 months total)
+            const annotation = july2025Index >= 0 && sept2025Index >= 0 ? {
+                annotations: {
+                    gapShading: {
+                        type: 'box',
+                        xMin: july2025Index - 0.25,
+                        xMax: sept2025Index + 0.25,
+                        backgroundColor: 'rgba(200, 200, 200, 0.2)',
+                        borderWidth: 0
+                    }
+                }
+            } : {};
+            
+            // Show/hide footnote based on whether grey shading is present
+            const footnote = document.getElementById('chartFootnote');
+            if (july2025Index >= 0 && sept2025Index >= 0) {
+                footnote.style.display = 'block';
+            } else {
+                footnote.style.display = 'none';
+            }
             
             priceChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: months,
+                    labels: chartLabels,
                     datasets: datasets
                 },
                 options: {
@@ -1183,9 +1320,18 @@
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
+                                },
+                                title: function(context) {
+                                    const rawMonth = trimmedRawMonths[context[0].dataIndex];
+                                    // Add indicator for gap months
+                                    if (rawMonth && ['2025-07', '2025-08', '2025-09'].includes(rawMonth)) {
+                                        return context[0].label + ' (no data - using June price)';
+                                    }
+                                    return context[0].label;
                                 }
                             }
-                        }
+                        },
+                        annotation: annotation
                     },
                     scales: {
                         y: {
@@ -1266,13 +1412,76 @@
             const historicalReceipt = document.getElementById('historicalReceipt');
             
             if (basketItems.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="basket-empty">
-                        <p>Your basket is empty</p>
-                        <small>Add items above to start building your basket</small>
+                // Show empty receipts instead of empty message
+                const store = document.getElementById('basketStore').value;
+                const storeInfo = {
+                    austin: { name: 'Austin - Seaholm', code: '452' },
+                    chicago: { name: 'Chicago - South Loop', code: '701' },
+                    newyork: { name: 'New York - East Village', code: '546' },
+                    la: { name: 'Los Angeles - La Brea', code: '31' }
+                };
+                const currentStore = storeInfo[store];
+                
+                // Get current and historical dates
+                const currentMonthStr = rawMonths[rawMonths.length - 1];
+                const historicalMonthStr = rawMonths[0];
+                
+                const [currentYear, currentMonth] = currentMonthStr.split('-');
+                const currentDate = new Date(currentYear, currentMonth - 1, 15);
+                const receiptDate = currentDate.toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+                const transactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                
+                const [oldYear, oldMonth] = historicalMonthStr.split('-');
+                const oldDate = new Date(oldYear, oldMonth - 1, 15);
+                const oldReceiptDate = oldDate.toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+                const oldTransactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                
+                // Generate empty receipt
+                const emptyReceiptHTML = (isHistorical) => `
+                    <div class="receipt-header">
+                        <strong style="font-family: 'Trader Joes', cursive; color: #000; font-size: 40px;">TRADER JOE'S</strong>
+                    </div>
+                    
+                    <div class="receipt-store-info">
+                        Store #${currentStore.code} - ${currentStore.name}<br>
+                        ${isHistorical ? oldReceiptDate : receiptDate}<br>
+                        Trans# ${isHistorical ? oldTransactionId : transactionId} | Cashier: ${getRandomCashier()}
+                    </div>
+                    
+                    <div class="receipt-separator"></div>
+                    <div class="receipt-separator"></div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 13px;">
+                        <span>SUBTOTAL:</span>
+                        <span>$0.00</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 13px;">
+                        <span>TAX:</span>
+                        <span>$0.00</span>
+                    </div>
+                    
+                    <div class="receipt-total">
+                        <div class="receipt-total-line">
+                            <span>TOTAL:</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="receipt-total-line">
+                            <span>CREDIT CARD:</span>
+                            <span>$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed #000; font-size: 11px; line-height: 1.4;">
+                        Visit us at traderjoes.com<br>
+                        Follow @TraderJoesList<br><br>
+                        PRICE TRACKER - ${isHistorical ? oldDate.toLocaleDateString() : currentDate.toLocaleDateString()}
                     </div>
                 `;
-                historicalReceipt.style.display = 'none';
+                
+                listContainer.innerHTML = emptyReceiptHTML(false);
+                document.getElementById('historicalReceiptContent').innerHTML = emptyReceiptHTML(true);
+                historicalReceipt.style.display = 'block';
                 document.getElementById('attributionSection').style.display = 'none';
                 return;
             }
@@ -1311,8 +1520,8 @@
                     return `
                         <div class="basket-item">
                             <div class="basket-item-name">
-                                <span class="basket-item-name-text">${item.name}</span>
                                 ${includeRemoveButtons ? `<button class="basket-item-remove" onclick="removeFromBasket(${index})">×</button>` : ''}
+                                <span class="basket-item-name-text">${item.name}</span>
                             </div>
                             <div class="basket-item-details">
                                 <span>QTY ${item.quantity}</span>
@@ -1334,15 +1543,16 @@
                 
                 return `
                     <div class="receipt-header">
-                        <strong>TRADER JOE'S</strong><br>
-                        Thank you for shopping with us!
+                        <strong style="font-family: 'Trader Joes', cursive; color: #000; font-size: 40px;">TRADER JOE'S</strong>
                     </div>
                     
                     <div class="receipt-store-info">
                         Store #${currentStore.code} - ${currentStore.name}<br>
                         ${date}<br>
-                        Trans# ${transId} | Cashier: ALEX
+                        Trans# ${transId} | Cashier: ${getRandomCashier()}
                     </div>
+                    
+                    <div class="receipt-separator"></div>
                     
                     ${items}
                     
@@ -1404,7 +1614,9 @@
                 return {
                     name: item.name,
                     change: priceChange,
-                    percentage: percentChange
+                    percentage: percentChange,
+                    category: item.category || 'general',
+                    cpiWeight: item.cpiWeight || 0
                 };
             });
             
@@ -1413,6 +1625,11 @@
             
             // Find max absolute value for scaling
             const maxChange = Math.max(...attributionData.map(d => Math.abs(d.change)));
+            
+            // Calculate total basket change
+            const totalBasketChange = attributionData.reduce((sum, item) => sum + item.change, 0);
+            const totalBasketPercentage = attributionData.length > 0 ? 
+                (totalBasketChange / attributionData.reduce((sum, item) => sum + (item.previousPrice * item.quantity), 0)) * 100 : 0;
             
             // Generate HTML for each item
             const itemsHtml = attributionData.map(item => {
@@ -1436,67 +1653,100 @@
                 `;
             }).join('');
             
-            attributionItems.innerHTML = itemsHtml;
+            // Add total basket summary
+            const totalHtml = `
+                <div class="attribution-item" style="border-top: 2px solid #e0e0e0; margin-top: 1rem; padding-top: 1rem; font-weight: bold;">
+                    <div class="attribution-item-name">Total Basket</div>
+                    <div class="attribution-item-change ${totalBasketChange >= 0 ? 'positive' : 'negative'}">
+                        ${totalBasketChange >= 0 ? '+' : ''}$${totalBasketChange.toFixed(2)} (${totalBasketPercentage.toFixed(1)}%)
+                    </div>
+                </div>
+            `;
+            
+            attributionItems.innerHTML = itemsHtml + totalHtml;
             attributionSection.style.display = 'block';
         }
 
 
-        function loadCPIBasket() {
+        async function loadCPIBasket() {
             const store = document.getElementById('basketStore').value;
             
             // Clear existing basket
             basketItems = [];
             
-            // Build CPI basket from available items - select representative items from each category
-            const categoriesNeeded = {
-                'beverages': 1,
-                'bread': 2,
-                'dairy': 2,
-                'meat': 2,
-                'pantry': 3,
-                'produce': 2,
-                'frozen': 1
-            };
-            
-            const cpiBasket = [];
-            const usedSkus = new Set();
-            
-            // Select items from each category
-            for (const [category, count] of Object.entries(categoriesNeeded)) {
-                const categoryItems = itemList.filter(item => 
-                    item.category === category && !usedSkus.has(item.sku)
-                );
+            try {
+                // Load CPI basket data
+                const response = await fetch('cpi_basket_essentials.json');
+                const cpiBasketData = await response.json();
                 
-                for (let i = 0; i < Math.min(count, categoryItems.length); i++) {
-                    const item = categoryItems[i];
-                    cpiBasket.push({
-                        item: item.sku,
-                        quantity: category === 'pantry' || category === 'produce' ? 2 : 1,
-                        name: item.title
-                    });
-                    usedSkus.add(item.sku);
+                let itemsAdded = 0;
+                let itemsSkipped = 0;
+                const skippedItems = [];
+                
+                // Add all CPI items to basket with validation
+                for (const [categoryName, categoryData] of Object.entries(cpiBasketData.categories)) {
+                    for (const [sku, itemData] of Object.entries(categoryData.items)) {
+                        if (priceData[store] && priceData[store][sku]) {
+                            const prices = priceData[store][sku];
+                            
+                            // Validate prices
+                            const currentPrice = prices[prices.length - 1]; // Latest price
+                            const previousPrice = prices[0]; // First price (12 months ago)
+                            
+                            // Check for valid prices (not null, undefined, 0, or empty)
+                            if (currentPrice && currentPrice > 0 && previousPrice && previousPrice > 0) {
+                                basketItems.push({
+                                    store,
+                                    item: sku,
+                                    quantity: itemData.quantity,
+                                    currentPrice,
+                                    previousPrice,
+                                    name: itemData.title,
+                                    category: categoryName,
+                                    cpiWeight: categoryData.weight
+                                });
+                                itemsAdded++;
+                            } else {
+                                skippedItems.push({
+                                    name: itemData.title,
+                                    sku: sku,
+                                    currentPrice: currentPrice,
+                                    previousPrice: previousPrice
+                                });
+                                itemsSkipped++;
+                                console.warn(`Skipped ${itemData.title}: currentPrice=${currentPrice}, previousPrice=${previousPrice}`);
+                            }
+                        } else {
+                            skippedItems.push({
+                                name: itemData.title,
+                                sku: sku,
+                                reason: 'No price data for store'
+                            });
+                            itemsSkipped++;
+                            console.warn(`No price data for ${itemData.title} in ${store} store`);
+                        }
+                    }
                 }
+                
+                updateBasketDisplay();
+                
+                // Show CPI basket info
+                console.log('CPI Basket loaded:', cpiBasketData.description);
+                console.log('Total weight:', cpiBasketData.total_weight + '%');
+                console.log('Items added:', itemsAdded);
+                console.log('Items skipped:', itemsSkipped);
+                
+                if (itemsSkipped > 0) {
+                    console.warn('Skipped items:', skippedItems);
+                    alert(`CPI Basket loaded with ${itemsAdded} items. ${itemsSkipped} items skipped due to missing/invalid price data. Check console for details.`);
+                } else {
+                    console.log('All CPI basket items loaded successfully!');
+                }
+                
+            } catch (error) {
+                console.error('Error loading CPI basket:', error);
+                alert('Failed to load CPI basket. Please try again.');
             }
-            
-            // Add all CPI items to basket
-            cpiBasket.forEach(cpiItem => {
-                if (priceData[store] && priceData[store][cpiItem.item]) {
-                    const prices = priceData[store][cpiItem.item];
-                    const currentPrice = prices[prices.length - 1]; // Latest price
-                    const previousPrice = prices[0]; // First price (12 months ago)
-                    
-                    basketItems.push({
-                        store,
-                        item: cpiItem.item,
-                        quantity: cpiItem.quantity,
-                        currentPrice,
-                        previousPrice,
-                        name: cpiItem.name
-                    });
-                }
-            });
-            
-            updateBasketDisplay();
         }
     </script>
 </body>
