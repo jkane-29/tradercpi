@@ -69,6 +69,9 @@
             background: #d41e36;
             padding: 1.5rem 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .app-header h1 {
@@ -138,6 +141,15 @@
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        
+        .last-update-date {
+            position: absolute;
+            bottom: 0.75rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: #888;
         }
 
         .logo-box {
@@ -181,7 +193,8 @@
         .control-group label[for="basketStore"],
         .control-group label[for="searchItem"],
         .control-group label[for="basketItem"],
-        .control-group label[for="basketQuantity"] {
+        .control-group label[for="basketQuantity"],
+        .control-group label[for="startMonth"] {
             font-family: 'Trader Joes', cursive;
             font-weight: normal;
             font-size: 1.1rem;
@@ -218,6 +231,16 @@
         .control-group input[type="text"]:focus {
             outline: none;
             border-color: #d41e36;
+        }
+
+        #searchItem {
+            border: 2px solid #d41e36 !important;
+            background: #fef5f5 !important;
+        }
+
+        #searchItem:focus {
+            border-color: #b91c2e !important;
+            background: white !important;
         }
 
         .search-wrapper {
@@ -431,14 +454,14 @@
         .btn-remove {
             background: none;
             border: none;
-            color: #999;
+            color: #d41e36;
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.25rem 0.5rem;
         }
 
         .btn-remove:hover {
-            color: #d41e36;
+            color: #b91c2e;
         }
 
         /* Basket Builder */
@@ -709,6 +732,83 @@
             color: #000;
         }
 
+        /* Price Ticker */
+        .price-ticker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            height: 40px;
+            overflow: hidden;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .main-app.visible ~ .price-ticker {
+            display: block;
+        }
+
+        .ticker-wrapper {
+            display: flex;
+            animation: scroll 60s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            height: 40px;
+        }
+
+        .ticker-item-name {
+            margin-right: 0.5rem;
+            font-family: 'Trader Joes', cursive;
+            color: #d41e36;
+        }
+
+        .ticker-item-price {
+            margin-right: 0.5rem;
+            font-family: 'Trader Joes', cursive;
+            color: #ddd;
+        }
+
+        .ticker-item-change {
+            font-family: 'Trader Joes', cursive;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .ticker-item-change.up {
+            color: #fff;
+            background: #d41e36;
+        }
+
+        .ticker-item-change.down {
+            color: #fff;
+            background: #333;
+        }
+
+        .ticker-separator {
+            margin: 0 1rem;
+            color: #666;
+        }
+
         @media (max-width: 768px) {
             .app-header h1 {
                 font-size: 1.8rem;
@@ -810,6 +910,13 @@
                 <div class="search-controls">
                     <div class="control-row" style="grid-template-columns: 1fr;">
                         <div class="control-group">
+                            <label for="searchItem">Item</label>
+                            <div class="search-wrapper">
+                                <input type="text" id="searchItem" placeholder="Search for an item..." autocomplete="off">
+                                <div class="search-suggestions" id="searchItemSuggestions"></div>
+                            </div>
+                        </div>
+                        <div class="control-group">
                             <label for="searchStore">Store Location</label>
                             <select id="searchStore">
                                 <option value="austin">Austin - Seaholm (Store #452)</option>
@@ -819,16 +926,18 @@
                             </select>
                         </div>
                         <div class="control-group">
-                            <label for="searchItem">Item</label>
-                            <div class="search-wrapper">
-                                <input type="text" id="searchItem" placeholder="Search for an item..." autocomplete="off">
-                                <div class="search-suggestions" id="searchItemSuggestions"></div>
-                            </div>
+                            <label for="startMonth">Chart Start Date</label>
+                            <select id="startMonth" onchange="updateChartStartMonth()">
+                                <!-- Options will be populated dynamically -->
+                            </select>
                         </div>
                     </div>
                     <div class="button-group">
-                        <button class="btn-primary" onclick="searchItem()">Search</button>
-                        <button class="btn-secondary" onclick="addToOverlay()">Add to Comparison</button>
+                        <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">Show Full History</button>
+                    </div>
+                    
+                    <div class="last-update-date">
+                        Last Updated: <span id="lastUpdateDate">Loading...</span>
                     </div>
                 </div>
 
@@ -837,29 +946,14 @@
                 </div>
             </div>
             
-            <div class="chart-container">
-                <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1.5rem;">
-                    <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">
-                        Show Full History
-                    </button>
-                </div>
+            <div class="chart-container" id="chartContainer" style="display: none;">
                 <div id="chartContent">
-                    <div class="chart-empty" style="background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); border: 2px dashed #e0e0e0; border-radius: 8px; padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
-                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
-                        <svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom: 2rem; opacity: 0.3;">
-                            <path d="M10,90 L30,60 L50,70 L70,40 L90,50 L110,20" stroke="#d41e36" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="10" cy="90" r="4" fill="#d41e36"/>
-                            <circle cx="30" cy="60" r="4" fill="#d41e36"/>
-                            <circle cx="50" cy="70" r="4" fill="#d41e36"/>
-                            <circle cx="70" cy="40" r="4" fill="#d41e36"/>
-                            <circle cx="90" cy="50" r="4" fill="#d41e36"/>
-                            <circle cx="110" cy="20" r="4" fill="#d41e36"/>
-                        </svg>
+                    <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; font-weight: 600;">Price History</h3>
+                        <div style="height: 400px; position: relative;">
+                            <canvas id="priceChart"></canvas>
+                        </div>
                     </div>
-                </div>
-                <div id="chartFootnote" style="display: none; margin-top: 1rem; padding: 0.75rem; background: #f8f9fa; border-left: 3px solid rgba(200, 200, 200, 0.5); font-size: 0.85rem; color: #666; font-style: italic;">
-                    <span style="display: inline-block; width: 12px; height: 12px; background: rgba(200, 200, 200, 0.3); border: 1px solid rgba(200, 200, 200, 0.5); margin-right: 0.5rem; vertical-align: middle;"></span>
-                    Shaded period reflects period where price data was amended
                 </div>
             </div>
             
@@ -892,10 +986,10 @@
                                 <div class="search-suggestions" id="basketItemSuggestions"></div>
                             </div>
                         </div>
-                        <div class="basket-add-row" style="grid-template-columns: auto auto 1fr; align-items: end;">
-                            <div class="control-group">
+                        <div class="basket-add-row" style="display: flex; gap: 1rem; align-items: flex-end;">
+                            <div class="control-group" style="margin-bottom: 0;">
                                 <label for="basketQuantity">Quantity</label>
-                                <select id="basketQuantity">
+                                <select id="basketQuantity" style="height: 45px;">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -903,8 +997,8 @@
                                     <option value="5">5</option>
                                 </select>
                             </div>
-                            <button class="btn-primary" onclick="addToBasket()" style="padding: 0.75rem 2.5rem;">Add Item</button>
-                            <button class="btn-secondary" onclick="loadCPIBasket()" style="justify-self: end;">Load CPI Basket</button>
+                            <button class="btn-primary" onclick="loadCPIBasket()" style="height: 45px; padding: 0 2rem;">Load CPI Basket</button>
+                            <button id="toggleBasketHistoryBtn" class="btn-secondary" onclick="toggleBasketHistoryView()" style="display: none; height: 45px; padding: 0 2rem;">Show Full History</button>
                         </div>
                     </div>
                 </div>
@@ -927,12 +1021,20 @@
                     </div>
                 </div>
 
-                <div class="attribution-section" id="attributionSection" style="display: none;">
-                    <div class="attribution-title">Price Change Attribution</div>
-                    <div class="attribution-items" id="attributionItems"></div>
+                <div class="attribution-section" id="basketChartSection" style="display: none;">
+                    <div style="height: 400px; width: 100%; position: relative;">
+                        <canvas id="basketTotalChart" style="max-height: 400px;"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- Price Ticker -->
+    <div class="price-ticker">
+        <div class="ticker-wrapper" id="tickerWrapper">
+            <!-- Ticker items will be populated by JavaScript -->
+        </div>
     </div>
 
     <script src="data_loader.js"></script>
@@ -948,10 +1050,60 @@
         };
 
         let priceChart = null;
-        let attributionChart = null;
+        let basketTotalChart = null;
         let overlayData = [];
         let basketItems = [];
+        let selectedStartMonthIndex = 0; // Index in the months array to start charts from
+
+        function initializeEmptyChart() {
+            const ctx = document.getElementById('priceChart');
+            if (!ctx) return;
+            
+            if (priceChart) {
+                priceChart.destroy();
+            }
+            
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        }
+                    }
+                }
+            });
+        }
         let showFullHistory = false; // Toggle between 1 year and full history
+        let showBasketFullHistory = false; // Toggle between 1 year and full history for basket chart
         
         // Quirky cashier names for receipts
         const cashierNames = [
@@ -983,11 +1135,17 @@
                     // Convert raw months to labels for display
                     months = getMonthLabels();
                     
+                    // Populate start month dropdown
+                    populateStartMonthDropdown();
+                    
                     // Setup search inputs with autocomplete
                     setupSearchInputs();
                     
                     // Initialize basket display with empty receipts
                     updateBasketDisplay();
+                    
+                    // Update last update date
+                    updateLastUpdateDate();
                     
                     console.log('App initialized with real data');
                     console.log('Loaded items:', Object.keys(priceData.austin || {}).length);
@@ -1011,6 +1169,61 @@
             }, 800);
         }, 1000);
 
+        // Update last update date
+        function updateLastUpdateDate() {
+            if (!rawMonths || rawMonths.length === 0) return;
+            
+            // Get the most recent month from rawMonths (format: "YYYY-MM")
+            const latestMonth = rawMonths[rawMonths.length - 1];
+            const [year, month] = latestMonth.split('-');
+            
+            // Create a date object and format it
+            const date = new Date(year, month - 1, 1);
+            const options = { year: 'numeric', month: 'long' };
+            const formattedDate = date.toLocaleDateString('en-US', options);
+            
+            // Update the display
+            document.getElementById('lastUpdateDate').textContent = formattedDate;
+        }
+
+        // Populate start month dropdown with available months
+        function populateStartMonthDropdown() {
+            const dropdown = document.getElementById('startMonth');
+            dropdown.innerHTML = '';
+            
+            // Use rawMonths for the full history if available, otherwise use current view
+            const availableMonths = showFullHistory ? rawMonthsFull : rawMonths;
+            
+            // Add options in reverse order (most recent first)
+            for (let i = availableMonths.length - 1; i >= 0; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                
+                // Format month as full name (e.g., "October 2024")
+                const [year, month] = availableMonths[i].split('-');
+                const date = new Date(year, month - 1, 1);
+                const fullMonthName = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+                option.textContent = fullMonthName;
+                
+                dropdown.appendChild(option);
+            }
+            
+            // Set default to most recent month (index 0 in the dropdown, but that's the last index in the array)
+            selectedStartMonthIndex = 0;
+            dropdown.value = availableMonths.length - 1; // Most recent
+        }
+
+        // Update chart when start month changes
+        function updateChartStartMonth() {
+            const dropdown = document.getElementById('startMonth');
+            selectedStartMonthIndex = parseInt(dropdown.value);
+            
+            // Re-render chart if there's data
+            if (overlayData.length > 0) {
+                renderChart();
+            }
+        }
+
         // Tab switching
         function switchTab(tab) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1027,11 +1240,11 @@
 
         // Setup autocomplete for search inputs
         function setupSearchInputs() {
-            setupAutocomplete('searchItem', 'searchItemSuggestions', false); // Use regular items
-            setupAutocomplete('basketItem', 'basketItemSuggestions', true); // Use basket essentials
+            setupAutocomplete('searchItem', 'searchItemSuggestions', false, 'overlay'); // Use regular items, auto-add to comparison
+            setupAutocomplete('basketItem', 'basketItemSuggestions', true, 'basket'); // Use basket essentials, auto-add to basket
         }
 
-        function setupAutocomplete(inputId, suggestionsId, useBasketItems = false) {
+        function setupAutocomplete(inputId, suggestionsId, useBasketItems = false, autoAddMode = null) {
             const input = document.getElementById(inputId);
             const suggestions = document.getElementById(suggestionsId);
             let selectedIndex = -1;
@@ -1051,7 +1264,7 @@
                         <div class="suggestion-item" data-sku="${item.sku}" data-index="${index}">
                             <div class="suggestion-title">${item.title}</div>
                             ${priceHtml}
-                        </div>
+                            </div>
                     `}).join('');
                     suggestions.classList.add('visible');
                     selectedIndex = -1;
@@ -1062,6 +1275,19 @@
                             input.value = item.querySelector('.suggestion-title').textContent;
                             input.dataset.selectedSku = item.dataset.sku;
                             suggestions.classList.remove('visible');
+                            
+                            // Auto-add based on mode
+                            if (autoAddMode === 'overlay') {
+                                addToOverlay();
+                                // Clear input for quick successive additions
+                                input.value = '';
+                                input.dataset.selectedSku = '';
+                            } else if (autoAddMode === 'basket') {
+                                addToBasket();
+                                // Clear input for quick successive additions
+                                input.value = '';
+                                input.dataset.selectedSku = '';
+                            }
                         });
                     });
                 } else {
@@ -1084,6 +1310,17 @@
                     e.preventDefault();
                     if (selectedIndex >= 0 && items[selectedIndex]) {
                         items[selectedIndex].click();
+                    } else if (autoAddMode && input.value) {
+                        // If no suggestion selected but there's text, try to add
+                        if (autoAddMode === 'overlay') {
+                            addToOverlay();
+                        } else if (autoAddMode === 'basket') {
+                            addToBasket();
+                        }
+                        // Clear input for quick successive additions
+                        input.value = '';
+                        input.dataset.selectedSku = '';
+                        suggestions.classList.remove('visible');
                     }
                 } else if (e.key === 'Escape') {
                     suggestions.classList.remove('visible');
@@ -1122,6 +1359,9 @@
             
             const prices = priceData[store][item];
             
+            // Show chart container
+            document.getElementById('chartContainer').style.display = 'block';
+            
             // Reset to 1 year view
             showFullHistory = false;
             const btn = document.getElementById('toggleHistoryBtn');
@@ -1155,6 +1395,9 @@
                 return;
             }
             
+            // Show chart container
+            document.getElementById('chartContainer').style.display = 'block';
+            
             const colors = ['#d41e36', '#003d7a', '#2ecc71', '#f39c12', '#9b59b6'];
             const color = colors[overlayData.length % colors.length];
             
@@ -1170,21 +1413,7 @@
             if (overlayData.length === 0) {
                 document.getElementById('overlayList').style.display = 'none';
                 document.getElementById('toggleHistoryBtn').style.display = 'none';
-                document.getElementById('chartFootnote').style.display = 'none';
-                document.getElementById('chartContent').innerHTML = `
-                    <div class="chart-empty" style="background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); border: 2px dashed #e0e0e0; border-radius: 8px; padding: 4rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
-                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
-                        <svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom: 2rem; opacity: 0.3;">
-                            <path d="M10,90 L30,60 L50,70 L70,40 L90,50 L110,20" stroke="#d41e36" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="10" cy="90" r="4" fill="#d41e36"/>
-                            <circle cx="30" cy="60" r="4" fill="#d41e36"/>
-                            <circle cx="50" cy="70" r="4" fill="#d41e36"/>
-                            <circle cx="70" cy="40" r="4" fill="#d41e36"/>
-                            <circle cx="90" cy="50" r="4" fill="#d41e36"/>
-                            <circle cx="110" cy="20" r="4" fill="#d41e36"/>
-                        </svg>
-                    </div>
-                `;
+                document.getElementById('chartContainer').style.display = 'none';
                 if (priceChart) {
                     priceChart.destroy();
                     priceChart = null;
@@ -1199,7 +1428,18 @@
             showFullHistory = !showFullHistory;
             const btn = document.getElementById('toggleHistoryBtn');
             btn.textContent = showFullHistory ? 'Show Last Year' : 'Show Full History';
+            
+            // Repopulate the start month dropdown with new date range
+            populateStartMonthDropdown();
+            
             renderChart();
+        }
+
+        function toggleBasketHistoryView() {
+            showBasketFullHistory = !showBasketFullHistory;
+            const btn = document.getElementById('toggleBasketHistoryBtn');
+            btn.textContent = showBasketFullHistory ? 'Show Last Year' : 'Show Full History';
+            renderBasketTotalChart();
         }
 
         function renderChart() {
@@ -1208,7 +1448,7 @@
             // Show the toggle button
             document.getElementById('toggleHistoryBtn').style.display = 'block';
             
-            document.getElementById('chartContent').innerHTML = '<canvas id="priceChart"></canvas>';
+            document.getElementById('chartContent').innerHTML = '<div style="height: 400px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
             const ctx = document.getElementById('priceChart').getContext('2d');
             
@@ -1247,30 +1487,36 @@
                 }
                 
                 return {
-                    label: `${itemNames[data.item]} - ${storeNames[data.store]}`,
+                label: `${itemNames[data.item]} - ${storeNames[data.store]}`,
                     data: prices,
-                    borderColor: data.color,
-                    backgroundColor: data.color + '20',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    pointRadius: 4,
+                borderColor: data.color,
+                backgroundColor: data.color + '20',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 4,
                     pointHoverRadius: 6,
                     spanGaps: true, // Connect across null values
                     startIndex: startIndex
                 };
             });
             
-            // If showing full history, trim all datasets and labels from the earliest start
+            // Trim datasets and labels based on selected start month
             let chartLabels = currentMonths;
             let trimmedRawMonths = currentRawMonths;
             
-            if (showFullHistory && earliestStartIndex > 0) {
-                chartLabels = currentMonths.slice(earliestStartIndex);
-                trimmedRawMonths = currentRawMonths.slice(earliestStartIndex);
+            // Use the selected start month index, but also consider earliest data if in full history mode
+            let trimStartIndex = selectedStartMonthIndex;
+            if (showFullHistory && earliestStartIndex > trimStartIndex) {
+                trimStartIndex = earliestStartIndex;
+            }
+            
+            if (trimStartIndex > 0) {
+                chartLabels = currentMonths.slice(trimStartIndex);
+                trimmedRawMonths = currentRawMonths.slice(trimStartIndex);
                 
                 // Trim all datasets
                 datasets.forEach(dataset => {
-                    dataset.data = dataset.data.slice(earliestStartIndex);
+                    dataset.data = dataset.data.slice(trimStartIndex);
                 });
             }
             
@@ -1292,13 +1538,6 @@
                 }
             } : {};
             
-            // Show/hide footnote based on whether grey shading is present
-            const footnote = document.getElementById('chartFootnote');
-            if (july2025Index >= 0 && sept2025Index >= 0) {
-                footnote.style.display = 'block';
-            } else {
-                footnote.style.display = 'none';
-            }
             
             priceChart = new Chart(ctx, {
                 type: 'line',
@@ -1312,7 +1551,15 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top'
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
                         },
                         tooltip: {
                             mode: 'index',
@@ -1439,7 +1686,7 @@
                 // Generate empty receipt
                 const emptyReceiptHTML = (isHistorical) => `
                     <div class="receipt-header">
-                        <strong style="font-family: 'Trader Joes', cursive; color: #000; font-size: 40px;">TRADER JOE'S</strong>
+                        <strong style="font-family: 'Trader Joes', cursive; color: #555; font-size: 40px;">TRADER JOE'S</strong>
                     </div>
                     
                     <div class="receipt-store-info">
@@ -1482,7 +1729,6 @@
                 listContainer.innerHTML = emptyReceiptHTML(false);
                 document.getElementById('historicalReceiptContent').innerHTML = emptyReceiptHTML(true);
                 historicalReceipt.style.display = 'block';
-                document.getElementById('attributionSection').style.display = 'none';
                 return;
             }
             
@@ -1543,7 +1789,7 @@
                 
                 return `
                     <div class="receipt-header">
-                        <strong style="font-family: 'Trader Joes', cursive; color: #000; font-size: 40px;">TRADER JOE'S</strong>
+                        <strong style="font-family: 'Trader Joes', cursive; color: #555; font-size: 40px;">TRADER JOE'S</strong>
                     </div>
                     
                     <div class="receipt-store-info">
@@ -1594,79 +1840,100 @@
             document.getElementById('historicalReceiptContent').innerHTML = generateReceipt(true, false);
             historicalReceipt.style.display = 'block';
             
-            // Render attribution analysis
-            renderAttribution();
+            // Render basket total chart
+            renderBasketTotalChart();
         }
 
-        function renderAttribution() {
-            const attributionSection = document.getElementById('attributionSection');
-            const attributionItems = document.getElementById('attributionItems');
+        function renderBasketTotalChart() {
+            const basketChartSection = document.getElementById('basketChartSection');
             
             if (basketItems.length === 0) {
-                attributionSection.style.display = 'none';
+                basketChartSection.style.display = 'none';
+                document.getElementById('toggleBasketHistoryBtn').style.display = 'none';
+                if (basketTotalChart) {
+                    basketTotalChart.destroy();
+                    basketTotalChart = null;
+                }
                 return;
             }
             
-            // Calculate price changes for each item
-            const attributionData = basketItems.map(item => {
-                const priceChange = (item.currentPrice - item.previousPrice) * item.quantity;
-                const percentChange = ((item.currentPrice - item.previousPrice) / item.previousPrice * 100);
-                return {
-                    name: item.name,
-                    change: priceChange,
-                    percentage: percentChange,
-                    category: item.category || 'general',
-                    cpiWeight: item.cpiWeight || 0
-                };
-            });
+            basketChartSection.style.display = 'block';
+            document.getElementById('toggleBasketHistoryBtn').style.display = 'block';
             
-            // Sort by absolute change (descending)
-            attributionData.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+            // Get appropriate data based on view mode
+            const currentMonths = showBasketFullHistory ? getMonthLabels(true) : months;
+            const currentPriceData = showBasketFullHistory ? priceDataFull : priceData;
             
-            // Find max absolute value for scaling
-            const maxChange = Math.max(...attributionData.map(d => Math.abs(d.change)));
+            // Calculate total basket price for each month
+            const basketTotals = [];
             
-            // Calculate total basket change
-            const totalBasketChange = attributionData.reduce((sum, item) => sum + item.change, 0);
-            const totalBasketPercentage = attributionData.length > 0 ? 
-                (totalBasketChange / attributionData.reduce((sum, item) => sum + (item.previousPrice * item.quantity), 0)) * 100 : 0;
-            
-            // Generate HTML for each item
-            const itemsHtml = attributionData.map(item => {
-                const barWidth = (Math.abs(item.change) / maxChange * 100);
-                const isPositive = item.change >= 0;
-                const changeClass = isPositive ? 'positive' : 'negative';
-                const barClass = isPositive ? '' : 'negative';
+            // Use the months from the data (same as other charts)
+            for (let monthIndex = 0; monthIndex < currentMonths.length; monthIndex++) {
+                let monthTotal = 0;
+                let hasData = false;
                 
-                return `
-                    <div class="attribution-item">
-                        <div class="attribution-item-name">${item.name}</div>
-                        <div class="attribution-item-bar-container">
-                            <div class="attribution-item-bar ${barClass}" style="width: ${barWidth}%">
-                                ${item.percentage.toFixed(1)}%
-                            </div>
-                        </div>
-                        <div class="attribution-item-change ${changeClass}">
-                            ${isPositive ? '+' : ''}$${item.change.toFixed(2)}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                for (const item of basketItems) {
+                    const prices = currentPriceData[item.store][item.item];
+                    if (prices && prices[monthIndex] !== null && prices[monthIndex] !== undefined) {
+                        monthTotal += prices[monthIndex] * item.quantity;
+                        hasData = true;
+                    }
+                }
+                
+                basketTotals.push(hasData ? monthTotal : null);
+            }
             
-            // Add total basket summary
-            const totalHtml = `
-                <div class="attribution-item" style="border-top: 2px solid #e0e0e0; margin-top: 1rem; padding-top: 1rem; font-weight: bold;">
-                    <div class="attribution-item-name">Total Basket</div>
-                    <div class="attribution-item-change ${totalBasketChange >= 0 ? 'positive' : 'negative'}">
-                        ${totalBasketChange >= 0 ? '+' : ''}$${totalBasketChange.toFixed(2)} (${totalBasketPercentage.toFixed(1)}%)
-                    </div>
-                </div>
-            `;
+            // Destroy existing chart if it exists
+            if (basketTotalChart) {
+                basketTotalChart.destroy();
+            }
             
-            attributionItems.innerHTML = itemsHtml + totalHtml;
-            attributionSection.style.display = 'block';
+            // Create new chart
+            const ctx = document.getElementById('basketTotalChart').getContext('2d');
+            basketTotalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: currentMonths,
+                    datasets: [{
+                        label: 'Total Basket Cost',
+                        data: basketTotals,
+                        borderColor: '#d41e36',
+                        backgroundColor: '#d41e36' + '20',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        spanGaps: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Total: $' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
-
 
         async function loadCPIBasket() {
             const store = document.getElementById('basketStore').value;
@@ -1690,17 +1957,17 @@
                             const prices = priceData[store][sku];
                             
                             // Validate prices
-                            const currentPrice = prices[prices.length - 1]; // Latest price
-                            const previousPrice = prices[0]; // First price (12 months ago)
-                            
+                    const currentPrice = prices[prices.length - 1]; // Latest price
+                    const previousPrice = prices[0]; // First price (12 months ago)
+                    
                             // Check for valid prices (not null, undefined, 0, or empty)
                             if (currentPrice && currentPrice > 0 && previousPrice && previousPrice > 0) {
-                                basketItems.push({
-                                    store,
+                    basketItems.push({
+                        store,
                                     item: sku,
                                     quantity: itemData.quantity,
-                                    currentPrice,
-                                    previousPrice,
+                        currentPrice,
+                        previousPrice,
                                     name: itemData.title,
                                     category: categoryName,
                                     cpiWeight: categoryData.weight
@@ -1727,8 +1994,8 @@
                         }
                     }
                 }
-                
-                updateBasketDisplay();
+            
+            updateBasketDisplay();
                 
                 // Show CPI basket info
                 console.log('CPI Basket loaded:', cpiBasketData.description);
@@ -1748,6 +2015,73 @@
                 alert('Failed to load CPI basket. Please try again.');
             }
         }
+
+        // Initialize price ticker
+        function initializeTicker() {
+            const store = 'austin'; // Default store for ticker
+            const tickerWrapper = document.getElementById('tickerWrapper');
+            
+            if (!priceData || !priceData[store]) {
+                console.log('Waiting for price data to load...');
+                setTimeout(initializeTicker, 500);
+                return;
+            }
+            
+            // Get items with price changes (YoY comparison)
+            const items = [];
+            const itemSkus = Object.keys(priceData[store]);
+            
+            for (const sku of itemSkus) {
+                const prices = priceData[store][sku];
+                
+                if (prices && prices.length >= 2) {
+                    // Compare most recent price (last index) to 12 months ago (first index)
+                    const oldPrice = prices[0]; // 12 months ago
+                    const newPrice = prices[prices.length - 1]; // Most recent
+                    
+                    if (oldPrice && newPrice && oldPrice > 0 && newPrice > 0) {
+                        const change = newPrice - oldPrice;
+                        
+                        // Only include items where price has changed
+                        if (change !== 0) {
+                            const percentChange = (change / oldPrice) * 100;
+                            
+                            items.push({
+                                name: itemNames[sku] || sku,
+                                price: newPrice,
+                                change: change,
+                                percent: percentChange
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Shuffle and take random selection
+            const shuffled = items.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 50); // Show more items since we're filtering
+            
+            // Create ticker items (duplicate for seamless loop)
+            const tickerHTML = selected.map(item => {
+                const changeClass = item.change >= 0 ? 'up' : 'down';
+                const changeSymbol = item.change >= 0 ? '▲' : '▼';
+                const changeText = `${changeSymbol} ${Math.abs(item.percent).toFixed(1)}%`;
+                
+                return `
+                    <div class="ticker-item">
+                        <span class="ticker-item-name">${item.name}</span>
+                        <span class="ticker-item-price">$${item.price.toFixed(2)}</span>
+                        <span class="ticker-item-change ${changeClass}">${changeText}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // Duplicate content for seamless infinite scroll
+            tickerWrapper.innerHTML = tickerHTML + tickerHTML;
+        }
+        
+        // Initialize ticker after a short delay to ensure data is loaded
+        setTimeout(initializeTicker, 1000);
     </script>
 </body>
 </html>
