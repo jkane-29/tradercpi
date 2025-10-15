@@ -926,8 +926,8 @@
                             </select>
                         </div>
                         <div class="control-group">
-                            <label for="startMonth">Chart Start Date</label>
-                            <select id="startMonth" onchange="updateChartStartMonth()">
+                            <label for="startMonth">Chart End Date</label>
+                            <select id="startMonth" onchange="updateChartEndMonth()">
                                 <!-- Options will be populated dynamically -->
                             </select>
                         </div>
@@ -1053,7 +1053,7 @@
         let basketTotalChart = null;
         let overlayData = [];
         let basketItems = [];
-        let selectedStartMonthIndex = 0; // Index in the months array to start charts from
+        let selectedStartMonthIndex = 0; // Index in the months array where charts end (defaults to most recent)
 
         function initializeEmptyChart() {
             const ctx = document.getElementById('priceChart');
@@ -1208,13 +1208,13 @@
                 dropdown.appendChild(option);
             }
             
-            // Set default to most recent month (index 0 in the dropdown, but that's the last index in the array)
-            selectedStartMonthIndex = 0;
+            // Set default to most recent month (last index in the array means chart goes to present)
+            selectedStartMonthIndex = availableMonths.length - 1;
             dropdown.value = availableMonths.length - 1; // Most recent
         }
 
-        // Update chart when start month changes
-        function updateChartStartMonth() {
+        // Update chart when end month changes
+        function updateChartEndMonth() {
             const dropdown = document.getElementById('startMonth');
             selectedStartMonthIndex = parseInt(dropdown.value);
             
@@ -1500,23 +1500,23 @@
                 };
             });
             
-            // Trim datasets and labels based on selected start month
+            // Trim datasets and labels based on selected end month
             let chartLabels = currentMonths;
             let trimmedRawMonths = currentRawMonths;
             
-            // Use the selected start month index, but also consider earliest data if in full history mode
-            let trimStartIndex = selectedStartMonthIndex;
-            if (showFullHistory && earliestStartIndex > trimStartIndex) {
-                trimStartIndex = earliestStartIndex;
-            }
+            // Use the selected end month index (slice up to this point)
+            let endIndex = selectedStartMonthIndex + 1; // +1 because slice is exclusive at end
             
-            if (trimStartIndex > 0) {
-                chartLabels = currentMonths.slice(trimStartIndex);
-                trimmedRawMonths = currentRawMonths.slice(trimStartIndex);
+            // Apply trimming from start (if in full history mode) and up to end date
+            let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            
+            if (endIndex < currentMonths.length || trimStartIndex > 0) {
+                chartLabels = currentMonths.slice(trimStartIndex, endIndex);
+                trimmedRawMonths = currentRawMonths.slice(trimStartIndex, endIndex);
                 
                 // Trim all datasets
                 datasets.forEach(dataset => {
-                    dataset.data = dataset.data.slice(trimStartIndex);
+                    dataset.data = dataset.data.slice(trimStartIndex, endIndex);
                 });
             }
             
