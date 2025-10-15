@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader Joe's Price Index</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1"></script>
+    <style>
+        @font-face {
+            font-family: 'Trader Joes';
+            src: url('TraderJoes-JYrx.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #333;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #bb3a39;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .splash-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo img {
+            max-width: 600px;
+            width: 80%;
+            height: auto;
+        }
+
+        /* Main App */
+        .main-app {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            display: none;
+        }
+
+        .main-app.visible {
+            opacity: 1;
+            display: block;
+        }
+
+        /* Header */
+        .app-header {
+            background: #d41e36;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-header h1 {
+            font-family: 'Trader Joes', cursive;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: normal;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 1.2rem 3rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: #d41e36;
+            background: #fdf2f4;
+        }
+
+        .nav-tab.active {
+            color: #d41e36;
+            border-bottom-color: #d41e36;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Item Search */
+        .search-controls-wrapper {
+            display: grid;
+            grid-template-columns: 780px 400px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-controls {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        
+        .last-update-date {
+            position: absolute;
+            bottom: 0.75rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .logo-box {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-box img {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .control-group label[for="searchStore"],
+        .control-group label[for="basketStore"],
+        .control-group label[for="searchItem"],
+        .control-group label[for="basketItem"],
+        .control-group label[for="basketQuantity"],
+        .control-group label[for="startMonth"] {
+            font-family: 'Trader Joes', cursive;
+            font-weight: normal;
+            font-size: 1.1rem;
+            color: #d41e36;
+        }
+
+        .control-group select {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            width: 100%;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .control-group select:focus {
+            outline: none;
+            border-color: #d41e36;
+        }
+
+        .control-group input[type="text"] {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: white;
+            transition: border-color 0.3s ease;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .control-group input[type="text"]:focus {
+            outline: none;
+            border-color: #d41e36;
+        }
+
+        #searchItem {
+            border: 2px solid #d41e36 !important;
+            background: #fef5f5 !important;
+        }
+
+        #searchItem:focus {
+            border-color: #b91c2e !important;
+            background: white !important;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #d41e36;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .search-suggestions.visible {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: #fdf2f4;
+        }
+
+        .suggestion-item.selected {
+            background: #fdf2f4;
+        }
+
+        .suggestion-title {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .suggestion-meta {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .suggestion-category {
+            color: #999;
+            text-transform: capitalize;
+        }
+
+        .suggestion-price {
+            color: #d41e36;
+            font-weight: 600;
+        }
+
+        .search-no-results {
+            padding: 1rem;
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #d41e36;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .btn-primary:hover {
+            background: #b91c2e;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #d41e36;
+            border: 2px solid #d41e36;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: #fdf2f4;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            max-width: 1212px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chart-container h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        #priceChart {
+            max-height: 400px;
+        }
+
+        .chart-empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #999;
+        }
+
+        .chart-empty p {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-empty small {
+            color: #bbb;
+        }
+
+        /* Overlay List */
+        .overlay-list {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 1212px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .overlay-list h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .overlay-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+        }
+
+        .overlay-item-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .overlay-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .overlay-item-text {
+            font-size: 0.95rem;
+        }
+
+        .overlay-item-text strong {
+            color: #333;
+        }
+
+        .overlay-item-text span {
+            color: #666;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #d41e36;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .btn-remove:hover {
+            color: #b91c2e;
+        }
+
+        /* Basket Builder */
+        .basket-controls-wrapper {
+            display: grid;
+            grid-template-columns: 780px 400px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .basket-controls {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .basket-add-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .basket-add-row {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .basket-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            align-items: start;
+            max-width: 1212px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .basket-attribution {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .basket-attribution h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        #attributionChart {
+            max-height: 350px;
+        }
+
+        .basket-items {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .basket-items > div {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 0.8rem;
+            margin-bottom: 0.8rem;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .receipt-store-info {
+            text-align: center;
+            margin-bottom: 0.8rem;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        .basket-item {
+            margin-bottom: 0.4rem;
+            font-size: 13px;
+        }
+
+        .basket-item-name {
+            font-weight: normal;
+            color: #000;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            min-height: 1.2rem;
+        }
+
+        .basket-item-name-text {
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .basket-item-details {
+            display: flex;
+            justify-content: space-between;
+            padding-left: 10px;
+            font-size: 12px;
+        }
+
+        .basket-item-price {
+            font-weight: normal;
+            color: #000;
+            text-align: right;
+        }
+
+        .basket-item-remove {
+            background: none;
+            border: none;
+            color: #d41e36;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 0.3rem;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .basket-item-remove:hover {
+            color: #b91c2e;
+            transform: scale(1.1);
+        }
+
+        .receipt-separator {
+            border-top: 1px dashed #000;
+            margin: 0.8rem 0;
+        }
+
+        .receipt-total {
+            border-top: 2px solid #000;
+            padding-top: 0.6rem;
+            margin-top: 0.6rem;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .receipt-total-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.2rem;
+        }
+
+        .basket-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Historical Receipt */
+        .historical-receipt {
+            width: 100%;
+        }
+
+        .historical-receipt .basket-items {
+            min-height: 400px;
+        }
+
+        .historical-receipt .basket-item-remove {
+            display: none;
+        }
+
+        /* Attribution Analysis */
+        .attribution-section {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .attribution-title {
+            font-family: 'Trader Joes', cursive;
+            font-size: 1.3rem;
+            color: #d41e36;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .attribution-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .attribution-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #fafafa;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .attribution-item:hover {
+            background: #f0f0f0;
+        }
+
+        .attribution-item-name {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .attribution-item-bar-container {
+            flex: 2;
+            height: 28px;
+            background: #e9ecef;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .attribution-item-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #d41e36, #b91c2e);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            min-width: 50px;
+        }
+
+        .attribution-item-bar.negative {
+            background: linear-gradient(90deg, #333, #000);
+        }
+
+        .attribution-item-change {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .attribution-item-change.positive {
+            color: #d41e36;
+        }
+
+        .attribution-item-change.negative {
+            color: #000;
+        }
+
+        /* Price Ticker */
+        .price-ticker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            color: #fff;
+            height: 40px;
+            overflow: hidden;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .main-app.visible ~ .price-ticker {
+            display: block;
+        }
+
+        .ticker-wrapper {
+            display: flex;
+            animation: scroll 60s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            height: 40px;
+        }
+
+        .ticker-item-name {
+            margin-right: 0.5rem;
+            font-family: 'Trader Joes', cursive;
+            color: #d41e36;
+        }
+
+        .ticker-item-price {
+            margin-right: 0.5rem;
+            font-family: 'Trader Joes', cursive;
+            color: #ddd;
+        }
+
+        .ticker-item-change {
+            font-family: 'Trader Joes', cursive;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .ticker-item-change.up {
+            color: #fff;
+            background: #d41e36;
+        }
+
+        .ticker-item-change.down {
+            color: #fff;
+            background: #333;
+        }
+
+        .ticker-separator {
+            margin: 0 1rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .app-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-tab {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .search-controls-wrapper,
+            .basket-controls-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-row {
+                grid-template-columns: 1fr;
+            }
+
+            .basket-add-row {
+                grid-template-columns: 1fr !important;
+            }
+
+            .basket-results {
+                grid-template-columns: 1fr;
+                justify-content: stretch;
+            }
+
+            .basket-items {
+                max-width: 100%;
+                min-height: 350px;
+            }
+
+            .historical-receipt {
+                min-width: auto;
+            }
+
+            .attribution-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .attribution-item-name {
+                font-size: 0.85rem;
+            }
+
+            .attribution-item-bar-container {
+                width: 100%;
+            }
+
+            .attribution-item-change {
+                width: 100%;
+                text-align: left;
+            }
+
+            .basket-attribution {
+                padding: 1.5rem;
+            }
+
+            #attributionChart {
+                max-height: 400px;
+            }
+
+            .logo-box {
+                min-height: 150px;
+            }
+
+            .logo-box img {
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="logo">
+            <img src="images/red logo crop.png" alt="Trader Joe's Price Index">
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="main-app" id="mainApp">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>Trader Joe's Price Index</h1>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
+            <button class="nav-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
+        </nav>
+
+        <!-- Item Search Section -->
+        <section class="content-section active" id="itemSearchSection">
+            <div class="search-controls-wrapper">
+                <div class="search-controls">
+                    <div class="control-row" style="grid-template-columns: 1fr;">
+                        <div class="control-group">
+                            <label for="searchItem">Item</label>
+                            <div class="search-wrapper">
+                                <input type="text" id="searchItem" placeholder="Search for an item..." autocomplete="off">
+                                <div class="search-suggestions" id="searchItemSuggestions"></div>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="searchStore">Store Location</label>
+                            <select id="searchStore">
+                                <option value="austin">Austin - Seaholm (Store #452)</option>
+                                <option value="chicago">Chicago - South Loop (Store #701)</option>
+                                <option value="newyork">New York - East Village (Store #546)</option>
+                                <option value="la">Los Angeles - La Brea (Store #31)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="startMonth">Chart End Date</label>
+                            <select id="startMonth" onchange="updateChartEndMonth()">
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">Show Full History</button>
+                    </div>
+                    
+                    <div class="last-update-date">
+                        Last Updated: <span id="lastUpdateDate">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="logo-box">
+                    <img src="images/white logo.png" alt="Trader Joe's Logo">
+                </div>
+            </div>
+            
+            <div class="chart-container" id="chartContainer" style="display: none;">
+                <div id="chartContent">
+                    <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; font-weight: 600;">Price History</h3>
+                        <div style="height: 400px; position: relative;">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overlay-list" id="overlayList" style="display: none;">
+                <h3>Comparison View</h3>
+                <div id="overlayItems"></div>
+            </div>
+        </section>
+
+        <!-- Basket Builder Section -->
+        <section class="content-section" id="basketBuilderSection">
+            <div class="basket-controls-wrapper">
+                <div class="basket-controls">
+                    <div class="control-row" style="grid-template-columns: 1fr; margin-bottom: 1.5rem;">
+                        <div class="control-group">
+                            <label for="basketStore">Store Location</label>
+                            <select id="basketStore">
+                                <option value="austin">Austin - Seaholm (Store #452)</option>
+                                <option value="chicago">Chicago - South Loop (Store #701)</option>
+                                <option value="newyork">New York - East Village (Store #546)</option>
+                                <option value="la">Los Angeles - La Brea (Store #31)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="basket-add-section">
+                        <div class="control-group">
+                            <label for="basketItem">Add Item</label>
+                            <div class="search-wrapper">
+                                <input type="text" id="basketItem" placeholder="Search for an item..." autocomplete="off">
+                                <div class="search-suggestions" id="basketItemSuggestions"></div>
+                            </div>
+                        </div>
+                        <div class="basket-add-row" style="display: flex; gap: 1rem; align-items: flex-end;">
+                            <div class="control-group" style="margin-bottom: 0;">
+                                <label for="basketQuantity">Quantity</label>
+                                <select id="basketQuantity" style="height: 45px;">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <button class="btn-primary" onclick="loadCPIBasket()" style="height: 45px; padding: 0 2rem;">Load CPI Basket</button>
+                            <button id="toggleBasketHistoryBtn" class="btn-secondary" onclick="toggleBasketHistoryView()" style="display: none; height: 45px; padding: 0 2rem;">Show Full History</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logo-box">
+                    <img src="images/white logo.png" alt="Trader Joe's Logo">
+                </div>
+            </div>
+
+            <div class="basket-results">
+                <div class="basket-items">
+                    <div id="basketItemsList">
+                        <!-- Receipt will be populated on load -->
+                    </div>
+                </div>
+
+                <div class="historical-receipt" id="historicalReceipt">
+                    <div class="basket-items">
+                        <div id="historicalReceiptContent"></div>
+                    </div>
+                </div>
+
+                <div class="attribution-section" id="basketChartSection" style="display: none;">
+                    <div style="height: 400px; width: 100%; position: relative;">
+                        <canvas id="basketTotalChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Price Ticker -->
+    <div class="price-ticker">
+        <div class="ticker-wrapper" id="tickerWrapper">
+            <!-- Ticker items will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script src="data_loader.js"></script>
+    <script>
+        // Data will be loaded from featured_items.json
+        // priceData, itemNames, itemList, months, and rawMonths are defined in data_loader.js
+
+        const storeNames = {
+            austin: 'Austin',
+            chicago: 'Chicago',
+            newyork: 'New York',
+            la: 'Los Angeles'
+        };
+
+        let priceChart = null;
+        let basketTotalChart = null;
+        let overlayData = [];
+        let basketItems = [];
+        let selectedStartMonthIndex = 0; // Index in the months array where charts end (defaults to most recent)
+
+        function initializeEmptyChart() {
+            const ctx = document.getElementById('priceChart');
+            if (!ctx) return;
+            
+            if (priceChart) {
+                priceChart.destroy();
+            }
+            
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#e9ecef'
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        let showFullHistory = false; // Toggle between 1 year and full history
+        let showBasketFullHistory = false; // Toggle between 1 year and full history for basket chart
+        
+        // Quirky cashier names for receipts
+        const cashierNames = [
+            'ZIGGY', 'MAPLE', 'DASH', 'CLOVER', 'JUNIPER', 'RIVER', 'SCOUT', 'PEPPER', 
+            'SAGE', 'FINN', 'LUNA', 'COSMO', 'INDIE', 'REMY', 'NOVA', 'PHOENIX',
+            'WILLOW', 'JASPER', 'RUBY', 'FELIX', 'CLEO', 'MILES', 'HAZEL', 'OTTO',
+            'OLIVE', 'MILO', 'IRIS', 'THEO', 'PEARL', 'LEO', 'IVY', 'SASHA',
+            'SUNNY', 'AUGUST', 'SKYE', 'ORION', 'JADE', 'QUINN', 'RAIN', 'PHOENIX',
+            'BASIL', 'WREN', 'ASH', 'BLAZE', 'CORAL', 'LEAF', 'STORM', 'ECHO',
+            'ZEPHYR', 'ATLAS', 'AURORA', 'River', 'AUTUMN', 'WINTER', 'SUMMER', 'SPRING',
+            'BIRCH', 'CEDAR', 'CYPRESS', 'FORREST', 'GROVE', 'LAKE', 'MEADOW', 'RIDGE',
+            'BROOK', 'CLIFF', 'DALE', 'FERN', 'GLEN', 'HILL', 'MARSH', 'MOSS',
+            'PEAK', 'REED', 'SAND', 'STAR', 'TIDE', 'VALE', 'WAVE', 'WIND',
+            'BAY', 'CLOUD', 'DEW', 'FOG', 'FROST', 'GALE', 'HAIL', 'ICE',
+            'MIST', 'RAIN', 'SNOW', 'SUN', 'MOON', 'COMET', 'PLANET', 'SPACE',
+            'ARROW', 'BEAR', 'CROW', 'DEER', 'EAGLE', 'FOX', 'HAWK', 'LYNX'
+        ];
+        
+        function getRandomCashier() {
+            return cashierNames[Math.floor(Math.random() * cashierNames.length)];
+        }
+
+        // Initialize app - load data first
+        async function initializeApp() {
+            try {
+                const dataLoaded = await loadRealData();
+                
+                if (dataLoaded) {
+                    // Convert raw months to labels for display
+                    months = getMonthLabels();
+                    
+                    // Populate start month dropdown
+                    populateStartMonthDropdown();
+                    
+                    // Setup search inputs with autocomplete
+                    setupSearchInputs();
+                    
+                    // Initialize basket display with empty receipts
+                    updateBasketDisplay();
+                    
+                    // Update last update date
+                    updateLastUpdateDate();
+                    
+                    console.log('App initialized with real data');
+                    console.log('Loaded items:', Object.keys(priceData.austin || {}).length);
+                } else {
+                    console.error('Failed to load data');
+                    alert('Failed to load price data. Please refresh the page.');
+                }
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                alert('Error loading app: ' + error.message);
+            }
+        }
+
+        // Start splash screen and data loading
+        setTimeout(() => {
+            document.getElementById('splashScreen').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('mainApp').classList.add('visible');
+                // Load data after UI is visible
+                initializeApp();
+            }, 800);
+        }, 1000);
+
+        // Update last update date
+        function updateLastUpdateDate() {
+            if (!rawMonths || rawMonths.length === 0) return;
+            
+            // Get the most recent month from rawMonths (format: "YYYY-MM")
+            const latestMonth = rawMonths[rawMonths.length - 1];
+            const [year, month] = latestMonth.split('-');
+            
+            // Create a date object and format it
+            const date = new Date(year, month - 1, 1);
+            const options = { year: 'numeric', month: 'long' };
+            const formattedDate = date.toLocaleDateString('en-US', options);
+            
+            // Update the display
+            document.getElementById('lastUpdateDate').textContent = formattedDate;
+        }
+
+        // Populate start month dropdown with available months
+        function populateStartMonthDropdown() {
+            const dropdown = document.getElementById('startMonth');
+            dropdown.innerHTML = '';
+            
+            // Use rawMonths for the full history if available, otherwise use current view
+            const availableMonths = showFullHistory ? rawMonthsFull : rawMonths;
+            
+            // Add options in reverse order (most recent first)
+            for (let i = availableMonths.length - 1; i >= 0; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                
+                // Format month as full name (e.g., "October 2024")
+                const [year, month] = availableMonths[i].split('-');
+                const date = new Date(year, month - 1, 1);
+                const fullMonthName = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+                option.textContent = fullMonthName;
+                
+                dropdown.appendChild(option);
+            }
+            
+            // Set default to most recent month (last index in the array means chart goes to present)
+            selectedStartMonthIndex = availableMonths.length - 1;
+            dropdown.value = availableMonths.length - 1; // Most recent
+        }
+
+        // Update chart when end month changes
+        function updateChartEndMonth() {
+            const dropdown = document.getElementById('startMonth');
+            selectedStartMonthIndex = parseInt(dropdown.value);
+            
+            // Re-render chart if there's data
+            if (overlayData.length > 0) {
+                renderChart();
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            
+            if (tab === 'itemSearch') {
+                document.querySelector('[onclick="switchTab(\'itemSearch\')"]').classList.add('active');
+                document.getElementById('itemSearchSection').classList.add('active');
+            } else {
+                document.querySelector('[onclick="switchTab(\'basketBuilder\')"]').classList.add('active');
+                document.getElementById('basketBuilderSection').classList.add('active');
+            }
+        }
+
+        // Setup autocomplete for search inputs
+        function setupSearchInputs() {
+            setupAutocomplete('searchItem', 'searchItemSuggestions', false, 'overlay'); // Use regular items, auto-add to comparison
+            setupAutocomplete('basketItem', 'basketItemSuggestions', true, 'basket'); // Use basket essentials, auto-add to basket
+        }
+
+        function setupAutocomplete(inputId, suggestionsId, useBasketItems = false, autoAddMode = null) {
+            const input = document.getElementById(inputId);
+            const suggestions = document.getElementById(suggestionsId);
+            let selectedIndex = -1;
+
+            input.addEventListener('input', (e) => {
+                const query = e.target.value;
+                const results = searchItems(query, useBasketItems);
+                
+                if (results.length === 0 && query.length >= 2) {
+                    suggestions.innerHTML = '<div class="search-no-results">No items found</div>';
+                    suggestions.classList.add('visible');
+                } else if (results.length > 0) {
+                    suggestions.innerHTML = results.map((item, index) => {
+                        const priceHtml = item.current_price ? 
+                            `<div class="suggestion-meta"><span class="suggestion-price">$${item.current_price.toFixed(2)}</span></div>` : '';
+                        return `
+                        <div class="suggestion-item" data-sku="${item.sku}" data-index="${index}">
+                            <div class="suggestion-title">${item.title}</div>
+                            ${priceHtml}
+                            </div>
+                    `}).join('');
+                    suggestions.classList.add('visible');
+                    selectedIndex = -1;
+                    
+                    // Add click handlers
+                    suggestions.querySelectorAll('.suggestion-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            input.value = item.querySelector('.suggestion-title').textContent;
+                            input.dataset.selectedSku = item.dataset.sku;
+                            suggestions.classList.remove('visible');
+                            
+                            // Auto-add based on mode
+                            if (autoAddMode === 'overlay') {
+                                addToOverlay();
+                                // Clear input for quick successive additions
+                                input.value = '';
+                                input.dataset.selectedSku = '';
+                            } else if (autoAddMode === 'basket') {
+                                addToBasket();
+                                // Clear input for quick successive additions
+                                input.value = '';
+                                input.dataset.selectedSku = '';
+                            }
+                        });
+                    });
+                } else {
+                    suggestions.classList.remove('visible');
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                const items = suggestions.querySelectorAll('.suggestion-item');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                    updateSelectedSuggestion(items, selectedIndex);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, -1);
+                    updateSelectedSuggestion(items, selectedIndex);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (selectedIndex >= 0 && items[selectedIndex]) {
+                        items[selectedIndex].click();
+                    } else if (autoAddMode && input.value) {
+                        // If no suggestion selected but there's text, try to add
+                        if (autoAddMode === 'overlay') {
+                            addToOverlay();
+                        } else if (autoAddMode === 'basket') {
+                            addToBasket();
+                        }
+                        // Clear input for quick successive additions
+                        input.value = '';
+                        input.dataset.selectedSku = '';
+                        suggestions.classList.remove('visible');
+                    }
+                } else if (e.key === 'Escape') {
+                    suggestions.classList.remove('visible');
+                }
+            });
+
+            // Close suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                    suggestions.classList.remove('visible');
+                }
+            });
+        }
+
+        function updateSelectedSuggestion(items, selectedIndex) {
+            items.forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        // Item Search Functions
+        function searchItem() {
+            const store = document.getElementById('searchStore').value;
+            const searchInput = document.getElementById('searchItem');
+            const item = searchInput.dataset.selectedSku;
+            
+            if (!item) {
+                alert('Please search for and select an item');
+                return;
+            }
+            
+            const prices = priceData[store][item];
+            
+            // Show chart container
+            document.getElementById('chartContainer').style.display = 'block';
+            
+            // Reset to 1 year view
+            showFullHistory = false;
+            const btn = document.getElementById('toggleHistoryBtn');
+            btn.textContent = 'Show Full History';
+            
+            // Clear previous chart
+            overlayData = [{
+                store: store,
+                item: item,
+                prices: prices,
+                color: '#d41e36'
+            }];
+            
+            renderChart();
+        }
+
+        function addToOverlay() {
+            const store = document.getElementById('searchStore').value;
+            const searchInput = document.getElementById('searchItem');
+            const item = searchInput.dataset.selectedSku;
+            
+            if (!item) {
+                alert('Please search for and select an item');
+                return;
+            }
+            
+            // Check if already in overlay
+            const exists = overlayData.some(d => d.store === store && d.item === item);
+            if (exists) {
+                alert('This item/store combination is already in the comparison');
+                return;
+            }
+            
+            // Show chart container
+            document.getElementById('chartContainer').style.display = 'block';
+            
+            const colors = ['#d41e36', '#003d7a', '#2ecc71', '#f39c12', '#9b59b6'];
+            const color = colors[overlayData.length % colors.length];
+            
+            const prices = priceData[store][item];
+            overlayData.push({ store, item, prices, color });
+            
+            renderChart();
+            updateOverlayList();
+        }
+
+        function removeFromOverlay(index) {
+            overlayData.splice(index, 1);
+            if (overlayData.length === 0) {
+                document.getElementById('overlayList').style.display = 'none';
+                document.getElementById('toggleHistoryBtn').style.display = 'none';
+                document.getElementById('chartContainer').style.display = 'none';
+                if (priceChart) {
+                    priceChart.destroy();
+                    priceChart = null;
+                }
+            } else {
+                renderChart();
+                updateOverlayList();
+            }
+        }
+
+        function toggleHistoryView() {
+            showFullHistory = !showFullHistory;
+            const btn = document.getElementById('toggleHistoryBtn');
+            btn.textContent = showFullHistory ? 'Show Last Year' : 'Show Full History';
+            
+            // Repopulate the start month dropdown with new date range
+            populateStartMonthDropdown();
+            
+            renderChart();
+        }
+
+        function toggleBasketHistoryView() {
+            showBasketFullHistory = !showBasketFullHistory;
+            const btn = document.getElementById('toggleBasketHistoryBtn');
+            btn.textContent = showBasketFullHistory ? 'Show Last Year' : 'Show Full History';
+            renderBasketTotalChart();
+        }
+
+        function renderChart() {
+            if (overlayData.length === 0) return;
+            
+            // Show the toggle button
+            document.getElementById('toggleHistoryBtn').style.display = 'block';
+            
+            document.getElementById('chartContent').innerHTML = '<div style="height: 400px; position: relative;"><canvas id="priceChart"></canvas></div>';
+            
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            if (priceChart) {
+                priceChart.destroy();
+            }
+            
+            // Get appropriate data based on view mode
+            const currentRawMonths = showFullHistory ? rawMonthsFull : rawMonths;
+            const currentMonths = showFullHistory ? getMonthLabels(true) : months;
+            const currentPriceData = showFullHistory ? priceDataFull : priceData;
+            
+            
+            // Find the earliest start index across all items
+            let earliestStartIndex = currentMonths.length;
+            
+            const datasets = overlayData.map(data => {
+                // Get prices for the current view
+                let prices;
+                if (showFullHistory) {
+                    prices = currentPriceData[data.store][data.item];
+                } else {
+                    prices = data.prices;
+                }
+                
+                // Find first non-null price index
+                let startIndex = 0;
+                if (showFullHistory) {
+                    for (let i = 0; i < prices.length; i++) {
+                        if (prices[i] !== null) {
+                            startIndex = i;
+                            break;
+                        }
+                    }
+                    earliestStartIndex = Math.min(earliestStartIndex, startIndex);
+                }
+                
+                return {
+                label: `${itemNames[data.item]} - ${storeNames[data.store]}`,
+                    data: prices,
+                borderColor: data.color,
+                backgroundColor: data.color + '20',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 4,
+                    pointHoverRadius: 6,
+                    spanGaps: true, // Connect across null values
+                    startIndex: startIndex
+                };
+            });
+            
+            // Trim datasets and labels based on selected end month
+            let chartLabels = currentMonths;
+            let trimmedRawMonths = currentRawMonths;
+            
+            // Use the selected end month index (slice up to this point)
+            let endIndex = selectedStartMonthIndex + 1; // +1 because slice is exclusive at end
+            
+            // Apply trimming from start (if in full history mode) and up to end date
+            let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            
+            if (endIndex < currentMonths.length || trimStartIndex > 0) {
+                chartLabels = currentMonths.slice(trimStartIndex, endIndex);
+                trimmedRawMonths = currentRawMonths.slice(trimStartIndex, endIndex);
+                
+                // Trim all datasets
+                datasets.forEach(dataset => {
+                    dataset.data = dataset.data.slice(trimStartIndex, endIndex);
+                });
+            }
+            
+            // Find July, August, September 2025 indices for shading (after trimming)
+            const july2025Index = trimmedRawMonths.indexOf('2025-07');
+            const sept2025Index = trimmedRawMonths.indexOf('2025-09');
+            
+            // Create annotation plugin for grey shading (aligned with data points)
+            // Shade from start of July to end of September (3 months total)
+            const annotation = july2025Index >= 0 && sept2025Index >= 0 ? {
+                annotations: {
+                    gapShading: {
+                        type: 'box',
+                        xMin: july2025Index - 0.25,
+                        xMax: sept2025Index + 0.25,
+                        backgroundColor: 'rgba(200, 200, 200, 0.2)',
+                        borderWidth: 0
+                    }
+                }
+            } : {};
+            
+            
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
+                                },
+                                title: function(context) {
+                                    const rawMonth = trimmedRawMonths[context[0].dataIndex];
+                                    // Add indicator for gap months
+                                    if (rawMonth && ['2025-07', '2025-08', '2025-09'].includes(rawMonth)) {
+                                        return context[0].label + ' (no data - using June price)';
+                                    }
+                                    return context[0].label;
+                                }
+                            }
+                        },
+                        annotation: annotation
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateOverlayList() {
+            if (overlayData.length <= 1) {
+                document.getElementById('overlayList').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('overlayList').style.display = 'block';
+            
+            const html = overlayData.map((data, index) => `
+                <div class="overlay-item">
+                    <div class="overlay-item-info">
+                        <div class="overlay-color" style="background: ${data.color};"></div>
+                        <div class="overlay-item-text">
+                            <strong>${itemNames[data.item]}</strong>
+                            <span>at ${storeNames[data.store]}</span>
+                        </div>
+                    </div>
+                    <button class="btn-remove" onclick="removeFromOverlay(${index})">×</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('overlayItems').innerHTML = html;
+        }
+
+        // Basket Builder Functions
+        function addToBasket() {
+            const store = document.getElementById('basketStore').value;
+            const basketInput = document.getElementById('basketItem');
+            const item = basketInput.dataset.selectedSku;
+            const quantity = parseInt(document.getElementById('basketQuantity').value);
+            
+            if (!item) {
+                alert('Please search for and select an item');
+                return;
+            }
+            
+            const currentPrice = priceData[store][item][priceData[store][item].length - 1]; // Latest price
+            const previousPrice = priceData[store][item][0]; // 12 months ago
+            
+            basketItems.push({
+                store,
+                item,
+                quantity,
+                currentPrice,
+                previousPrice,
+                name: itemNames[item] || basketInput.value
+            });
+            
+            // Clear the input after adding
+            basketInput.value = '';
+            basketInput.dataset.selectedSku = '';
+            
+            updateBasketDisplay();
+        }
+
+        function removeFromBasket(index) {
+            basketItems.splice(index, 1);
+            updateBasketDisplay();
+        }
+
+        function updateBasketDisplay() {
+            const listContainer = document.getElementById('basketItemsList');
+            const historicalReceipt = document.getElementById('historicalReceipt');
+            
+            if (basketItems.length === 0) {
+                // Show empty receipts instead of empty message
+                const store = document.getElementById('basketStore').value;
+                const storeInfo = {
+                    austin: { name: 'Austin - Seaholm', code: '452' },
+                    chicago: { name: 'Chicago - South Loop', code: '701' },
+                    newyork: { name: 'New York - East Village', code: '546' },
+                    la: { name: 'Los Angeles - La Brea', code: '31' }
+                };
+                const currentStore = storeInfo[store];
+                
+                // Get current and historical dates
+                const currentMonthStr = rawMonths[rawMonths.length - 1];
+                const historicalMonthStr = rawMonths[0];
+                
+                const [currentYear, currentMonth] = currentMonthStr.split('-');
+                const currentDate = new Date(currentYear, currentMonth - 1, 15);
+                const receiptDate = currentDate.toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+                const transactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                
+                const [oldYear, oldMonth] = historicalMonthStr.split('-');
+                const oldDate = new Date(oldYear, oldMonth - 1, 15);
+                const oldReceiptDate = oldDate.toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+                const oldTransactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                
+                // Generate empty receipt
+                const emptyReceiptHTML = (isHistorical) => `
+                    <div class="receipt-header">
+                        <strong style="font-family: 'Trader Joes', cursive; color: #555; font-size: 40px;">TRADER JOE'S</strong>
+                    </div>
+                    
+                    <div class="receipt-store-info">
+                        Store #${currentStore.code} - ${currentStore.name}<br>
+                        ${isHistorical ? oldReceiptDate : receiptDate}<br>
+                        Trans# ${isHistorical ? oldTransactionId : transactionId} | Cashier: ${getRandomCashier()}
+                    </div>
+                    
+                    <div class="receipt-separator"></div>
+                    <div class="receipt-separator"></div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 13px;">
+                        <span>SUBTOTAL:</span>
+                        <span>$0.00</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 13px;">
+                        <span>TAX:</span>
+                        <span>$0.00</span>
+                    </div>
+                    
+                    <div class="receipt-total">
+                        <div class="receipt-total-line">
+                            <span>TOTAL:</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="receipt-total-line">
+                            <span>CREDIT CARD:</span>
+                            <span>$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed #000; font-size: 11px; line-height: 1.4;">
+                        Visit us at traderjoes.com<br>
+                        Follow @TraderJoesList<br><br>
+                        PRICE TRACKER - ${isHistorical ? oldDate.toLocaleDateString() : currentDate.toLocaleDateString()}
+                    </div>
+                `;
+                
+                listContainer.innerHTML = emptyReceiptHTML(false);
+                document.getElementById('historicalReceiptContent').innerHTML = emptyReceiptHTML(true);
+                historicalReceipt.style.display = 'block';
+                return;
+            }
+            
+            // Get store info
+            const store = document.getElementById('basketStore').value;
+            const storeInfo = {
+                austin: { name: 'Austin - Seaholm', code: '452' },
+                chicago: { name: 'Chicago - South Loop', code: '701' },
+                newyork: { name: 'New York - East Village', code: '546' },
+                la: { name: 'Los Angeles - La Brea', code: '31' }
+            };
+            
+            const currentStore = storeInfo[store];
+            
+            // Get dates from actual data periods (use rawMonths for YYYY-MM format)
+            const currentMonthStr = rawMonths[rawMonths.length - 1]; // e.g., "2024-10"
+            const historicalMonthStr = rawMonths[0]; // e.g., "2023-10"
+            
+            // Parse and format current date
+            const [currentYear, currentMonth] = currentMonthStr.split('-');
+            const currentDate = new Date(currentYear, currentMonth - 1, 15); // Mid-month
+            const receiptDate = currentDate.toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+            const transactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            
+            // Parse and format historical date
+            const [oldYear, oldMonth] = historicalMonthStr.split('-');
+            const oldDate = new Date(oldYear, oldMonth - 1, 15); // Mid-month
+            const oldReceiptDate = oldDate.toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+            const oldTransactionId = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            
+            // Function to generate receipt HTML
+            function generateReceipt(usePreviousPrices = false, includeRemoveButtons = true) {
+                const items = basketItems.map((item, index) => {
+                    const price = usePreviousPrices ? item.previousPrice : item.currentPrice;
+                    return `
+                        <div class="basket-item">
+                            <div class="basket-item-name">
+                                ${includeRemoveButtons ? `<button class="basket-item-remove" onclick="removeFromBasket(${index})">×</button>` : ''}
+                                <span class="basket-item-name-text">${item.name}</span>
+                            </div>
+                            <div class="basket-item-details">
+                                <span>QTY ${item.quantity}</span>
+                                <span>$${(price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                const subtotal = basketItems.reduce((sum, item) => {
+                    const price = usePreviousPrices ? item.previousPrice : item.currentPrice;
+                    return sum + (price * item.quantity);
+                }, 0);
+                const tax = subtotal * 0.08;
+                const total = subtotal + tax;
+                
+                const date = usePreviousPrices ? oldReceiptDate : receiptDate;
+                const transId = usePreviousPrices ? oldTransactionId : transactionId;
+                
+                return `
+                    <div class="receipt-header">
+                        <strong style="font-family: 'Trader Joes', cursive; color: #555; font-size: 40px;">TRADER JOE'S</strong>
+                    </div>
+                    
+                    <div class="receipt-store-info">
+                        Store #${currentStore.code} - ${currentStore.name}<br>
+                        ${date}<br>
+                        Trans# ${transId} | Cashier: ${getRandomCashier()}
+                    </div>
+                    
+                    <div class="receipt-separator"></div>
+                    
+                    ${items}
+                    
+                    <div class="receipt-separator"></div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 13px;">
+                        <span>SUBTOTAL:</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 13px;">
+                        <span>TAX:</span>
+                        <span>$${tax.toFixed(2)}</span>
+                    </div>
+                    
+                    <div class="receipt-total">
+                        <div class="receipt-total-line">
+                            <span>TOTAL:</span>
+                            <span>$${total.toFixed(2)}</span>
+                        </div>
+                        <div class="receipt-total-line">
+                            <span>CREDIT CARD:</span>
+                            <span>$${total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed #000; font-size: 11px; line-height: 1.4;">
+                        Visit us at traderjoes.com<br>
+                        Follow @TraderJoesList<br><br>
+                        PRICE TRACKER - ${usePreviousPrices ? oldDate.toLocaleDateString() : currentDate.toLocaleDateString()}
+                    </div>
+                `;
+            }
+
+            // Update current receipt (with remove buttons)
+            listContainer.innerHTML = generateReceipt(false, true);
+            
+            // Update historical receipt (without remove buttons)
+            document.getElementById('historicalReceiptContent').innerHTML = generateReceipt(true, false);
+            historicalReceipt.style.display = 'block';
+            
+            // Render basket total chart
+            renderBasketTotalChart();
+        }
+
+        function renderBasketTotalChart() {
+            const basketChartSection = document.getElementById('basketChartSection');
+            
+            if (basketItems.length === 0) {
+                basketChartSection.style.display = 'none';
+                document.getElementById('toggleBasketHistoryBtn').style.display = 'none';
+                if (basketTotalChart) {
+                    basketTotalChart.destroy();
+                    basketTotalChart = null;
+                }
+                return;
+            }
+            
+            basketChartSection.style.display = 'block';
+            document.getElementById('toggleBasketHistoryBtn').style.display = 'block';
+            
+            // Get appropriate data based on view mode
+            const currentMonths = showBasketFullHistory ? getMonthLabels(true) : months;
+            const currentPriceData = showBasketFullHistory ? priceDataFull : priceData;
+            
+            // Calculate total basket price for each month
+            const basketTotals = [];
+            
+            // Use the months from the data (same as other charts)
+            for (let monthIndex = 0; monthIndex < currentMonths.length; monthIndex++) {
+                let monthTotal = 0;
+                let hasData = false;
+                
+                for (const item of basketItems) {
+                    const prices = currentPriceData[item.store][item.item];
+                    if (prices && prices[monthIndex] !== null && prices[monthIndex] !== undefined) {
+                        monthTotal += prices[monthIndex] * item.quantity;
+                        hasData = true;
+                    }
+                }
+                
+                basketTotals.push(hasData ? monthTotal : null);
+            }
+            
+            // Destroy existing chart if it exists
+            if (basketTotalChart) {
+                basketTotalChart.destroy();
+            }
+            
+            // Create new chart
+            const ctx = document.getElementById('basketTotalChart').getContext('2d');
+            basketTotalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: currentMonths,
+                    datasets: [{
+                        label: 'Total Basket Cost',
+                        data: basketTotals,
+                        borderColor: '#d41e36',
+                        backgroundColor: '#d41e36' + '20',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        spanGaps: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Total: $' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadCPIBasket() {
+            const store = document.getElementById('basketStore').value;
+            
+            // Clear existing basket
+            basketItems = [];
+            
+            try {
+                // Load CPI basket data
+                const response = await fetch('cpi_basket_essentials.json');
+                const cpiBasketData = await response.json();
+                
+                let itemsAdded = 0;
+                let itemsSkipped = 0;
+                const skippedItems = [];
+                
+                // Add all CPI items to basket with validation
+                for (const [categoryName, categoryData] of Object.entries(cpiBasketData.categories)) {
+                    for (const [sku, itemData] of Object.entries(categoryData.items)) {
+                        if (priceData[store] && priceData[store][sku]) {
+                            const prices = priceData[store][sku];
+                            
+                            // Validate prices
+                    const currentPrice = prices[prices.length - 1]; // Latest price
+                    const previousPrice = prices[0]; // First price (12 months ago)
+                    
+                            // Check for valid prices (not null, undefined, 0, or empty)
+                            if (currentPrice && currentPrice > 0 && previousPrice && previousPrice > 0) {
+                    basketItems.push({
+                        store,
+                                    item: sku,
+                                    quantity: itemData.quantity,
+                        currentPrice,
+                        previousPrice,
+                                    name: itemData.title,
+                                    category: categoryName,
+                                    cpiWeight: categoryData.weight
+                                });
+                                itemsAdded++;
+                            } else {
+                                skippedItems.push({
+                                    name: itemData.title,
+                                    sku: sku,
+                                    currentPrice: currentPrice,
+                                    previousPrice: previousPrice
+                                });
+                                itemsSkipped++;
+                                console.warn(`Skipped ${itemData.title}: currentPrice=${currentPrice}, previousPrice=${previousPrice}`);
+                            }
+                        } else {
+                            skippedItems.push({
+                                name: itemData.title,
+                                sku: sku,
+                                reason: 'No price data for store'
+                            });
+                            itemsSkipped++;
+                            console.warn(`No price data for ${itemData.title} in ${store} store`);
+                        }
+                    }
+                }
+            
+            updateBasketDisplay();
+                
+                // Show CPI basket info
+                console.log('CPI Basket loaded:', cpiBasketData.description);
+                console.log('Total weight:', cpiBasketData.total_weight + '%');
+                console.log('Items added:', itemsAdded);
+                console.log('Items skipped:', itemsSkipped);
+                
+                if (itemsSkipped > 0) {
+                    console.warn('Skipped items:', skippedItems);
+                    alert(`CPI Basket loaded with ${itemsAdded} items. ${itemsSkipped} items skipped due to missing/invalid price data. Check console for details.`);
+                } else {
+                    console.log('All CPI basket items loaded successfully!');
+                }
+                
+            } catch (error) {
+                console.error('Error loading CPI basket:', error);
+                alert('Failed to load CPI basket. Please try again.');
+            }
+        }
+
+        // Initialize price ticker
+        function initializeTicker() {
+            const store = 'austin'; // Default store for ticker
+            const tickerWrapper = document.getElementById('tickerWrapper');
+            
+            if (!priceData || !priceData[store]) {
+                console.log('Waiting for price data to load...');
+                setTimeout(initializeTicker, 500);
+                return;
+            }
+            
+            // Get items with price changes (YoY comparison)
+            const items = [];
+            const itemSkus = Object.keys(priceData[store]);
+            
+            for (const sku of itemSkus) {
+                const prices = priceData[store][sku];
+                
+                if (prices && prices.length >= 2) {
+                    // Compare most recent price (last index) to 12 months ago (first index)
+                    const oldPrice = prices[0]; // 12 months ago
+                    const newPrice = prices[prices.length - 1]; // Most recent
+                    
+                    if (oldPrice && newPrice && oldPrice > 0 && newPrice > 0) {
+                        const change = newPrice - oldPrice;
+                        
+                        // Only include items where price has changed
+                        if (change !== 0) {
+                            const percentChange = (change / oldPrice) * 100;
+                            
+                            items.push({
+                                name: itemNames[sku] || sku,
+                                price: newPrice,
+                                change: change,
+                                percent: percentChange
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Shuffle and take random selection
+            const shuffled = items.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 50); // Show more items since we're filtering
+            
+            // Create ticker items (duplicate for seamless loop)
+            const tickerHTML = selected.map(item => {
+                const changeClass = item.change >= 0 ? 'up' : 'down';
+                const changeSymbol = item.change >= 0 ? '▲' : '▼';
+                const changeText = `${changeSymbol} ${Math.abs(item.percent).toFixed(1)}%`;
+                
+                return `
+                    <div class="ticker-item">
+                        <span class="ticker-item-name">${item.name}</span>
+                        <span class="ticker-item-price">$${item.price.toFixed(2)}</span>
+                        <span class="ticker-item-change ${changeClass}">${changeText}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // Duplicate content for seamless infinite scroll
+            tickerWrapper.innerHTML = tickerHTML + tickerHTML;
+        }
+        
+        // Initialize ticker after a short delay to ensure data is loaded
+        setTimeout(initializeTicker, 1000);
+    </script>
+</body>
+</html>
+
+

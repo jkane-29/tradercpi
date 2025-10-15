@@ -1,0 +1,199 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Daily Tracking of Trader Joe&#39;s Price Changes"><meta name="keywords" content="trader joes, prices, price tracking"><title>Trader Joe&#39;s Prices</title></head><body><style>body {
+  font-family: sans-serif;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+:root {
+  --black: #000;
+  --blue: #1660c1;
+  --dark-green: #137752;
+  --dark-navy: #00449e;
+  --dark-pink: #d5008f;
+  --dark-red: #e7040f;
+  --gold: #ffb700;
+  --gray: #777;
+  --green: #008458;
+  --hot-pink: #ff41b4;
+  --light-blue: #96ccff;
+  --light-blue: #96ccff;
+  --light-gray: #999;
+  --light-green: #9eebcf;
+  --light-pink: #ffa3d7;
+  --light-purple: #a463f2;
+  --light-red: #ff725c;
+  --light-yellow: #fbf1a9;
+  --lightest-blue: #cdecff;
+  --lightest-gray: #bfbfbf;
+  --navy: #001b44;
+  --orange: #e25600;
+  --pink: #ff80cc;
+  --purple: #5e2ca5;
+  --red: #e7040f;
+  --washed-gray: #ddd;
+  --washed-blue: #eff9ff;
+  --washed-green: #e8fdf5;
+  --washed-red: #ffecec;
+  --washed-yellow: #fffceb;
+  --white: #fff;
+  --yellow: #ffb700;
+}
+
+.table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  text-align: left;
+  border: 0.08333rem solid #bfbfbf;
+}
+
+.table.table-striped tbody tr:nth-of-type(odd) {
+  background: #eee;
+}
+
+.table tbody tr.active,
+.table.table-striped tbody tr.active {
+  background: #e6e6e6;
+}
+
+.table.table-hover tbody tr:hover {
+  background: #e6e6e6;
+}
+
+.table.table-scroll {
+  display: block;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  white-space: nowrap;
+}
+
+.table td {
+  overflow: hidden;
+  padding: 0.3rem 0.4rem 0.1rem;
+  text-overflow: ellipsis;
+  border: 0.08333rem solid #bfbfbf;
+}
+
+.table th {
+  font-weight: bold;
+  font-size: 1.25em;
+  padding: 0.3rem 0.4rem 0;
+  border-bottom: 0.08333rem solid black;
+}
+
+.table tbody th {
+  border: 0.08333rem solid #bfbfbf;
+}
+
+.table-gray {
+  font-size: 1em !important;
+  border-top: 2px dotted #ddd;
+  border-left: 4px solid #777;
+  background: #fff;
+  box-shadow: 2px 2px #ddd;
+}
+
+td.green {
+  background-color: rgb(189,223,206);
+}
+
+td.red {
+  background-color: rgb(240,201,196);
+}
+
+.formInput {
+  font-size: 14px;
+  top: -2px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 2rem;
+  padding: 0.5rem 0.1rem 0.3rem 0.4rem;
+  color: black;
+  border: 0.08333rem solid black;
+  outline: none;
+  background: white;
+  background-image: none;
+  box-shadow: inset 2px 2px var(--washed-gray);
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.formInput:focus {
+  border-color: black;
+  box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.2);
+}
+
+.formInput::placeholder {
+  color: var(--gray);
+}
+
+.formInput.input-lg {
+  font-size: 1rem;
+  height: 2rem;
+  padding: 0.23334rem 0.6rem;
+}
+
+.btn {
+  position: relative;
+  top: -2px;
+  display: inline-block;
+  height: 2rem;
+  padding: 0.15rem 0.6rem 0;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-decoration: none;
+  color: black;
+  border: 0.08333rem solid black;
+  border-radius: 0;
+  outline: none;
+  background: white;
+  box-shadow: 2px 2px #bbb;
+  -webkit-appearance: none;
+  appearance: none;
+  fill: black;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.2);
+}
+
+.btn.primary {
+  color: white;
+  border-color: black;
+  background: black;
+}
+
+.signup-form {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+  align-items: center;
+  gap: 10px;
+  border: 2px dotted black;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+@media (width <= 500px) {
+  .signup-form {
+    flex-direction: column;
+  }
+}
+</style><i>Last updated: 2025-10-10 18:57:05 CDT</i><br><a class="underline" href="https://github.com/cmoog/traderjoes" target="_blank">Source code</a><br><a class="underline" href="https://data.traderjoesprices.com/dump.csv" download="traderjoes-dump.csv">Download full history (.csv)</a><br><br><strong style="font-size: 1.15em; font-family: serif"><i>Disclaimer: This website is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Trader Joe&#39;s, or any of its subsidiaries or its affiliates. All prices are sourced from Trader Joe&#39;s South Loop in Chicago, IL (store code 701). There may be regional price differences from those listed on this site. This website may include discontinued or unavailable products.</i></strong><br><h1>(Unofficial) Trader Joe&#39;s Price Tracking</h1><form action="signup" class="signup-form" role="form"><label for="email">Sign up for a weekly email of price changes.</label><input required="" name="email" type="email" class="formInput input-lg" placeholder="example@gmail.com"><button type="submit" class="btn primary" title="Email address">Sign Up</button></form><h2>Price Changes</h2><table class="table table-striped table-gray"><thead><tr><th>Date Changed</th><th>Item Name</th><th>Old Price</th><th>New Price</th></tr></thead><tbody></tbody></table><h2>All Items</h2><table class="table table-striped table-gray"><thead><tr><th>Item Name</th><th>Retail Price</th></tr></thead><tbody></tbody></table></body></html>

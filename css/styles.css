@@ -1,0 +1,442 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #000;
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* Splash Screen */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 1.5s ease-out;
+}
+
+.splash-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.logo {
+    text-align: center;
+    color: white;
+}
+
+/* Clean logo styling - no effects */
+.logo-image {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    background: transparent;
+}
+
+/* Responsive logo sizing */
+@media (max-width: 768px) {
+    .logo-image {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-image {
+        max-width: 250px;
+    }
+}
+
+/* Map Screen */
+.map-screen {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+    position: relative;
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease-in;
+}
+
+.map-screen.visible {
+    display: block;
+    opacity: 1;
+}
+
+.map-header {
+    text-align: center;
+    padding: 3rem 2rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.map-header h2 {
+    font-size: 2.5rem;
+    color: #d41e36;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.map-header p {
+    font-size: 1.2rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+.map-container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.us-map {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.1));
+}
+
+.city-marker {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #d41e36;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 30, 54, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.city-marker:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 6px 25px rgba(212, 30, 54, 0.4);
+}
+
+.city-marker::before {
+    content: "🏪";
+    font-size: 24px;
+}
+
+.city-label {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    white-space: nowrap;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* City positions for accurate US map */
+.city-austin { top: 74%; left: 39%; }
+.city-chicago { top: 46%; left: 59%; }
+.city-nyc { top: 40%; left: 78%; }
+.city-la { top: 68%; left: 13%; }
+
+/* Dashboard Screen */
+.dashboard-screen {
+    min-height: 100vh;
+    background: #fafafa;
+    display: none;
+    padding: 2rem 0;
+}
+
+.dashboard-screen.visible {
+    display: block;
+}
+
+.dashboard-header {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h2 {
+    font-size: 2.2rem;
+    color: #d41e36;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.dashboard-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 0 2rem;
+}
+
+.archetypes-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.archetypes-section h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.archetype-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.archetype-card {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.archetype-card:hover {
+    border-color: #d41e36;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 30, 54, 0.1);
+}
+
+.archetype-card.selected {
+    border-color: #d41e36;
+    background: #fdf2f4;
+}
+
+.archetype-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.archetype-info h4 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.archetype-info p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.results-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.results-section h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.inflation-display {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #d41e36, #b91c2e);
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.inflation-rate {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.inflation-label {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.basket-receipt {
+    background: white;
+    border-radius: 0;
+    padding: 1.5rem;
+    font-family: 'Courier New', monospace;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 280px;
+    margin: 0 auto;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.receipt-header {
+    text-align: center;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
+    font-size: 11px;
+}
+
+.receipt-store-info {
+    text-align: center;
+    margin-bottom: 0.8rem;
+    font-size: 10px;
+    line-height: 1.1;
+}
+
+.receipt-item {
+    margin-bottom: 0.3rem;
+    font-size: 10px;
+}
+
+.receipt-item-name {
+    margin-bottom: 0.1rem;
+}
+
+.receipt-item-details {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    font-size: 9px;
+}
+
+.receipt-separator {
+    border-top: 1px dashed #000;
+    margin: 0.8rem 0;
+}
+
+.receipt-subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-bottom: 0.2rem;
+}
+
+.receipt-tax {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-bottom: 0.2rem;
+}
+
+.receipt-total {
+    border-top: 2px solid #000;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.receipt-total-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+}
+
+.receipt-change {
+    margin-top: 0.8rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #000;
+    color: #d41e36;
+    font-weight: bold;
+}
+
+.receipt-footer {
+    text-align: center;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed #000;
+    font-size: 9px;
+    line-height: 1.2;
+}
+
+.custom-basket-btn {
+    background: #d41e36;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.3s ease;
+}
+
+.custom-basket-btn:hover {
+    background: #b91c2e;
+}
+
+.back-btn {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    background: white;
+    border: 2px solid #d41e36;
+    color: #d41e36;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.back-btn:hover {
+    background: #d41e36;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .logo h1 {
+        font-size: 2.5rem;
+    }
+    
+    .map-header h2 {
+        font-size: 2rem;
+    }
+}
