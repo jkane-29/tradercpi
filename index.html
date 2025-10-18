@@ -824,137 +824,79 @@
                 font-size: 1.5rem;
             }
             
-            .nav-tab {
-                padding: 0.8rem 1rem;
-                font-size: 0.9rem;
-                flex: 1;
+            /* Hide navigation tabs on mobile */
+            .nav-tabs {
+                display: none;
             }
 
             .content-section {
                 padding: 1rem;
-            }
-
-            .search-controls-wrapper,
-            .basket-controls-wrapper {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+                display: block !important;
             }
             
-            .search-controls,
-            .basket-controls {
+            /* Show only Item Search on mobile */
+            #basketBuilderSection {
+                display: none !important;
+            }
+
+            /* Simplified mobile search */
+            .search-controls-wrapper {
+                display: block;
+                margin-bottom: 1rem;
+            }
+            
+            .search-controls {
                 padding: 1rem;
             }
             
-            .control-row {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+            /* Hide store selector and chart controls on mobile */
+            .control-group:has(#searchStore),
+            .control-group:has(#startMonth),
+            .logo-box,
+            .last-update-date {
+                display: none !important;
+            }
+            
+            /* Make item search prominent */
+            .control-group:has(#searchItem) {
+                margin-bottom: 0;
             }
 
             .control-group label {
-                font-size: 0.9rem;
-            }
-
-            .control-group label[for="searchStore"],
-            .control-group label[for="basketStore"],
-            .control-group label[for="searchItem"],
-            .control-group label[for="basketItem"],
-            .control-group label[for="basketQuantity"],
-            .control-group label[for="startMonth"] {
                 font-size: 1rem;
+                margin-bottom: 0.5rem;
             }
 
-            .basket-add-row {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 0.75rem;
+            .control-group label[for="searchItem"] {
+                font-size: 1.2rem;
+                font-weight: 600;
             }
             
-            .basket-add-row select,
-            .basket-add-row button {
-                width: 100% !important;
-                height: 42px !important;
-                padding: 0 1rem !important;
-                font-size: 0.9rem !important;
+            #searchItem {
+                font-size: 1rem;
+                padding: 1rem;
+                border-radius: 8px;
+            }
+
+            /* Autocomplete suggestions mobile styling */
+            .suggestions-list {
+                max-height: 50vh;
+                border-radius: 8px;
+            }
+
+            /* Mobile-optimized chart view */
+            #chartContainer {
+                margin-top: 1rem;
             }
             
-            .basket-add-row .control-group {
-                width: 100% !important;
+            #chartContainer > div {
+                height: 300px !important;
             }
-
-            .basket-results {
-                grid-template-columns: 1fr;
-                justify-content: stretch;
-            }
-
-            .basket-items {
-                max-width: 100%;
-                min-height: 300px;
-            }
-
-            .basket-item {
-                padding: 0.75rem;
-            }
-
-            .basket-item-name {
-                font-size: 0.9rem;
-            }
-
-            .basket-item-controls {
-                gap: 0.5rem;
-            }
-
-            .btn-remove {
-                font-size: 1rem;
-                padding: 0.25rem;
-            }
-
-            .historical-receipt {
-                min-width: auto;
-                padding: 1rem;
-            }
-
-            .receipt-item {
-                font-size: 0.85rem;
-            }
-
-            .attribution-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .attribution-item-name {
-                font-size: 0.85rem;
-            }
-
-            .attribution-item-bar-container {
-                width: 100%;
-            }
-
-            .attribution-item-change {
-                width: 100%;
-                text-align: left;
-            }
-
-            .basket-attribution {
-                padding: 1rem;
-            }
-
-            #attributionChart {
-                max-height: 300px;
-            }
-
-            .logo-box {
-                min-height: 120px;
-                padding: 1rem;
-            }
-
-            .logo-box img {
-                max-width: 150px;
-            }
-
+            
+            /* Simplified overlay for mobile */
             .overlay-container {
-                padding: 1rem;
+                padding: 0.75rem;
+                margin-bottom: 1rem;
             }
 
             .overlay-list {
@@ -963,13 +905,20 @@
 
             .overlay-item {
                 padding: 0.75rem;
-                font-size: 0.9rem;
+                font-size: 0.95rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .overlay-item-text {
+                flex: 1;
             }
 
-            .btn-primary,
-            .btn-secondary {
-                padding: 0.6rem 1.5rem;
-                font-size: 0.9rem;
+            .btn-remove {
+                font-size: 1.2rem;
+                padding: 0.25rem 0.5rem;
+                margin-left: 0.5rem;
             }
 
             .suggestion-item {
@@ -977,18 +926,21 @@
             }
 
             .suggestion-title {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
+                font-weight: 600;
             }
 
             .suggestion-meta {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
+                margin-top: 0.25rem;
             }
-
-            .last-update-date {
-                position: static;
-                margin-top: 1rem;
-                font-size: 0.75rem;
-                text-align: center;
+            
+            /* Mobile price snapshot */
+            .overlay-item-text strong {
+                display: block;
+                font-size: 1.1rem;
+                margin-bottom: 0.25rem;
+                color: #d41e36;
             }
 
             /* Hide ticker on mobile */
