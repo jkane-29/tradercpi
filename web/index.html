@@ -1484,10 +1484,13 @@
                     data: prices,
                 borderColor: data.color,
                 backgroundColor: data.color + '20',
-                borderWidth: 2,
+                borderWidth: 3,
                 tension: 0.4,
-                pointRadius: 4,
-                    pointHoverRadius: 6,
+                pointRadius: 0,
+                    pointHoverRadius: 8,
+                    pointHoverBorderWidth: 3,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: data.color,
                     spanGaps: true, // Connect across null values
                     startIndex: startIndex
                 };
@@ -1546,6 +1549,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -1560,8 +1567,25 @@
                             }
                         },
                         tooltip: {
+                            enabled: true,
                             mode: 'index',
                             intersect: false,
+                            position: 'nearest',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            borderWidth: 1,
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            titleFont: {
+                                size: 13,
+                                weight: 'normal'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
@@ -1585,10 +1609,42 @@
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
                                 },
-                                maxTicksLimit: 15
+                                maxTicksLimit: 15,
+                                color: '#999',
+                                font: {
+                                    size: 11
+                                }
                             },
-                            grace: '5%'
+                            grace: '5%',
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#999',
+                                font: {
+                                    size: 11
+                                },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 20
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
                         }
+                    },
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    hover: {
+                        mode: 'index',
+                        intersect: false
                     }
                 }
             });
@@ -1922,21 +1978,47 @@
                         data: displayTotals,
                         borderColor: '#d41e36',
                         backgroundColor: '#d41e36' + '20',
-                        borderWidth: 2,
+                        borderWidth: 3,
                         tension: 0.4,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
+                        pointRadius: 0,
+                        pointHoverRadius: 8,
+                        pointHoverBorderWidth: 3,
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#d41e36',
                         spanGaps: true
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            borderWidth: 1,
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            titleFont: {
+                                size: 13,
+                                weight: 'normal'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            displayColors: false,
                             callbacks: {
                                 label: function(context) {
                                     return 'Total: $' + context.parsed.y.toFixed(2);
@@ -1950,9 +2032,41 @@
                             ticks: {
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
+                                },
+                                color: '#999',
+                                font: {
+                                    size: 11
                                 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#999',
+                                font: {
+                                    size: 11
+                                },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 20
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
                             }
                         }
+                    },
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    hover: {
+                        mode: 'index',
+                        intersect: false
                     }
                 }
             });

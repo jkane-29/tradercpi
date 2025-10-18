@@ -369,6 +369,38 @@
             gap: 1rem;
         }
 
+        /* Time period buttons */
+        .time-period-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        #timePeriodButtons .time-period-btn {
+            background: white;
+            color: #666;
+            border: 2px solid #e9ecef;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        #timePeriodButtons .time-period-btn:hover {
+            border-color: #d41e36;
+            color: #d41e36;
+        }
+
+        #timePeriodButtons .time-period-btn.active {
+            background: #d41e36;
+            color: white;
+            border-color: #d41e36;
+        }
+
         /* Chart Container */
         .chart-container {
             background: white;
@@ -914,6 +946,11 @@
                 height: 400px !important;
             }
             
+            /* Hide desktop time period buttons on mobile */
+            #timePeriodButtons {
+                display: none !important;
+            }
+            
             /* Mobile time period selector */
             .mobile-chart-controls {
                 display: flex !important;
@@ -1084,17 +1121,22 @@
             <div class="chart-container" id="chartContainer" style="display: none;">
                 <!-- Mobile Time Period Selector -->
                 <div class="mobile-chart-controls" style="display: none;">
-                    <button class="time-period-btn" data-period="1" onclick="setMobileTimePeriod(1)">1M</button>
                     <button class="time-period-btn" data-period="3" onclick="setMobileTimePeriod(3)">3M</button>
                     <button class="time-period-btn" data-period="6" onclick="setMobileTimePeriod(6)">6M</button>
-                    <button class="time-period-btn active" data-period="12" onclick="setMobileTimePeriod(12)">1Y</button>
-                    <button class="time-period-btn" data-period="all" onclick="setMobileTimePeriod('all')">ALL</button>
+                    <button class="time-period-btn" data-period="12" onclick="setMobileTimePeriod(12)">1Y</button>
+                    <button class="time-period-btn active" data-period="all" onclick="setMobileTimePeriod('all')">ALL</button>
                 </div>
                 
                 <div id="chartContent">
                     <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; font-weight: 600;">Price History</h3>
-                        <div style="height: 400px; position: relative;">
+                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
+                        <div class="time-period-buttons" id="timePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
+                            <button class="time-period-btn" onclick="setTimePeriod(3)">3M</button>
+                            <button class="time-period-btn" onclick="setTimePeriod(6)">6M</button>
+                            <button class="time-period-btn" onclick="setTimePeriod(12)">1Y</button>
+                            <button class="time-period-btn active" onclick="setTimePeriod('all')">ALL</button>
+                        </div>
+                        <div style="height: calc(100vh - 350px); min-height: 600px; position: relative;">
                             <canvas id="priceChart"></canvas>
                         </div>
                     </div>
@@ -1196,7 +1238,8 @@
         let priceChart = null;
         let basketTotalChart = null;
         let overlayData = [];
-        let mobileTimePeriod = 12; // Default to 1 year
+        let mobileTimePeriod = 'all'; // Default to all
+        let timePeriodMonths = 'all'; // Desktop time period
         let basketItems = [];
         let selectedStartMonthIndex = 0; // Index in the months array where charts end (defaults to most recent)
 
@@ -1589,6 +1632,7 @@
 
         function setMobileTimePeriod(period) {
             mobileTimePeriod = period;
+            timePeriodMonths = period; // Sync desktop period
             
             // Update button states
             document.querySelectorAll('.time-period-btn').forEach(btn => {
@@ -1597,6 +1641,20 @@
             document.querySelector(`[data-period="${period}"]`).classList.add('active');
             
             // Re-render chart with new period
+            renderChart();
+        }
+
+        function setTimePeriod(months) {
+            timePeriodMonths = months;
+            mobileTimePeriod = months; // Sync mobile period
+            
+            // Update button states for desktop
+            document.querySelectorAll('#timePeriodButtons .time-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Re-render chart
             renderChart();
         }
 
@@ -1649,10 +1707,13 @@
                     data: prices,
                 borderColor: data.color,
                 backgroundColor: data.color + '20',
-                borderWidth: 2,
+                borderWidth: 3,
                 tension: 0.4,
-                pointRadius: 4,
-                    pointHoverRadius: 6,
+                pointRadius: 0,
+                    pointHoverRadius: 8,
+                    pointHoverBorderWidth: 3,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: data.color,
                     spanGaps: true, // Connect across null values
                     startIndex: startIndex
                 };
@@ -1666,12 +1727,14 @@
             let endIndex = selectedStartMonthIndex + 1; // +1 because slice is exclusive at end
             
             // Apply trimming from start (if in full history mode) and up to end date
-            let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            let trimStartIndex = 0;
             
-            // Mobile time period adjustment
-            if (window.innerWidth <= 768 && mobileTimePeriod !== 'all') {
-                const monthsToShow = mobileTimePeriod;
-                trimStartIndex = Math.max(0, endIndex - monthsToShow);
+            // Time period adjustment (both desktop and mobile)
+            if (timePeriodMonths === 'all') {
+                trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            } else {
+                // Start from N months before the end
+                trimStartIndex = Math.max(0, currentMonths.length - timePeriodMonths);
             }
             
             if (endIndex < currentMonths.length || trimStartIndex > 0) {
@@ -1711,7 +1774,11 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -1726,8 +1793,25 @@
                             }
                         },
                         tooltip: {
+                            enabled: true,
                             mode: 'index',
                             intersect: false,
+                            position: 'nearest',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            borderWidth: 1,
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            titleFont: {
+                                size: 13,
+                                weight: 'normal'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
@@ -1750,9 +1834,43 @@
                             ticks: {
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
+                                },
+                                maxTicksLimit: 15,
+                                color: '#999',
+                                font: {
+                                    size: 11
                                 }
+                            },
+                            grace: '5%',
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#999',
+                                font: {
+                                    size: 11
+                                },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 20
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
                             }
                         }
+                    },
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    hover: {
+                        mode: 'index',
+                        intersect: false
                     }
                 }
             });
@@ -2063,21 +2181,47 @@
                         data: basketTotals,
                         borderColor: '#d41e36',
                         backgroundColor: '#d41e36' + '20',
-                        borderWidth: 2,
+                        borderWidth: 3,
                         tension: 0.4,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
+                        pointRadius: 0,
+                        pointHoverRadius: 8,
+                        pointHoverBorderWidth: 3,
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#d41e36',
                         spanGaps: true
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            position: 'nearest',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            borderColor: 'rgba(255, 255, 255, 0.3)',
+                            borderWidth: 1,
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            titleFont: {
+                                size: 13,
+                                weight: 'normal'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            displayColors: false,
                             callbacks: {
                                 label: function(context) {
                                     return 'Total: $' + context.parsed.y.toFixed(2);
@@ -2091,9 +2235,41 @@
                             ticks: {
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
+                                },
+                                color: '#999',
+                                font: {
+                                    size: 11
                                 }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#999',
+                                font: {
+                                    size: 11
+                                },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 20
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
                             }
                         }
+                    },
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    hover: {
+                        mode: 'index',
+                        intersect: false
                     }
                 }
             });
