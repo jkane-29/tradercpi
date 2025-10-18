@@ -413,11 +413,6 @@
             border-color: #d41e36;
         }
 
-        /* Hide time period buttons in chart area */
-        #timePeriodButtons {
-            display: none !important;
-        }
-
         /* Chart Container */
         .chart-container {
             background: white;
@@ -1083,11 +1078,6 @@
                 touch-action: pan-y; /* Allow vertical scrolling */
             }
             
-            /* Hide desktop time period buttons on mobile */
-            #timePeriodButtons {
-                display: none !important;
-            }
-            
             /* Show mobile price display */
             #mobilePriceDisplay {
                 display: block !important;
@@ -1260,6 +1250,14 @@
                 display: none !important;
             }
             
+            /* Hide chart container, overlay list, and basket builder on mobile */
+            #chartContainer,
+            #overlayList,
+            #basketBuilderSection,
+            #basketBuilderTab {
+                display: none !important;
+            }
+            
             /* Mobile Basket Builder */
             .basket-controls-wrapper {
                 display: block;
@@ -1365,7 +1363,7 @@
         <!-- Navigation -->
         <nav class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
-            <button class="nav-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
+            <button class="nav-tab" id="basketBuilderTab" onclick="switchTab('basketBuilder')">Basket Builder</button>
         </nav>
 
         <!-- Item Search Section -->
@@ -1427,12 +1425,6 @@
                 <div id="chartContent">
                     <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                         <h3 style="font-family: 'Trader Joes', cursive; font-size: 1.3rem; color: #d41e36; margin-bottom: 1rem; font-weight: normal;">Price History</h3>
-                        <div class="time-period-buttons" id="timePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
-                            <button class="time-period-btn" onclick="setTimePeriod(3)">3M</button>
-                            <button class="time-period-btn" onclick="setTimePeriod(6)">6M</button>
-                            <button class="time-period-btn" onclick="setTimePeriod(12)">1Y</button>
-                            <button class="time-period-btn active" onclick="setTimePeriod('all')">ALL</button>
-                        </div>
                         <!-- Mobile price display -->
                         <div id="mobilePriceDisplay" style="display: none; text-align: center; margin-bottom: 0.5rem; min-height: 2rem;">
                             <span id="mobilePriceValue" style="font-size: 1.5rem; font-weight: bold; color: #d41e36;"></span>
@@ -1951,16 +1943,10 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            // Preserve the desktop time period buttons and rebuild chart content
+            // Rebuild chart content
             document.getElementById('chartContent').innerHTML = `
                 <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                     <h3 style="font-family: 'Trader Joes', cursive; font-size: 1.3rem; color: #d41e36; margin-bottom: 1rem; font-weight: normal;">Price History</h3>
-                    <div class="time-period-buttons" id="timePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
-                        <button class="time-period-btn ${timePeriodMonths === 3 ? 'active' : ''}" onclick="setTimePeriod(3)">3M</button>
-                        <button class="time-period-btn ${timePeriodMonths === 6 ? 'active' : ''}" onclick="setTimePeriod(6)">6M</button>
-                        <button class="time-period-btn ${timePeriodMonths === 12 ? 'active' : ''}" onclick="setTimePeriod(12)">1Y</button>
-                        <button class="time-period-btn ${timePeriodMonths === 'all' ? 'active' : ''}" onclick="setTimePeriod('all')">ALL</button>
-                    </div>
                     <!-- Price Summary -->
                     <div id="priceSummary" style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #fef5f5; border-radius: 6px; border: 1px solid #fdd; display: none;">
                     </div>
