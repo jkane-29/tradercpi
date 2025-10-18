@@ -1012,6 +1012,26 @@
                 padding: 0.5rem 1rem !important;
             }
             
+            /* Mobile price summary */
+            #priceSummary {
+                padding: 0.5rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            #priceSummary > div {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            
+            #priceSummary > div > div:nth-child(2),
+            #priceSummary > div > div:nth-child(4) {
+                display: none !important;
+            }
+            
+            #priceSummary span {
+                font-size: 0.85rem !important;
+            }
+            
             /* Mobile time period selector */
             .mobile-chart-controls {
                 display: flex !important;
@@ -1734,6 +1754,9 @@
                         <button class="time-period-btn ${timePeriodMonths === 12 ? 'active' : ''}" onclick="setTimePeriod(12)">1Y</button>
                         <button class="time-period-btn ${timePeriodMonths === 'all' ? 'active' : ''}" onclick="setTimePeriod('all')">ALL</button>
                     </div>
+                    <!-- Price Summary -->
+                    <div id="priceSummary" style="text-align: center; margin-bottom: 1rem; padding: 0.75rem; background: #fef5f5; border-radius: 6px; border: 1px solid #fdd; display: none;">
+                    </div>
                     <!-- Mobile price display -->
                     <div id="mobilePriceDisplay" style="display: none; text-align: center; margin-bottom: 0.5rem; min-height: 2rem;">
                         <span id="mobilePriceValue" style="font-size: 1.5rem; font-weight: bold; color: #d41e36;"></span>
@@ -1821,6 +1844,57 @@
                 datasets.forEach(dataset => {
                     dataset.data = dataset.data.slice(trimStartIndex, endIndex);
                 });
+            }
+            
+            // Calculate and display price summary for single item view
+            if (overlayData.length === 1) {
+                const dataset = datasets[0];
+                const trimmedData = dataset.data;
+                
+                // Find first and last non-null prices
+                let startPrice = null;
+                let endPrice = null;
+                
+                for (let i = 0; i < trimmedData.length; i++) {
+                    if (trimmedData[i] !== null && startPrice === null) {
+                        startPrice = trimmedData[i];
+                    }
+                }
+                
+                for (let i = trimmedData.length - 1; i >= 0; i--) {
+                    if (trimmedData[i] !== null && endPrice === null) {
+                        endPrice = trimmedData[i];
+                        break;
+                    }
+                }
+                
+                if (startPrice !== null && endPrice !== null) {
+                    const change = endPrice - startPrice;
+                    const percentChange = ((change / startPrice) * 100).toFixed(1);
+                    const changeColor = change >= 0 ? '#d41e36' : '#000';
+                    const changeSymbol = change >= 0 ? '+' : '';
+                    
+                    const priceSummary = document.getElementById('priceSummary');
+                    priceSummary.style.display = 'block';
+                    priceSummary.innerHTML = `
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                            <div>
+                                <span style="font-size: 0.85rem; color: #666;">Period Start:</span>
+                                <span style="font-size: 1.1rem; font-weight: 600; color: #333; margin-left: 0.5rem;">$${startPrice.toFixed(2)}</span>
+                            </div>
+                            <div style="border-left: 2px solid #e9ecef; height: 30px;"></div>
+                            <div>
+                                <span style="font-size: 0.85rem; color: #666;">Period End:</span>
+                                <span style="font-size: 1.1rem; font-weight: 600; color: #333; margin-left: 0.5rem;">$${endPrice.toFixed(2)}</span>
+                            </div>
+                            <div style="border-left: 2px solid #e9ecef; height: 30px;"></div>
+                            <div>
+                                <span style="font-size: 0.85rem; color: #666;">Change:</span>
+                                <span style="font-size: 1.1rem; font-weight: 700; color: ${changeColor}; margin-left: 0.5rem;">${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${percentChange}%)</span>
+                            </div>
+                        </div>
+                    `;
+                }
             }
             
             // Find July, August, September 2025 indices for shading (after trimming)
