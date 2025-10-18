@@ -54,8 +54,8 @@
         }
         
         .logo img {
-            max-width: 300px;
-            width: 40%;
+            max-width: 600px;
+            width: 80%;
             height: auto;
             display: block;
         }
@@ -889,12 +889,48 @@
                 padding: 1rem;
             }
             
-            /* Hide store selector and chart controls on mobile */
-            .control-group:has(#searchStore),
+            /* Reorder controls on mobile - store first, then item search */
+            .search-controls .control-row {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .control-group:has(#searchStore) {
+                order: 1;
+            }
+            
+            .control-group:has(#searchItem) {
+                order: 2;
+            }
+            
+            .control-group:has(#startMonth) {
+                order: 3;
+            }
+            
+            /* Hide chart controls on mobile but keep store selector */
             .control-group:has(#startMonth),
             .logo-box,
             .last-update-date {
                 display: none !important;
+            }
+            
+            /* Show store selector on mobile */
+            .control-group:has(#searchStore) {
+                display: flex !important;
+                margin-bottom: 1rem;
+            }
+            
+            .control-group label[for="searchStore"] {
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+            
+            #searchStore {
+                font-size: 1rem;
+                padding: 1rem;
+                border-radius: 8px;
+                width: 100%;
             }
             
             /* Make item search prominent */
@@ -1649,7 +1685,26 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            document.getElementById('chartContent').innerHTML = '<div style="height: calc(100vh - 350px); min-height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
+            // Preserve the desktop time period buttons and rebuild chart content
+            document.getElementById('chartContent').innerHTML = `
+                <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
+                    <div class="time-period-buttons" id="timePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
+                        <button class="time-period-btn ${timePeriodMonths === 3 ? 'active' : ''}" onclick="setTimePeriod(3)">3M</button>
+                        <button class="time-period-btn ${timePeriodMonths === 6 ? 'active' : ''}" onclick="setTimePeriod(6)">6M</button>
+                        <button class="time-period-btn ${timePeriodMonths === 12 ? 'active' : ''}" onclick="setTimePeriod(12)">1Y</button>
+                        <button class="time-period-btn ${timePeriodMonths === 'all' ? 'active' : ''}" onclick="setTimePeriod('all')">ALL</button>
+                    </div>
+                    <!-- Mobile price display -->
+                    <div id="mobilePriceDisplay" style="display: none; text-align: center; margin-bottom: 0.5rem; min-height: 2rem;">
+                        <span id="mobilePriceValue" style="font-size: 1.5rem; font-weight: bold; color: #d41e36;"></span>
+                        <span id="mobilePriceDate" style="font-size: 0.9rem; color: #666; margin-left: 0.5rem;"></span>
+                    </div>
+                    <div style="height: 400px; position: relative;">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            `;
             
             const ctx = document.getElementById('priceChart').getContext('2d');
             
