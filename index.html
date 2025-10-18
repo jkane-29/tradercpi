@@ -377,28 +377,42 @@
             margin-bottom: 1rem;
         }
 
-        #timePeriodButtons .time-period-btn {
+        /* Desktop time period buttons in search controls */
+        .desktop-time-period-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .desktop-time-period-buttons .time-period-btn {
             background: white;
             color: #666;
             border: 2px solid #e9ecef;
-            padding: 0.5rem 1.25rem;
+            padding: 0.75rem;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        #timePeriodButtons .time-period-btn:hover {
+        .desktop-time-period-buttons .time-period-btn:hover {
             border-color: #d41e36;
             color: #d41e36;
+            background: #fdf2f4;
         }
 
-        #timePeriodButtons .time-period-btn.active {
+        .desktop-time-period-buttons .time-period-btn.active {
             background: #d41e36;
             color: white;
             border-color: #d41e36;
+        }
+
+        /* Hide time period buttons in chart area */
+        #timePeriodButtons {
+            display: none !important;
         }
 
         /* Chart Container */
@@ -909,6 +923,7 @@
             
             /* Hide chart controls on mobile but keep store selector */
             .control-group:has(#startMonth),
+            .control-group:has(#desktopTimePeriodButtons),
             .logo-box,
             .last-update-date {
                 display: none !important;
@@ -1143,6 +1158,15 @@
                             <select id="startMonth" onchange="updateChartEndMonth()">
                                 <!-- Options will be populated dynamically -->
                             </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Time Period</label>
+                            <div class="desktop-time-period-buttons" id="desktopTimePeriodButtons">
+                                <button class="time-period-btn" onclick="setTimePeriod(3)">3M</button>
+                                <button class="time-period-btn" onclick="setTimePeriod(6)">6M</button>
+                                <button class="time-period-btn" onclick="setTimePeriod(12)">1Y</button>
+                                <button class="time-period-btn active" onclick="setTimePeriod('all')">ALL</button>
+                            </div>
                         </div>
                     </div>
                     <div class="last-update-date">
@@ -1673,13 +1697,23 @@
             mobileTimePeriod = months; // Sync mobile period
             
             // Update button states for desktop
-            document.querySelectorAll('#timePeriodButtons .time-period-btn').forEach(btn => {
+            document.querySelectorAll('#desktopTimePeriodButtons .time-period-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
             
-            // Re-render chart
-            renderChart();
+            // Find and activate the button that matches the selected period
+            const buttons = document.querySelectorAll('#desktopTimePeriodButtons .time-period-btn');
+            buttons.forEach((btn, index) => {
+                const btnValue = index === 0 ? 3 : index === 1 ? 6 : index === 2 ? 12 : 'all';
+                if (btnValue === months) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Re-render chart if data exists
+            if (overlayData.length > 0) {
+                renderChart();
+            }
         }
 
         function renderChart() {
