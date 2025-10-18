@@ -118,7 +118,7 @@
         .content-section {
             display: none;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 2rem 0;
         }
 
         .content-section.active {
@@ -127,10 +127,11 @@
 
         /* Item Search */
         .search-controls-wrapper {
-            max-width: 1200px;
+            max-width: 100%;
             margin-bottom: 2rem;
             margin-left: auto;
             margin-right: auto;
+            padding: 0 2rem;
         }
 
         .search-controls {
@@ -139,6 +140,8 @@
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             position: relative;
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .last-update-date {
@@ -397,7 +400,7 @@
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-bottom: 2rem;
-            max-width: 1212px;
+            max-width: 100%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -410,7 +413,7 @@
         }
 
         #priceChart {
-            max-height: 600px;
+            height: 100%;
         }
 
         .chart-empty {
@@ -434,7 +437,7 @@
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            max-width: 1212px;
+            max-width: 100%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -844,6 +847,18 @@
                 padding: 1rem 1.5rem;
                 font-size: 1rem;
             }
+            
+            .time-period-buttons {
+                display: none !important;
+            }
+            
+            .search-controls-wrapper {
+                padding: 0 1rem;
+            }
+            
+            .chart-container {
+                padding: 1rem;
+            }
 
             .search-controls-wrapper,
             .basket-controls-wrapper {
@@ -960,7 +975,7 @@
                             <button class="time-period-btn" onclick="setTimePeriod(12)">1Y</button>
                             <button class="time-period-btn active" onclick="setTimePeriod('all')">ALL</button>
                         </div>
-                        <div style="height: 600px; position: relative;">
+                        <div style="height: calc(100vh - 350px); min-height: 600px; position: relative;">
                             <canvas id="priceChart"></canvas>
                         </div>
                     </div>
@@ -1426,7 +1441,7 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            document.getElementById('chartContent').innerHTML = '<div style="height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
+            document.getElementById('chartContent').innerHTML = '<div style="height: calc(100vh - 350px); min-height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
             const ctx = document.getElementById('priceChart').getContext('2d');
             
@@ -1530,7 +1545,7 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: true,
@@ -1569,8 +1584,10 @@
                             ticks: {
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
-                                }
-                            }
+                                },
+                                maxTicksLimit: 15
+                            },
+                            grace: '5%'
                         }
                     }
                 }
