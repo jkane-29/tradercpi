@@ -951,6 +951,11 @@
                 display: none !important;
             }
             
+            /* Show mobile price display */
+            #mobilePriceDisplay {
+                display: block !important;
+            }
+            
             /* Mobile time period selector */
             .mobile-chart-controls {
                 display: flex !important;
@@ -1135,6 +1140,11 @@
                             <button class="time-period-btn" onclick="setTimePeriod(6)">6M</button>
                             <button class="time-period-btn" onclick="setTimePeriod(12)">1Y</button>
                             <button class="time-period-btn active" onclick="setTimePeriod('all')">ALL</button>
+                        </div>
+                        <!-- Mobile price display -->
+                        <div id="mobilePriceDisplay" style="display: none; text-align: center; margin-bottom: 0.5rem; min-height: 2rem;">
+                            <span id="mobilePriceValue" style="font-size: 1.5rem; font-weight: bold; color: #d41e36;"></span>
+                            <span id="mobilePriceDate" style="font-size: 0.9rem; color: #666; margin-left: 0.5rem;"></span>
                         </div>
                         <div style="height: calc(100vh - 350px); min-height: 600px; position: relative;">
                             <canvas id="priceChart"></canvas>
@@ -1707,13 +1717,10 @@
                     data: prices,
                 borderColor: data.color,
                 backgroundColor: data.color + '20',
-                borderWidth: 3,
+                borderWidth: 2,
                 tension: 0.4,
-                pointRadius: 0,
-                    pointHoverRadius: 8,
-                    pointHoverBorderWidth: 3,
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: data.color,
+                pointRadius: 4,
+                    pointHoverRadius: 6,
                     spanGaps: true, // Connect across null values
                     startIndex: startIndex
                 };
@@ -1775,10 +1782,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -1793,25 +1796,9 @@
                             }
                         },
                         tooltip: {
-                            enabled: true,
+                            enabled: window.innerWidth > 768, // Disable on mobile
                             mode: 'index',
                             intersect: false,
-                            position: 'nearest',
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            borderColor: 'rgba(255, 255, 255, 0.3)',
-                            borderWidth: 1,
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            titleFont: {
-                                size: 13,
-                                weight: 'normal'
-                            },
-                            bodyFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
@@ -1834,43 +1821,33 @@
                             ticks: {
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
-                                },
-                                maxTicksLimit: 15,
-                                color: '#999',
-                                font: {
-                                    size: 11
                                 }
-                            },
-                            grace: '5%',
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)',
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#999',
-                                font: {
-                                    size: 11
-                                },
-                                maxRotation: 0,
-                                autoSkip: true,
-                                autoSkipPadding: 20
-                            },
-                            grid: {
-                                display: false,
-                                drawBorder: false
                             }
                         }
                     },
-                    elements: {
-                        line: {
-                            borderWidth: 3
+                    onHover: (event, activeElements) => {
+                        if (window.innerWidth <= 768 && activeElements.length > 0) {
+                            const datasetIndex = activeElements[0].datasetIndex;
+                            const index = activeElements[0].index;
+                            const dataset = priceChart.data.datasets[datasetIndex];
+                            const value = dataset.data[index];
+                            const label = priceChart.data.labels[index];
+                            
+                            const mobilePriceDisplay = document.getElementById('mobilePriceDisplay');
+                            const mobilePriceValue = document.getElementById('mobilePriceValue');
+                            const mobilePriceDate = document.getElementById('mobilePriceDate');
+                            
+                            if (mobilePriceDisplay && mobilePriceValue && mobilePriceDate) {
+                                mobilePriceDisplay.style.display = 'block';
+                                mobilePriceValue.textContent = '$' + value.toFixed(2);
+                                mobilePriceDate.textContent = label;
+                            }
+                        } else if (window.innerWidth <= 768 && activeElements.length === 0) {
+                            const mobilePriceDisplay = document.getElementById('mobilePriceDisplay');
+                            if (mobilePriceDisplay) {
+                                mobilePriceDisplay.style.display = 'none';
+                            }
                         }
-                    },
-                    hover: {
-                        mode: 'index',
-                        intersect: false
                     }
                 }
             });
@@ -2181,47 +2158,21 @@
                         data: basketTotals,
                         borderColor: '#d41e36',
                         backgroundColor: '#d41e36' + '20',
-                        borderWidth: 3,
+                        borderWidth: 2,
                         tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 8,
-                        pointHoverBorderWidth: 3,
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#d41e36',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                         spanGaps: true
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
                     plugins: {
                         legend: {
                             display: false
                         },
                         tooltip: {
-                            enabled: true,
-                            mode: 'index',
-                            intersect: false,
-                            position: 'nearest',
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            borderColor: 'rgba(255, 255, 255, 0.3)',
-                            borderWidth: 1,
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            titleFont: {
-                                size: 13,
-                                weight: 'normal'
-                            },
-                            bodyFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            displayColors: false,
                             callbacks: {
                                 label: function(context) {
                                     return 'Total: $' + context.parsed.y.toFixed(2);
@@ -2235,41 +2186,9 @@
                             ticks: {
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
-                                },
-                                color: '#999',
-                                font: {
-                                    size: 11
                                 }
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)',
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#999',
-                                font: {
-                                    size: 11
-                                },
-                                maxRotation: 0,
-                                autoSkip: true,
-                                autoSkipPadding: 20
-                            },
-                            grid: {
-                                display: false,
-                                drawBorder: false
                             }
                         }
-                    },
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
-                    },
-                    hover: {
-                        mode: 'index',
-                        intersect: false
                     }
                 }
             });

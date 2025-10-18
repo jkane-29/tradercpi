@@ -852,6 +852,11 @@
                 display: none !important;
             }
             
+            /* Show mobile price display */
+            #mobilePriceDisplay {
+                display: block !important;
+            }
+            
             .search-controls-wrapper {
                 padding: 0 1rem;
             }
@@ -974,6 +979,11 @@
                             <button class="time-period-btn" onclick="setTimePeriod(6)">6M</button>
                             <button class="time-period-btn" onclick="setTimePeriod(12)">1Y</button>
                             <button class="time-period-btn active" onclick="setTimePeriod('all')">ALL</button>
+                        </div>
+                        <!-- Mobile price display -->
+                        <div id="mobilePriceDisplay" style="display: none; text-align: center; margin-bottom: 0.5rem; min-height: 2rem;">
+                            <span id="mobilePriceValue" style="font-size: 1.5rem; font-weight: bold; color: #d41e36;"></span>
+                            <span id="mobilePriceDate" style="font-size: 0.9rem; color: #666; margin-left: 0.5rem;"></span>
                         </div>
                         <div style="height: calc(100vh - 350px); min-height: 600px; position: relative;">
                             <canvas id="priceChart"></canvas>
@@ -1567,25 +1577,9 @@
                             }
                         },
                         tooltip: {
-                            enabled: true,
+                            enabled: window.innerWidth > 768, // Disable on mobile
                             mode: 'index',
                             intersect: false,
-                            position: 'nearest',
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            borderColor: 'rgba(255, 255, 255, 0.3)',
-                            borderWidth: 1,
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            titleFont: {
-                                size: 13,
-                                weight: 'normal'
-                            },
-                            bodyFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
                                     return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
@@ -1645,6 +1639,30 @@
                     hover: {
                         mode: 'index',
                         intersect: false
+                    },
+                    onHover: (event, activeElements) => {
+                        if (window.innerWidth <= 768 && activeElements.length > 0) {
+                            const datasetIndex = activeElements[0].datasetIndex;
+                            const index = activeElements[0].index;
+                            const dataset = priceChart.data.datasets[datasetIndex];
+                            const value = dataset.data[index];
+                            const label = priceChart.data.labels[index];
+                            
+                            const mobilePriceDisplay = document.getElementById('mobilePriceDisplay');
+                            const mobilePriceValue = document.getElementById('mobilePriceValue');
+                            const mobilePriceDate = document.getElementById('mobilePriceDate');
+                            
+                            if (mobilePriceDisplay && mobilePriceValue && mobilePriceDate) {
+                                mobilePriceDisplay.style.display = 'block';
+                                mobilePriceValue.textContent = '$' + value.toFixed(2);
+                                mobilePriceDate.textContent = label;
+                            }
+                        } else if (window.innerWidth <= 768 && activeElements.length === 0) {
+                            const mobilePriceDisplay = document.getElementById('mobilePriceDisplay');
+                            if (mobilePriceDisplay) {
+                                mobilePriceDisplay.style.display = 'none';
+                            }
+                        }
                     }
                 }
             });
