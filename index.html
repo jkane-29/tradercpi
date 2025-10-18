@@ -1119,16 +1119,10 @@
 
             /* Robinhood-style mobile chart view */
             #chartContainer {
-                margin: 0 !important;
-                padding: 0 !important;
-                background: white !important;
-                border-radius: 0 !important;
-                display: block !important;
-                overflow: visible !important;
-            }
-            
-            #chartContainer.chart-container {
-                box-shadow: none !important;
+                margin: 0;
+                padding: 0;
+                background: white;
+                border-radius: 0;
             }
             
             #chartContainer #chartContent > div {
@@ -1143,38 +1137,13 @@
             
             #chartContainer #chartContent > div > div {
                 height: 350px !important;
-                min-height: 350px !important;
-                max-height: 350px !important;
                 padding: 0.5rem !important;
-            }
-            
-            /* Additional selector to ensure the canvas container gets proper height */
-            #chartContent div {
-                max-height: none;
-            }
-            
-            #chartContent > div > div:has(canvas) {
-                height: 350px !important;
-                min-height: 350px !important;
-                max-height: 350px !important;
-                overflow: visible !important;
             }
             
             /* Optimize chart canvas for mobile */
             #priceChart {
-                height: 100% !important;
-                width: 100% !important;
                 max-height: 350px !important;
                 touch-action: pan-y; /* Allow vertical scrolling */
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-            }
-            
-            /* Ensure chart content is visible */
-            #chartContent {
-                display: block !important;
-                visibility: visible !important;
             }
             
             /* Show mobile price display */
@@ -1533,7 +1502,7 @@
                             <span id="mobilePriceValue" style="font-size: 1.5rem; font-weight: bold; color: #d41e36;"></span>
                             <span id="mobilePriceDate" style="font-size: 0.9rem; color: #666; margin-left: 0.5rem;"></span>
                         </div>
-                        <div style="height: 400px; min-height: 400px; position: relative;">
+                        <div style="height: calc(100vh - 350px); min-height: 600px; position: relative;">
                             <canvas id="priceChart"></canvas>
                         </div>
                     </div>
