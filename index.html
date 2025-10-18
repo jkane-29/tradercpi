@@ -33,7 +33,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #bb3a39;
+            background: #d41e36;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -991,27 +991,9 @@
                 text-align: center;
             }
 
-            /* Ticker adjustments */
+            /* Hide ticker on mobile */
             .price-ticker {
-                padding: 0.5rem 0;
-            }
-
-            .ticker-item {
-                font-size: 0.8rem;
-                margin-right: 1.5rem;
-            }
-
-            .ticker-item-name {
-                font-size: 0.8rem;
-            }
-
-            .ticker-item-price {
-                font-size: 0.8rem;
-            }
-
-            .ticker-item-change {
-                font-size: 0.75rem;
-                padding: 0.15rem 0.4rem;
+                display: none !important;
             }
         }
     </style>
