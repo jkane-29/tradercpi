@@ -1109,10 +1109,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="button-group">
-                        <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">Show Full History</button>
-                    </div>
-                    
                     <div class="last-update-date">
                         Last Updated: <span id="lastUpdateDate">Loading...</span>
                     </div>
@@ -1194,7 +1190,6 @@
                                 </select>
                             </div>
                             <button class="btn-primary" onclick="loadCPIBasket()" style="height: 45px; padding: 0 2rem;">Load CPI Basket</button>
-                            <button id="toggleBasketHistoryBtn" class="btn-secondary" onclick="toggleBasketHistoryView()" style="display: none; height: 45px; padding: 0 2rem;">Show Full History</button>
                         </div>
                     </div>
                 </div>
@@ -1218,6 +1213,13 @@
                 </div>
 
                 <div class="attribution-section" id="basketChartSection" style="display: none;">
+                    <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600; text-align: center;">Basket Total Over Time</h3>
+                    <div class="time-period-buttons" id="basketTimePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
+                        <button class="time-period-btn" onclick="setBasketTimePeriod(3)">3M</button>
+                        <button class="time-period-btn" onclick="setBasketTimePeriod(6)">6M</button>
+                        <button class="time-period-btn" onclick="setBasketTimePeriod(12)">1Y</button>
+                        <button class="time-period-btn active" onclick="setBasketTimePeriod('all')">ALL</button>
+                    </div>
                     <div style="height: 400px; width: 100%; position: relative;">
                         <canvas id="basketTotalChart" style="max-height: 400px;"></canvas>
                     </div>
@@ -1560,11 +1562,6 @@
             // Show chart container
             document.getElementById('chartContainer').style.display = 'block';
             
-            // Reset to 1 year view
-            showFullHistory = false;
-            const btn = document.getElementById('toggleHistoryBtn');
-            btn.textContent = 'Show Full History';
-            
             // Clear previous chart
             overlayData = [{
                 store: store,
@@ -1610,7 +1607,6 @@
             overlayData.splice(index, 1);
             if (overlayData.length === 0) {
                 document.getElementById('overlayList').style.display = 'none';
-                document.getElementById('toggleHistoryBtn').style.display = 'none';
                 document.getElementById('chartContainer').style.display = 'none';
                 if (priceChart) {
                     priceChart.destroy();
@@ -1620,24 +1616,6 @@
                 renderChart();
                 updateOverlayList();
             }
-        }
-
-        function toggleHistoryView() {
-            showFullHistory = !showFullHistory;
-            const btn = document.getElementById('toggleHistoryBtn');
-            btn.textContent = showFullHistory ? 'Show Last Year' : 'Show Full History';
-            
-            // Repopulate the start month dropdown with new date range
-            populateStartMonthDropdown();
-            
-            renderChart();
-        }
-
-        function toggleBasketHistoryView() {
-            showBasketFullHistory = !showBasketFullHistory;
-            const btn = document.getElementById('toggleBasketHistoryBtn');
-            btn.textContent = showBasketFullHistory ? 'Show Last Year' : 'Show Full History';
-            renderBasketTotalChart();
         }
 
         function setMobileTimePeriod(period) {
@@ -1671,10 +1649,7 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            // Show the toggle button
-            document.getElementById('toggleHistoryBtn').style.display = 'block';
-            
-            document.getElementById('chartContent').innerHTML = '<div style="height: 400px; position: relative;"><canvas id="priceChart"></canvas></div>';
+            document.getElementById('chartContent').innerHTML = '<div style="height: calc(100vh - 350px); min-height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
             const ctx = document.getElementById('priceChart').getContext('2d');
             
@@ -2103,12 +2078,26 @@
             renderBasketTotalChart();
         }
 
+        let basketTimePeriodMonths = 'all'; // Current time period for basket chart
+        
+        function setBasketTimePeriod(months) {
+            basketTimePeriodMonths = months;
+            
+            // Update button states
+            document.querySelectorAll('#basketTimePeriodButtons .time-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Re-render chart
+            renderBasketTotalChart();
+        }
+        
         function renderBasketTotalChart() {
             const basketChartSection = document.getElementById('basketChartSection');
             
             if (basketItems.length === 0) {
                 basketChartSection.style.display = 'none';
-                document.getElementById('toggleBasketHistoryBtn').style.display = 'none';
                 if (basketTotalChart) {
                     basketTotalChart.destroy();
                     basketTotalChart = null;
@@ -2117,7 +2106,6 @@
             }
             
             basketChartSection.style.display = 'block';
-            document.getElementById('toggleBasketHistoryBtn').style.display = 'block';
             
             // Get appropriate data based on view mode
             const currentMonths = showBasketFullHistory ? getMonthLabels(true) : months;
@@ -2142,6 +2130,16 @@
                 basketTotals.push(hasData ? monthTotal : null);
             }
             
+            // Apply time period filter
+            let displayMonths = currentMonths;
+            let displayTotals = basketTotals;
+            
+            if (basketTimePeriodMonths !== 'all') {
+                const startIndex = Math.max(0, currentMonths.length - basketTimePeriodMonths);
+                displayMonths = currentMonths.slice(startIndex);
+                displayTotals = basketTotals.slice(startIndex);
+            }
+            
             // Destroy existing chart if it exists
             if (basketTotalChart) {
                 basketTotalChart.destroy();
@@ -2152,10 +2150,10 @@
             basketTotalChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: currentMonths,
+                    labels: displayMonths,
                     datasets: [{
                         label: 'Total Basket Cost',
-                        data: basketTotals,
+                        data: displayTotals,
                         borderColor: '#d41e36',
                         backgroundColor: '#d41e36' + '20',
                         borderWidth: 2,
