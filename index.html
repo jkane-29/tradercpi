@@ -93,6 +93,17 @@
             margin: 0;
         }
 
+        /* Desktop optimizations for full screen */
+        @media (min-width: 1024px) {
+            .app-header {
+                padding: 0.8rem 2rem;
+            }
+
+            .app-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
         /* Navigation */
         .nav-tabs {
             background: white;
@@ -124,6 +135,13 @@
             border-bottom-color: #d41e36;
         }
 
+        @media (min-width: 1024px) {
+            .nav-tab {
+                padding: 0.8rem 3rem;
+                font-size: 1rem;
+            }
+        }
+
         /* Content Sections */
         .content-section {
             display: none;
@@ -135,6 +153,12 @@
             display: block;
         }
 
+        @media (min-width: 1024px) {
+            .content-section {
+                padding: 2rem 2rem;
+            }
+        }
+
         /* Item Search */
         .search-controls-wrapper {
             display: grid;
@@ -144,6 +168,13 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        @media (min-width: 1024px) {
+            .search-controls-wrapper {
+                max-width: 90vw;
+                grid-template-columns: 1fr 400px;
+            }
         }
 
         .search-controls {
@@ -425,6 +456,12 @@
             margin-right: auto;
         }
 
+        @media (min-width: 1024px) {
+            .chart-container {
+                max-width: 90vw;
+            }
+        }
+
         .chart-container h3 {
             font-size: 1.3rem;
             color: #333;
@@ -434,6 +471,12 @@
 
         #priceChart {
             max-height: 400px;
+        }
+
+        @media (min-width: 1024px) {
+            #priceChart {
+                max-height: 500px;
+            }
         }
 
         .chart-empty {
@@ -460,6 +503,12 @@
             max-width: 1212px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        @media (min-width: 1024px) {
+            .overlay-list {
+                max-width: 90vw;
+            }
         }
 
         .overlay-list h3 {
@@ -527,6 +576,13 @@
             margin-right: auto;
         }
 
+        @media (min-width: 1024px) {
+            .basket-controls-wrapper {
+                max-width: 90vw;
+                grid-template-columns: 1fr 400px;
+            }
+        }
+
         .basket-controls {
             background: white;
             border-radius: 8px;
@@ -556,6 +612,12 @@
             margin-right: auto;
         }
 
+        @media (min-width: 1024px) {
+            .basket-results {
+                max-width: 90vw;
+            }
+        }
+
         .basket-attribution {
             background: white;
             border-radius: 8px;
@@ -572,6 +634,12 @@
 
         #attributionChart {
             max-height: 350px;
+        }
+
+        @media (min-width: 1024px) {
+            #attributionChart {
+                max-height: 450px;
+            }
         }
 
         .basket-items {
