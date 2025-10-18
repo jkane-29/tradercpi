@@ -202,7 +202,8 @@
         .control-group label[for="searchItem"],
         .control-group label[for="basketItem"],
         .control-group label[for="basketQuantity"],
-        .control-group label[for="startMonth"] {
+        .control-group label[for="startMonth"],
+        .control-group label:has(+ #desktopTimePeriodButtons) {
             font-family: 'Trader Joes', cursive;
             font-weight: normal;
             font-size: 1.1rem;
@@ -1194,7 +1195,7 @@
                 
                 <div id="chartContent">
                     <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                        <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
+                        <h3 style="font-family: 'Trader Joes', cursive; font-size: 1.3rem; color: #d41e36; margin-bottom: 1rem; font-weight: normal;">Price History</h3>
                         <div class="time-period-buttons" id="timePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
                             <button class="time-period-btn" onclick="setTimePeriod(3)">3M</button>
                             <button class="time-period-btn" onclick="setTimePeriod(6)">6M</button>
@@ -1726,7 +1727,7 @@
             // Preserve the desktop time period buttons and rebuild chart content
             document.getElementById('chartContent').innerHTML = `
                 <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                    <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1rem; font-weight: 600;">Price History</h3>
+                    <h3 style="font-family: 'Trader Joes', cursive; font-size: 1.3rem; color: #d41e36; margin-bottom: 1rem; font-weight: normal;">Price History</h3>
                     <div class="time-period-buttons" id="timePeriodButtons" style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
                         <button class="time-period-btn ${timePeriodMonths === 3 ? 'active' : ''}" onclick="setTimePeriod(3)">3M</button>
                         <button class="time-period-btn ${timePeriodMonths === 6 ? 'active' : ''}" onclick="setTimePeriod(6)">6M</button>
