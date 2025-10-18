@@ -892,41 +892,101 @@
                 border-radius: 8px;
             }
 
-            /* Mobile-optimized chart view */
+            /* Robinhood-style mobile chart view */
             #chartContainer {
-                margin-top: 1rem;
+                margin: 0;
+                padding: 0;
+                background: white;
+                border-radius: 0;
             }
             
-            #chartContainer > div {
-                height: 300px !important;
+            #chartContainer #chartContent > div {
+                padding: 1rem !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
             }
             
-            /* Simplified overlay for mobile */
+            #chartContainer #chartContent > div > h3 {
+                display: none !important;
+            }
+            
+            #chartContainer #chartContent > div > div {
+                height: 400px !important;
+            }
+            
+            /* Mobile time period selector */
+            .mobile-chart-controls {
+                display: flex !important;
+                justify-content: space-around;
+                padding: 1rem;
+                background: white;
+                border-bottom: 1px solid #e9ecef;
+                gap: 0.5rem;
+            }
+            
+            .time-period-btn {
+                flex: 1;
+                padding: 0.5rem 0.75rem;
+                background: transparent;
+                border: none;
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #666;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border-radius: 4px;
+            }
+            
+            .time-period-btn.active {
+                color: #bb3a39;
+                background: #fef5f5;
+            }
+            
+            .time-period-btn:hover {
+                background: #fdf2f4;
+            }
+            
+            /* Mobile item info display */
             .overlay-container {
-                padding: 0.75rem;
-                margin-bottom: 1rem;
+                background: white;
+                padding: 1rem;
+                border-bottom: 1px solid #e9ecef;
             }
 
             .overlay-list {
-                gap: 0.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
             }
 
             .overlay-item {
-                padding: 0.75rem;
-                font-size: 0.95rem;
+                padding: 0;
+                font-size: 1rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                background: transparent;
+                border: none;
+                box-shadow: none;
             }
             
             .overlay-item-text {
                 flex: 1;
             }
+            
+            .overlay-item-text strong {
+                display: block;
+                font-size: 1.1rem;
+                margin-bottom: 0.25rem;
+                color: #bb3a39;
+                font-family: 'Trader Joes', cursive;
+            }
 
             .btn-remove {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
                 padding: 0.25rem 0.5rem;
                 margin-left: 0.5rem;
+                color: #bb3a39;
             }
 
             .suggestion-item {
@@ -1022,6 +1082,15 @@
             </div>
             
             <div class="chart-container" id="chartContainer" style="display: none;">
+                <!-- Mobile Time Period Selector -->
+                <div class="mobile-chart-controls" style="display: none;">
+                    <button class="time-period-btn" data-period="1" onclick="setMobileTimePeriod(1)">1M</button>
+                    <button class="time-period-btn" data-period="3" onclick="setMobileTimePeriod(3)">3M</button>
+                    <button class="time-period-btn" data-period="6" onclick="setMobileTimePeriod(6)">6M</button>
+                    <button class="time-period-btn active" data-period="12" onclick="setMobileTimePeriod(12)">1Y</button>
+                    <button class="time-period-btn" data-period="all" onclick="setMobileTimePeriod('all')">ALL</button>
+                </div>
+                
                 <div id="chartContent">
                     <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                         <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; font-weight: 600;">Price History</h3>
@@ -1127,6 +1196,7 @@
         let priceChart = null;
         let basketTotalChart = null;
         let overlayData = [];
+        let mobileTimePeriod = 12; // Default to 1 year
         let basketItems = [];
         let selectedStartMonthIndex = 0; // Index in the months array where charts end (defaults to most recent)
 
@@ -1517,6 +1587,19 @@
             renderBasketTotalChart();
         }
 
+        function setMobileTimePeriod(period) {
+            mobileTimePeriod = period;
+            
+            // Update button states
+            document.querySelectorAll('.time-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-period="${period}"]`).classList.add('active');
+            
+            // Re-render chart with new period
+            renderChart();
+        }
+
         function renderChart() {
             if (overlayData.length === 0) return;
             
@@ -1584,6 +1667,12 @@
             
             // Apply trimming from start (if in full history mode) and up to end date
             let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            
+            // Mobile time period adjustment
+            if (window.innerWidth <= 768 && mobileTimePeriod !== 'all') {
+                const monthsToShow = mobileTimePeriod;
+                trimStartIndex = Math.max(0, endIndex - monthsToShow);
+            }
             
             if (endIndex < currentMonths.length || trimStartIndex > 0) {
                 chartLabels = currentMonths.slice(trimStartIndex, endIndex);
