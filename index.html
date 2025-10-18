@@ -54,8 +54,8 @@
         }
         
         .logo img {
-            max-width: 600px;
-            width: 80%;
+            max-width: 480px;
+            width: 64%;
             height: auto;
             display: block;
         }
@@ -984,7 +984,7 @@
             }
             
             #chartContainer #chartContent > div {
-                padding: 1rem !important;
+                padding: 0 !important;
                 box-shadow: none !important;
                 border-radius: 0 !important;
             }
@@ -995,6 +995,7 @@
             
             #chartContainer #chartContent > div > div {
                 height: 400px !important;
+                padding: 0.5rem !important;
             }
             
             /* Hide desktop time period buttons on mobile */
@@ -1005,13 +1006,16 @@
             /* Show mobile price display */
             #mobilePriceDisplay {
                 display: block !important;
+                margin-bottom: 0 !important;
+                min-height: 0 !important;
+                padding: 0.5rem 1rem !important;
             }
             
             /* Mobile time period selector */
             .mobile-chart-controls {
                 display: flex !important;
                 justify-content: space-around;
-                padding: 1rem;
+                padding: 0.5rem 1rem;
                 background: white;
                 border-bottom: 1px solid #e9ecef;
                 gap: 0.5rem;
