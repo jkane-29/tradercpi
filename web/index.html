@@ -386,7 +386,7 @@
         }
 
         #priceChart {
-            max-height: 400px;
+            max-height: 350px;
         }
 
         .chart-empty {
@@ -853,7 +853,7 @@
 
         /* Time Period Selector (Robinhood-style) */
         .time-period-selector {
-            display: none;
+            display: flex;
             background: white;
             padding: 0.75rem 1rem;
             border-top: 1px solid #f0f0f0;
@@ -1172,7 +1172,7 @@
                 <div id="chartContent">
                     <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                         <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; font-weight: 600;">Price History</h3>
-                        <div style="height: 400px; position: relative;">
+                        <div style="height: 350px; position: relative;">
                             <canvas id="priceChart"></canvas>
                         </div>
                     </div>
@@ -1788,7 +1788,7 @@
             // Show the toggle button
             document.getElementById('toggleHistoryBtn').style.display = 'block';
             
-            document.getElementById('chartContent').innerHTML = '<div style="height: 400px; position: relative;"><canvas id="priceChart"></canvas></div>';
+            document.getElementById('chartContent').innerHTML = '<div style="height: 350px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
             const ctx = document.getElementById('priceChart').getContext('2d');
             
