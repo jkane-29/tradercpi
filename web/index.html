@@ -814,33 +814,53 @@
             color: #666;
         }
 
-        /* Mobile Item Header (Robinhood-style) */
+        /* Item Header (Robinhood-style) - Mobile Only */
         .mobile-item-header {
             display: none;
             background: white;
-            padding: 1rem;
-            padding-top: 0.5rem;
+            padding: 1.5rem 2rem;
             border-bottom: 1px solid #f0f0f0;
         }
 
         .mobile-item-title {
             font-family: 'Trader Joes', cursive;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .item-stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .item-stat-box {
+            background: #fafafa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .item-stat-label {
+            font-size: 0.85rem;
+            color: #666;
             margin-bottom: 0.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .mobile-item-price {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 0.25rem;
         }
 
         .mobile-item-change {
-            font-size: 1rem;
-            font-weight: 500;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         .mobile-item-change.up {
@@ -955,13 +975,34 @@
                 display: none !important;
             }
 
-            /* Mobile item header - hidden by default, shown by JS when item selected */
+            /* Mobile item header - shown by JS when item selected */
             .mobile-item-header {
-                display: none !important;
+                padding: 1rem !important;
             }
-            
+
             .mobile-item-header.has-item {
                 display: block !important;
+            }
+
+            .mobile-item-title {
+                font-size: 1.4rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .item-stat-box {
+                padding: 0.75rem !important;
+            }
+
+            .item-stat-label {
+                font-size: 0.75rem !important;
+            }
+
+            .mobile-item-price {
+                font-size: 1.5rem !important;
+            }
+
+            .mobile-item-change {
+                font-size: 1.2rem !important;
             }
 
             /* Show time period selector on mobile */
@@ -1161,11 +1202,19 @@
                 </div>
             </div>
 
-            <!-- Mobile Item Header (Robinhood-style) -->
+            <!-- Item Header (Robinhood-style) -->
             <div class="mobile-item-header" id="mobileItemHeader">
                 <div class="mobile-item-title" id="mobileItemTitle">Select an item</div>
-                <div class="mobile-item-price" id="mobileItemPrice">--</div>
-                <div class="mobile-item-change" id="mobileItemChange">--</div>
+                <div class="item-stats-row">
+                    <div class="item-stat-box">
+                        <div class="item-stat-label">Current Price</div>
+                        <div class="mobile-item-price" id="mobileItemPrice">--</div>
+                    </div>
+                    <div class="item-stat-box">
+                        <div class="item-stat-label">Past Year Change</div>
+                        <div class="mobile-item-change" id="mobileItemChange">--</div>
+                    </div>
+                </div>
             </div>
             
             <div class="chart-container" id="chartContainer" style="display: none;">
@@ -1696,7 +1745,7 @@
             const prices = priceData[store][item];
             overlayData.push({ store, item, prices, color });
             
-            // Update mobile item header (only on mobile)
+            // Update item header (mobile only)
             if (isMobile) {
                 updateMobileItemHeader(store, item, prices);
             }
@@ -1710,7 +1759,7 @@
             const currentPrice = prices[prices.length - 1];
             const previousPrice = prices[0];
             const change = currentPrice - previousPrice;
-            const changePercent = ((change / previousPrice) * 100).toFixed(2);
+            const changePercent = ((change / previousPrice) * 100).toFixed(1);
             
             const titleEl = document.getElementById('mobileItemTitle');
             const priceEl = document.getElementById('mobileItemPrice');
@@ -1722,7 +1771,7 @@
             
             const changeClass = change >= 0 ? 'up' : 'down';
             const changeSymbol = change >= 0 ? '+' : '';
-            changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%) Past Year`;
+            changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%)`;
             changeEl.className = `mobile-item-change ${changeClass}`;
             
             headerEl.classList.add('has-item');
