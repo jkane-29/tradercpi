@@ -827,13 +827,18 @@
                 width: 70%;
             }
 
-            /* Header - match splash screen red color */
+            /* Header - match splash screen red color, compact on mobile */
             .app-header {
                 background: #bb3a39;
+                padding: 1rem;
             }
 
             .app-header h1 {
-                font-size: 1.8rem;
+                font-size: 1.2rem;
+                padding: 0 0.5rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             /* Hide bottom ticker on mobile */
@@ -841,15 +846,9 @@
                 display: none !important;
             }
 
-            /* Hide basket tab on mobile - only show search */
-            .nav-tab:last-child {
-                display: none;
-            }
-            
-            .nav-tab {
-                padding: 1rem 1.5rem;
-                font-size: 1rem;
-                flex: 1;
+            /* Hide all navigation tabs on mobile */
+            .nav-tabs {
+                display: none !important;
             }
 
             /* Hide basket section entirely on mobile */
@@ -867,8 +866,14 @@
                 display: none !important;
             }
 
-            /* Hide overlay list on mobile - only show mobile ticker */
+            /* Hide overlay list on mobile */
             .overlay-list {
+                display: none !important;
+            }
+
+            /* Hide button group and last update on mobile */
+            .button-group,
+            .last-update-date {
                 display: none !important;
             }
 
@@ -876,7 +881,18 @@
             .chart-container {
                 max-width: 100% !important;
                 width: 100% !important;
-                padding: 0.5rem !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            #chartContent {
+                padding: 0 !important;
+            }
+
+            #chartContent > div {
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                padding: 1rem !important;
             }
 
             #priceChart {
@@ -887,10 +903,31 @@
             .search-controls-wrapper,
             .basket-controls-wrapper {
                 grid-template-columns: 1fr;
+                padding: 0 !important;
+            }
+
+            .search-controls {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 1rem !important;
             }
             
             .control-row {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .control-group {
+                width: 100%;
+            }
+
+            .control-group label {
+                font-size: 0.9rem;
+            }
+
+            .control-group input,
+            .control-group select {
+                font-size: 0.95rem;
             }
 
             .basket-add-row {
