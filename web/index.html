@@ -809,10 +809,60 @@
             color: #666;
         }
 
+        /* Mobile Stock Ticker (Robinhood-style) */
+        .mobile-stock-ticker {
+            display: none;
+            position: sticky;
+            top: 64px;
+            background: white;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            z-index: 99;
+        }
+
+        .mobile-ticker-symbol {
+            font-family: 'Trader Joes', cursive;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .mobile-ticker-price {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .mobile-ticker-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .mobile-ticker-change.up {
+            color: #00C805;
+        }
+
+        .mobile-ticker-change.down {
+            color: #FF3B30;
+        }
+
         @media (max-width: 768px) {
-            /* Splash screen - smaller logo on mobile */
+            /* Splash screen - smaller logo on mobile (30% smaller) */
+            .splash-screen {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .splash-screen .logo {
+                text-align: center;
+            }
+
             .splash-screen .logo img {
-                max-width: 300px;
+                max-width: 210px;
+                width: 70%;
             }
 
             /* Header - match splash screen red color */
@@ -822,6 +872,16 @@
 
             .app-header h1 {
                 font-size: 1.8rem;
+            }
+
+            /* Show mobile stock ticker on mobile */
+            .mobile-stock-ticker {
+                display: block !important;
+            }
+
+            /* Hide bottom ticker on mobile */
+            .item-ticker {
+                display: none !important;
             }
 
             /* Hide basket tab on mobile - only show search */
@@ -842,6 +902,16 @@
 
             /* Hide logo box on mobile */
             .logo-box {
+                display: none !important;
+            }
+
+            /* Hide "Add to Graph" button on mobile - auto-add single item */
+            .add-btn {
+                display: none !important;
+            }
+
+            /* Hide overlay list on mobile - only show mobile ticker */
+            .overlay-list {
                 display: none !important;
             }
 
@@ -933,6 +1003,13 @@
             <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
             <button class="nav-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
         </nav>
+
+        <!-- Mobile Stock Ticker (Robinhood-style) -->
+        <div class="mobile-stock-ticker" id="mobileStockTicker" style="display: none;">
+            <div class="mobile-ticker-symbol" id="mobileTickerSymbol">Select an item</div>
+            <div class="mobile-ticker-price" id="mobileTickerPrice">--</div>
+            <div class="mobile-ticker-change" id="mobileTickerChange">--</div>
+        </div>
 
         <!-- Item Search Section -->
         <section class="content-section active" id="itemSearchSection">
@@ -1418,11 +1495,19 @@
                 return;
             }
             
-            // Check if already in overlay
-            const exists = overlayData.some(d => d.store === store && d.item === item);
-            if (exists) {
-                alert('This item/store combination is already in the comparison');
-                return;
+            // Mobile: Only allow 1 item, replace existing
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile && overlayData.length > 0) {
+                overlayData = []; // Clear existing items on mobile
+            }
+            
+            // Check if already in overlay (skip on mobile since we just cleared)
+            if (!isMobile) {
+                const exists = overlayData.some(d => d.store === store && d.item === item);
+                if (exists) {
+                    alert('This item/store combination is already in the comparison');
+                    return;
+                }
             }
             
             // Show chart container
@@ -1434,8 +1519,36 @@
             const prices = priceData[store][item];
             overlayData.push({ store, item, prices, color });
             
+            // Update mobile ticker
+            if (isMobile) {
+                updateMobileTicker(store, item, prices);
+            }
+            
             renderChart();
             updateOverlayList();
+        }
+
+        function updateMobileTicker(store, item, prices) {
+            const itemName = itemNames[item];
+            const currentPrice = prices[prices.length - 1];
+            const previousPrice = prices[0];
+            const change = currentPrice - previousPrice;
+            const changePercent = ((change / previousPrice) * 100).toFixed(2);
+            
+            const tickerSymbol = document.getElementById('mobileTickerSymbol');
+            const tickerPrice = document.getElementById('mobileTickerPrice');
+            const tickerChange = document.getElementById('mobileTickerChange');
+            const mobileStockTicker = document.getElementById('mobileStockTicker');
+            
+            tickerSymbol.textContent = itemName;
+            tickerPrice.textContent = `$${currentPrice.toFixed(2)}`;
+            
+            const changeClass = change >= 0 ? 'up' : 'down';
+            const changeSymbol = change >= 0 ? '+' : '';
+            tickerChange.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%)`;
+            tickerChange.className = `mobile-ticker-change ${changeClass}`;
+            
+            mobileStockTicker.style.display = 'block';
         }
 
         function removeFromOverlay(index) {
