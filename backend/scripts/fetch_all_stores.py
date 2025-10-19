@@ -2,6 +2,13 @@
 """
 Fetch products from ALL Trader Joe's stores
 Creates comprehensive multi-store dataset
+
+UPDATES (Oct 19, 2025):
+- Added Category 2 (Products root) to capture ALL products (~25k per store)
+- Filters out products with $0.00 prices (discontinued/unavailable items)
+- Enhanced anti-detection (headless=False, stealth mode, human-like headers)
+- Increased page size to 100 items (maximum allowed)
+- Result: ~20k-25k products per store vs previous ~3k
 """
 import asyncio
 import json
@@ -10,18 +17,20 @@ from datetime import datetime
 from playwright.async_api import async_playwright
 from playwright_stealth import Stealth
 
-# Known valid store codes (from old data)
+# Known valid store codes (verified working Oct 19, 2025)
 STORES = {
     "31": "New York, NY - Union Square",
     "452": "San Francisco, CA",
-    "546": "Chicago, IL",
-    "701": "Los Angeles, CA",
-    "706": "Brooklyn, NY",
-    "100": "Store 100 - Test Expansion"  # Testing store expansion
+    "546": "East Village, NYC",
+    "691": "Lincoln Park, Chicago, IL",  # NEW - verified Oct 19
+    "701": "South Loop, Chicago, IL",
+    "706": "Hyde Park, Chicago, IL",
 }
 
-# All categories
+# All categories including the root "Products" category (ID: 2)
+# Category 2 captures ALL products, including those not in subcategories
 CATEGORIES = [
+    {"id": "2", "name": "Products"},  # Root category - captures everything!
     {"id": "8", "name": "Food"},
     {"id": "11", "name": "Bakery"},
     {"id": "29", "name": "Cheese"},
@@ -107,7 +116,7 @@ async def fetch_store(page, store_code, store_name):
                 "storeCode": store_code,
                 "categoryId": int(category['id']),
                 "currentPage": current_page,
-                "pageSize": 15
+                "pageSize": 100  # Maximum page size for faster scraping
             }
             
             payload = {
@@ -158,8 +167,15 @@ async def fetch_store(page, store_code, store_name):
                             except:
                                 pass
                         
+                        # Only add products with SKU and non-zero price
                         if product['sku']:
-                            category_products.append(product)
+                            try:
+                                price = float(product['retail_price']) if product['retail_price'] else 0
+                                if price > 0:
+                                    category_products.append(product)
+                            except (ValueError, TypeError):
+                                # If price can't be converted, skip the product
+                                pass
                     
                     current_page += 1
                     await asyncio.sleep(0.2)
@@ -198,20 +214,52 @@ async def fetch_all_stores():
     print(f"Categories per store: {len(CATEGORIES)}\n")
     
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
+        # Launch with anti-detection settings
+        browser = await p.chromium.launch(
+            headless=False,
+            args=[
+                '--disable-blink-features=AutomationControlled',
+                '--disable-dev-shm-usage',
+                '--no-sandbox',
+            ]
+        )
+        
         context = await browser.new_context(
             viewport={'width': 1920, 'height': 1080},
-            user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+            user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            locale='en-US',
+            timezone_id='America/Chicago',
         )
+        
+        # Add extra headers to appear more human
+        await context.set_extra_http_headers({
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        })
         
         page = await context.new_page()
         stealth_config = Stealth()
         await stealth_config.apply_stealth_async(page)
         
+        # Override navigator.webdriver to avoid detection
+        await page.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+        """)
+        
         try:
-            # Establish session
+            # Establish session with human-like behavior
             print("Establishing session...")
             await page.goto('https://www.traderjoes.com/', wait_until='networkidle')
+            await asyncio.sleep(3)
+            
+            # Navigate to products page
+            print("Loading products page...")
+            await page.goto('https://www.traderjoes.com/home/products', wait_until='networkidle')
             await asyncio.sleep(2)
             print("✓ Session established\n")
             
