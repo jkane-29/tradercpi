@@ -928,8 +928,19 @@
                 display: flex !important;
             }
 
+            .nav-tab {
+                flex: 1;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            /* Hide basket builder tab on mobile */
+            .basket-tab {
+                display: none !important;
+            }
+
             /* Hide basket section entirely on mobile */
-            #basketTab {
+            #basketBuilderSection {
                 display: none !important;
             }
 
@@ -1098,6 +1109,7 @@
         <!-- Navigation -->
         <nav class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
+            <button class="nav-tab basket-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
             <button class="nav-tab" onclick="switchTab('feedback')">Feedback</button>
         </nav>
 
