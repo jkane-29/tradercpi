@@ -1413,28 +1413,26 @@
             }
         }
 
-        // Start splash screen and data loading
-        // Ensure DOM is ready first
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', startApp);
-        } else {
-            startApp();
-        }
-
-        function startApp() {
+        // Simple splash screen fade - happens regardless of data loading
+        window.addEventListener('load', () => {
+            console.log('Page loaded, starting splash fade...');
             setTimeout(() => {
                 const splash = document.getElementById('splashScreen');
                 const mainApp = document.getElementById('mainApp');
                 
+                console.log('Fading splash screen...');
                 if (splash) splash.classList.add('fade-out');
                 
                 setTimeout(() => {
+                    console.log('Showing main app...');
                     if (mainApp) mainApp.classList.add('visible');
                     // Load data after UI is visible
-                    initializeApp();
+                    initializeApp().catch(err => {
+                        console.error('Init error:', err);
+                    });
                 }, 800);
-            }, 1500); // Increased to 1.5s for visibility
-        }
+            }, 2000); // 2 second splash
+        });
 
         // Update last update date
         function updateLastUpdateDate() {
