@@ -814,6 +814,77 @@
             color: #666;
         }
 
+        /* Mobile Item Header (Robinhood-style) */
+        .mobile-item-header {
+            display: none;
+            background: white;
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .mobile-item-title {
+            font-family: 'Trader Joes', cursive;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .mobile-item-price {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .mobile-item-change {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .mobile-item-change.up {
+            color: #00C805;
+        }
+
+        .mobile-item-change.down {
+            color: #FF3B30;
+        }
+
+        /* Time Period Selector (Robinhood-style) */
+        .time-period-selector {
+            display: none;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #f0f0f0;
+            justify-content: space-around;
+            gap: 0.5rem;
+        }
+
+        .time-period-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: none;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .time-period-btn.active {
+            background: #bb3a39;
+            color: white;
+        }
+
+        .time-period-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .time-period-btn.active:hover {
+            background: #bb3a39;
+        }
 
         @media (max-width: 768px) {
             /* Splash screen - smaller logo on mobile (30% smaller) */
@@ -852,9 +923,9 @@
                 display: none !important;
             }
 
-            /* Hide all navigation tabs on mobile */
+            /* Keep nav tabs visible on mobile */
             .nav-tabs {
-                display: none !important;
+                display: flex !important;
             }
 
             /* Hide basket section entirely on mobile */
@@ -872,6 +943,16 @@
                 display: none !important;
             }
 
+            /* Show mobile item header */
+            .mobile-item-header {
+                display: block !important;
+            }
+
+            /* Show time period selector on mobile */
+            .time-period-selector {
+                display: flex !important;
+            }
+
             /* Hide overlay list on mobile */
             .overlay-list {
                 display: none !important;
@@ -883,7 +964,12 @@
                 display: none !important;
             }
 
-            /* Expand graph to fill screen on mobile */
+            /* Tighten spacing between containers */
+            .search-controls-wrapper {
+                margin-bottom: 0 !important;
+            }
+
+            /* Expand graph to fill screen on mobile (Robinhood-style) */
             .chart-container {
                 max-width: 100% !important;
                 width: 100% !important;
@@ -898,11 +984,17 @@
             #chartContent > div {
                 border-radius: 0 !important;
                 box-shadow: none !important;
-                padding: 1rem !important;
+                padding: 0.5rem !important;
+                margin: 0 !important;
+            }
+
+            #chartContent h3 {
+                display: none !important;
             }
 
             #priceChart {
-                max-height: 60vh !important;
+                height: 70vh !important;
+                max-height: 70vh !important;
                 width: 100% !important;
             }
 
@@ -1006,7 +1098,7 @@
         <!-- Navigation -->
         <nav class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
-            <button class="nav-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
+            <button class="nav-tab" onclick="switchTab('feedback')">Feedback</button>
         </nav>
 
         <!-- Item Search Section -->
@@ -1050,6 +1142,13 @@
                     <img src="images/white logo.png" alt="Trader Joe's Logo">
                 </div>
             </div>
+
+            <!-- Mobile Item Header (Robinhood-style) -->
+            <div class="mobile-item-header" id="mobileItemHeader">
+                <div class="mobile-item-title" id="mobileItemTitle">Select an item</div>
+                <div class="mobile-item-price" id="mobileItemPrice">--</div>
+                <div class="mobile-item-change" id="mobileItemChange">--</div>
+            </div>
             
             <div class="chart-container" id="chartContainer" style="display: none;">
                 <div id="chartContent">
@@ -1059,6 +1158,14 @@
                             <canvas id="priceChart"></canvas>
                         </div>
                     </div>
+                </div>
+
+                <!-- Time Period Selector (Robinhood-style) -->
+                <div class="time-period-selector" id="timePeriodSelector">
+                    <button class="time-period-btn" onclick="setTimePeriod('3M')">3M</button>
+                    <button class="time-period-btn" onclick="setTimePeriod('6M')">6M</button>
+                    <button class="time-period-btn active" onclick="setTimePeriod('1Y')">1Y</button>
+                    <button class="time-period-btn" onclick="setTimePeriod('ALL')">All</button>
                 </div>
             </div>
             
@@ -1130,6 +1237,36 @@
                     <div style="height: 400px; width: 100%; position: relative;">
                         <canvas id="basketTotalChart" style="max-height: 400px;"></canvas>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section class="content-section" id="feedbackSection">
+            <div class="search-controls-wrapper">
+                <div class="search-controls" style="max-width: 800px; margin: 2rem auto;">
+                    <h2 style="font-family: 'Trader Joes', cursive; color: #d41e36; margin-bottom: 1.5rem; text-align: center;">We'd Love Your Feedback!</h2>
+                    
+                    <div class="control-group">
+                        <label for="feedbackName">Name (Optional)</label>
+                        <input type="text" id="feedbackName" placeholder="Your name">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="feedbackEmail">Email (Optional)</label>
+                        <input type="email" id="feedbackEmail" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="feedbackMessage">Message</label>
+                        <textarea id="feedbackMessage" placeholder="Share your thoughts, suggestions, or report any issues..." style="min-height: 150px; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 6px; font-size: 1rem; font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <button class="btn-primary" onclick="submitFeedback()" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Send Feedback</button>
+                    
+                    <p style="text-align: center; color: #666; margin-top: 1.5rem; font-size: 0.9rem;">
+                        Your feedback helps us improve the Trader Joe's Price Index experience!
+                    </p>
                 </div>
             </div>
         </section>
@@ -1337,10 +1474,33 @@
             if (tab === 'itemSearch') {
                 document.querySelector('[onclick="switchTab(\'itemSearch\')"]').classList.add('active');
                 document.getElementById('itemSearchSection').classList.add('active');
+            } else if (tab === 'feedback') {
+                document.querySelector('[onclick="switchTab(\'feedback\')"]').classList.add('active');
+                document.getElementById('feedbackSection').classList.add('active');
             } else {
                 document.querySelector('[onclick="switchTab(\'basketBuilder\')"]').classList.add('active');
                 document.getElementById('basketBuilderSection').classList.add('active');
             }
+        }
+
+        function submitFeedback() {
+            const name = document.getElementById('feedbackName').value;
+            const email = document.getElementById('feedbackEmail').value;
+            const message = document.getElementById('feedbackMessage').value;
+            
+            if (!message.trim()) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            // For now, just show a thank you message
+            // In the future, this could send to a backend or email service
+            alert('Thank you for your feedback! We appreciate your input.');
+            
+            // Clear the form
+            document.getElementById('feedbackName').value = '';
+            document.getElementById('feedbackEmail').value = '';
+            document.getElementById('feedbackMessage').value = '';
         }
 
         // Setup autocomplete for search inputs
@@ -1517,8 +1677,56 @@
             const prices = priceData[store][item];
             overlayData.push({ store, item, prices, color });
             
+            // Update mobile item header
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                updateMobileItemHeader(store, item, prices);
+            }
+
             renderChart();
             updateOverlayList();
+        }
+
+        function updateMobileItemHeader(store, item, prices) {
+            const itemName = itemNames[item];
+            const currentPrice = prices[prices.length - 1];
+            const previousPrice = prices[0];
+            const change = currentPrice - previousPrice;
+            const changePercent = ((change / previousPrice) * 100).toFixed(2);
+            
+            const titleEl = document.getElementById('mobileItemTitle');
+            const priceEl = document.getElementById('mobileItemPrice');
+            const changeEl = document.getElementById('mobileItemChange');
+            const headerEl = document.getElementById('mobileItemHeader');
+            
+            titleEl.textContent = itemName;
+            priceEl.textContent = `$${currentPrice.toFixed(2)}`;
+            
+            const changeClass = change >= 0 ? 'up' : 'down';
+            const changeSymbol = change >= 0 ? '+' : '';
+            changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%) Past Year`;
+            changeEl.className = `mobile-item-change ${changeClass}`;
+            
+            headerEl.style.display = 'block';
+        }
+
+        let currentTimePeriod = '1Y';
+
+        function setTimePeriod(period) {
+            currentTimePeriod = period;
+            
+            // Update button states
+            document.querySelectorAll('.time-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Adjust chart based on period
+            // For now, this is a placeholder - you can implement different date ranges
+            console.log('Time period changed to:', period);
+            
+            // Could filter data based on period here
+            renderChart();
         }
 
         function removeFromOverlay(index) {
