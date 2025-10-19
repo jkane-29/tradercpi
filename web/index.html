@@ -386,7 +386,7 @@
         }
 
         #priceChart {
-            max-height: 350px;
+            max-height: 600px;
         }
 
         .chart-empty {
@@ -828,7 +828,7 @@
             position: absolute;
             top: 1rem;
             left: 1rem;
-            transform: translateY(0.9rem);
+            transform: translateY(0.5rem);
             background: none;
             border: none;
             color: #d41e36;
@@ -1315,7 +1315,7 @@
                 <div id="chartContent">
                     <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                         <h3 style="font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; font-weight: 600;">Price History</h3>
-                        <div style="height: 350px; position: relative;">
+                        <div style="height: 600px; position: relative;">
                             <canvas id="priceChart"></canvas>
                         </div>
                     </div>
@@ -1986,7 +1986,7 @@
             // Show the toggle button
             document.getElementById('toggleHistoryBtn').style.display = 'block';
             
-            document.getElementById('chartContent').innerHTML = '<div style="height: 350px; position: relative;"><canvas id="priceChart"></canvas></div>';
+            document.getElementById('chartContent').innerHTML = '<div style="height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
             const ctx = document.getElementById('priceChart').getContext('2d');
             
