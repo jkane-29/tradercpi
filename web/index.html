@@ -1019,7 +1019,7 @@
             .mobile-back-btn {
                 top: 1rem !important;
                 left: 0.5rem !important;
-                transform: translateY(0.7rem) !important;
+                transform: translateY(0.5rem) !important;
                 font-size: 1.3rem !important;
             }
 
@@ -1903,13 +1903,14 @@
         function setTimePeriod(period, event) {
             currentTimePeriod = period;
             
-            // Update button states
+            // Update button states - find button by text content instead of relying on event.target
             document.querySelectorAll('.time-period-btn').forEach(btn => {
                 btn.classList.remove('active');
+                // Match button text to period (case insensitive)
+                if (btn.textContent.toUpperCase() === period.toUpperCase()) {
+                    btn.classList.add('active');
+                }
             });
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
             
             // Re-render chart with new time period
             renderChart();
