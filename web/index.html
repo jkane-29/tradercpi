@@ -826,8 +826,9 @@
         .mobile-back-btn {
             display: none;
             position: absolute;
-            top: 1rem;
+            top: 50%;
             left: 1rem;
+            transform: translateY(-50%);
             background: none;
             border: none;
             color: #d41e36;
@@ -998,7 +999,7 @@
 
             /* Mobile item header - shown by JS when item selected */
             .mobile-item-header {
-                padding: 0.75rem 1rem !important;
+                padding: 1rem !important;
             }
 
             .mobile-item-header.has-item {
@@ -1016,8 +1017,9 @@
             }
 
             .mobile-back-btn {
-                top: 0.75rem !important;
+                top: 50% !important;
                 left: 0.5rem !important;
+                transform: translateY(-50%) !important;
                 font-size: 1.3rem !important;
             }
 
@@ -1093,8 +1095,8 @@
 
             /* Chart canvas on mobile - taller height container to fill screen */
             #chartContent > div > div {
-                height: calc(100vh - 280px) !important;
-                min-height: 450px !important;
+                height: calc(100vh - 200px) !important;
+                min-height: 500px !important;
                 max-height: none !important;
                 position: relative !important;
             }
@@ -1141,9 +1143,19 @@
             .search-controls {
                 width: 100% !important;
                 max-width: 100% !important;
-                padding: 0.75rem !important;
+                padding: 1rem !important;
                 padding-bottom: 1rem !important;
                 border-radius: 0 !important;
+            }
+            
+            /* Lighter padding for feedback section */
+            #feedbackSection .search-controls {
+                padding: 1rem !important;
+                margin: 0 !important;
+            }
+            
+            #feedbackSection .search-controls-wrapper {
+                padding: 1rem !important;
             }
             
             .control-row {
@@ -1899,11 +1911,7 @@
                 event.target.classList.add('active');
             }
             
-            // Adjust chart based on period
-            // For now, this is a placeholder - you can implement different date ranges
-            console.log('Time period changed to:', period);
-            
-            // Could filter data based on period here
+            // Re-render chart with new time period
             renderChart();
         }
 
@@ -2039,6 +2047,17 @@
             
             // Apply trimming from start (if in full history mode) and up to end date
             let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            
+            // Apply time period filter (3M, 6M, 1Y, ALL)
+            if (currentTimePeriod !== 'ALL') {
+                let monthsToShow = 12; // Default 1Y
+                if (currentTimePeriod === '3M') monthsToShow = 3;
+                else if (currentTimePeriod === '6M') monthsToShow = 6;
+                
+                // Calculate start index based on months to show from end
+                const periodStartIndex = Math.max(trimStartIndex, endIndex - monthsToShow);
+                trimStartIndex = periodStartIndex;
+            }
             
             if (endIndex < currentMonths.length || trimStartIndex > 0) {
                 chartLabels = currentMonths.slice(trimStartIndex, endIndex);

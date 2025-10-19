@@ -430,6 +430,11 @@ body {
     .dashboard-content {
         grid-template-columns: 1fr;
         gap: 2rem;
+        padding: 1rem;
+    }
+    
+    .dashboard-screen {
+        padding: 1rem 0;
     }
     
     .logo h1 {
