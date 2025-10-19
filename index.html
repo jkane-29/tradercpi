@@ -1414,14 +1414,27 @@
         }
 
         // Start splash screen and data loading
-        setTimeout(() => {
-            document.getElementById('splashScreen').classList.add('fade-out');
+        // Ensure DOM is ready first
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startApp);
+        } else {
+            startApp();
+        }
+
+        function startApp() {
             setTimeout(() => {
-                document.getElementById('mainApp').classList.add('visible');
-                // Load data after UI is visible
-                initializeApp();
-            }, 800);
-        }, 1000);
+                const splash = document.getElementById('splashScreen');
+                const mainApp = document.getElementById('mainApp');
+                
+                if (splash) splash.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    if (mainApp) mainApp.classList.add('visible');
+                    // Load data after UI is visible
+                    initializeApp();
+                }, 800);
+            }, 1500); // Increased to 1.5s for visibility
+        }
 
         // Update last update date
         function updateLastUpdateDate() {
