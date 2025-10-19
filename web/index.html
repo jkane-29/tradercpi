@@ -1024,6 +1024,7 @@
             /* Tighten spacing between containers */
             .search-controls-wrapper {
                 margin-bottom: 0 !important;
+                transition: opacity 0.3s ease;
             }
 
             /* Expand graph to fill screen on mobile (Robinhood-style) */
@@ -1782,6 +1783,8 @@
             // Update item header (mobile only)
             if (isMobile) {
                 updateMobileItemHeader(store, item, prices);
+                // Hide search controls on mobile to maximize graph space
+                document.querySelector('.search-controls-wrapper').style.display = 'none';
             }
 
             renderChart();
@@ -1864,6 +1867,11 @@
                 document.getElementById('toggleHistoryBtn').style.display = 'none';
                 document.getElementById('chartContainer').style.display = 'none';
                 document.getElementById('mobileItemHeader').classList.remove('has-item');
+                // Show search controls again on mobile when chart is cleared
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    document.querySelector('.search-controls-wrapper').style.display = 'grid';
+                }
                 if (priceChart) {
                     priceChart.destroy();
                     priceChart = null;
