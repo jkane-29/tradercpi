@@ -16,7 +16,8 @@ STORES = {
     "452": "San Francisco, CA",
     "546": "Chicago, IL",
     "701": "Los Angeles, CA",
-    "706": "Brooklyn, NY"
+    "706": "Brooklyn, NY",
+    "100": "Store 100 - Test Expansion"  # Testing store expansion
 }
 
 # All categories
