@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=./web/index.html">
+    <title>Redirecting to Trader Joe's Price Index...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #d41e36;
+            color: white;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.2rem;
+        }
+        a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trader Joe's Price Index</h1>
+        <p>Redirecting to app...</p>
+        <p><a href="./web/index.html">Click here if you are not redirected automatically</a></p>
+    </div>
+    <script>
+        // Backup redirect in case meta refresh doesn't work
+        setTimeout(function() {
+            window.location.href = './web/index.html';
+        }, 100);
+    </script>
+</body>
+</html>
+
