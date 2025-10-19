@@ -1573,9 +1573,7 @@
                             // Auto-add based on mode
                             if (autoAddMode === 'overlay') {
                                 addToOverlay();
-                                // Clear input for quick successive additions
-                                input.value = '';
-                                input.dataset.selectedSku = '';
+                                // Keep the selected item in the search box (don't clear)
                             } else if (autoAddMode === 'basket') {
                                 addToBasket();
                                 // Clear input for quick successive additions
@@ -1608,12 +1606,13 @@
                         // If no suggestion selected but there's text, try to add
                         if (autoAddMode === 'overlay') {
                             addToOverlay();
+                            // Keep the selected item in the search box (don't clear)
                         } else if (autoAddMode === 'basket') {
                             addToBasket();
+                            // Clear input for quick successive additions
+                            input.value = '';
+                            input.dataset.selectedSku = '';
                         }
-                        // Clear input for quick successive additions
-                        input.value = '';
-                        input.dataset.selectedSku = '';
                         suggestions.classList.remove('visible');
                     }
                 } else if (e.key === 'Escape') {
@@ -1682,19 +1681,10 @@
                 return;
             }
             
-            // Mobile: Only allow 1 item, replace existing
+            // Only allow 1 item, replace existing (both mobile and desktop)
             const isMobile = window.innerWidth <= 768;
-            if (isMobile && overlayData.length > 0) {
-                overlayData = []; // Clear existing items on mobile
-            }
-            
-            // Check if already in overlay (skip on mobile since we just cleared)
-            if (!isMobile) {
-                const exists = overlayData.some(d => d.store === store && d.item === item);
-                if (exists) {
-                    alert('This item/store combination is already in the comparison');
-                    return;
-                }
+            if (overlayData.length > 0) {
+                overlayData = []; // Clear existing items
             }
             
             // Show chart container
@@ -1706,7 +1696,7 @@
             const prices = priceData[store][item];
             overlayData.push({ store, item, prices, color });
             
-            // Update mobile item header
+            // Update mobile item header (only on mobile)
             if (isMobile) {
                 updateMobileItemHeader(store, item, prices);
             }
