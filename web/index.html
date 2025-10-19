@@ -810,13 +810,51 @@
         }
 
         @media (max-width: 768px) {
+            /* Splash screen - smaller logo on mobile */
+            .splash-screen .logo img {
+                max-width: 300px;
+            }
+
+            /* Header - match splash screen red color */
+            .app-header {
+                background: #bb3a39;
+            }
+
             .app-header h1 {
                 font-size: 1.8rem;
+            }
+
+            /* Hide basket tab on mobile - only show search */
+            .nav-tab:last-child {
+                display: none;
             }
             
             .nav-tab {
                 padding: 1rem 1.5rem;
                 font-size: 1rem;
+                flex: 1;
+            }
+
+            /* Hide basket section entirely on mobile */
+            #basketTab {
+                display: none !important;
+            }
+
+            /* Hide logo box on mobile */
+            .logo-box {
+                display: none !important;
+            }
+
+            /* Expand graph to fill screen on mobile */
+            .chart-container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0.5rem !important;
+            }
+
+            #priceChart {
+                max-height: 60vh !important;
+                width: 100% !important;
             }
 
             .search-controls-wrapper,
@@ -871,14 +909,6 @@
 
             #attributionChart {
                 max-height: 400px;
-            }
-
-            .logo-box {
-                min-height: 150px;
-            }
-
-            .logo-box img {
-                max-width: 200px;
             }
         }
     </style>
