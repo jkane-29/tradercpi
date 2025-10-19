@@ -188,7 +188,7 @@ function searchItems(query, useBasketItems = false) {
     if (!query || query.length < 2) return [];
     
     const lowerQuery = query.toLowerCase();
-    const sourceList = useBasketItems ? basketItemList : itemList;
+    const sourceList = itemList; // Always use the full item list
     
     // Get the current store to show relevant prices
     const currentStore = useBasketItems ? 
