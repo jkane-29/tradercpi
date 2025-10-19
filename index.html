@@ -852,8 +852,8 @@
 
         .item-stats-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
         }
 
         .item-stat-box {
@@ -952,7 +952,7 @@
 
             .app-header h1 {
                 font-size: 1.2rem;
-                padding: 0 0.5rem;
+                padding: 0 1rem;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -1005,11 +1005,8 @@
             }
 
             .mobile-item-title {
-                font-size: 1.1rem !important;
                 margin-bottom: 0.75rem !important;
                 white-space: nowrap !important;
-                overflow: hidden !important;
-                text-overflow: ellipsis !important;
             }
 
             .item-stat-box {
@@ -1046,7 +1043,7 @@
 
             /* Reduce padding for content sections on mobile */
             .content-section {
-                padding: 0.5rem !important;
+                padding: 1rem !important;
             }
 
             /* Tighten spacing between containers */
@@ -1069,7 +1066,7 @@
             #chartContent > div {
                 border-radius: 0 !important;
                 box-shadow: none !important;
-                padding: 0.5rem !important;
+                padding: 1rem !important;
                 margin: 0 !important;
             }
 
@@ -1093,19 +1090,19 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 padding: 0.75rem !important;
-                padding-bottom: 0.5rem !important;
+                padding-bottom: 1rem !important;
                 border-radius: 0 !important;
             }
             
             .control-row {
                 grid-template-columns: 1fr;
-                gap: 0.5rem;
+                gap: 1rem;
                 margin-bottom: 0 !important;
             }
 
             .control-group {
                 width: 100%;
-                margin-bottom: 0.5rem;
+                margin-bottom: 1rem;
             }
 
             .control-group label {
@@ -1140,7 +1137,7 @@
             .attribution-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.5rem;
+                gap: 1rem;
             }
 
             .attribution-item-name {
@@ -1239,8 +1236,12 @@
                         <div class="mobile-item-price" id="mobileItemPrice">--</div>
                     </div>
                     <div class="item-stat-box">
-                        <div class="item-stat-label">Past Year Change</div>
-                        <div class="mobile-item-change" id="mobileItemChange">--</div>
+                        <div class="item-stat-label">$ Change</div>
+                        <div class="mobile-item-change" id="mobileItemDollarChange">--</div>
+                    </div>
+                    <div class="item-stat-box">
+                        <div class="item-stat-label">% Change</div>
+                        <div class="mobile-item-change" id="mobileItemPercentChange">--</div>
                     </div>
                 </div>
             </div>
@@ -1819,7 +1820,8 @@
             
             const titleEl = document.getElementById('mobileItemTitle');
             const priceEl = document.getElementById('mobileItemPrice');
-            const changeEl = document.getElementById('mobileItemChange');
+            const dollarChangeEl = document.getElementById('mobileItemDollarChange');
+            const percentChangeEl = document.getElementById('mobileItemPercentChange');
             const headerEl = document.getElementById('mobileItemHeader');
             
             titleEl.textContent = itemName;
@@ -1827,8 +1829,12 @@
             
             const changeClass = change >= 0 ? 'up' : 'down';
             const changeSymbol = change >= 0 ? '+' : '';
-            changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%)`;
-            changeEl.className = `mobile-item-change ${changeClass}`;
+            
+            dollarChangeEl.textContent = `${changeSymbol}$${change.toFixed(2)}`;
+            dollarChangeEl.className = `mobile-item-change ${changeClass}`;
+            
+            percentChangeEl.textContent = `${changeSymbol}${changePercent}%`;
+            percentChangeEl.className = `mobile-item-change ${changeClass}`;
             
             headerEl.classList.add('has-item');
             
@@ -1840,12 +1846,15 @@
             const titleEl = document.getElementById('mobileItemTitle');
             const nameBox = titleEl.parentElement;
             
-            // Reset to default size
-            let fontSize = 1.2;
+            // Start with a large font size and decrease until it fits
+            let fontSize = 1.4; // rem
+            const minFontSize = 0.9; // rem - minimum readable size
+            const containerWidth = nameBox.offsetWidth - 32; // Subtract padding
+            
             titleEl.style.fontSize = fontSize + 'rem';
             
-            // Reduce font size until it fits
-            while (titleEl.scrollWidth > nameBox.clientWidth && fontSize > 0.7) {
+            // Decrease font size until text fits in one line
+            while (titleEl.scrollWidth > containerWidth && fontSize > minFontSize) {
                 fontSize -= 0.05;
                 titleEl.style.fontSize = fontSize + 'rem';
             }
