@@ -223,17 +223,37 @@
             border-color: #d41e36;
         }
 
-        .control-group input[type="text"] {
+        .control-group input[type="text"],
+        .control-group input[type="email"] {
             padding: 0.75rem;
             border: 2px solid #e9ecef;
             border-radius: 6px;
             font-size: 0.95rem;
             background: white;
+            color: #333;
             transition: border-color 0.3s ease;
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        .control-group input[type="text"]:focus {
+        .control-group input[type="text"]:focus,
+        .control-group input[type="email"]:focus {
+            outline: none;
+            border-color: #d41e36;
+        }
+
+        .control-group textarea {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: white;
+            color: #333;
+            transition: border-color 0.3s ease;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            resize: vertical;
+        }
+
+        .control-group textarea:focus {
             outline: none;
             border-color: #d41e36;
         }
@@ -818,29 +838,61 @@
         .mobile-item-header {
             display: none;
             background: white;
-            padding: 1rem;
-            padding-top: 0.5rem;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 0.75rem;
+            gap: 0.5rem;
+        }
+
+        .mobile-item-header-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-item-name-box {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .mobile-item-title {
             font-family: 'Trader Joes', cursive;
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #333;
-            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .mobile-item-price-box {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: fit-content;
         }
 
         .mobile-item-price {
-            font-size: 2.5rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 0.25rem;
+            white-space: nowrap;
         }
 
         .mobile-item-change {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 500;
+            text-align: center;
         }
 
         .mobile-item-change.up {
@@ -962,6 +1014,7 @@
             
             .mobile-item-header.has-item {
                 display: block !important;
+                border-bottom: 1px solid #f0f0f0;
             }
 
             /* Show time period selector on mobile */
@@ -1163,8 +1216,14 @@
 
             <!-- Mobile Item Header (Robinhood-style) -->
             <div class="mobile-item-header" id="mobileItemHeader">
-                <div class="mobile-item-title" id="mobileItemTitle">Select an item</div>
-                <div class="mobile-item-price" id="mobileItemPrice">--</div>
+                <div class="mobile-item-header-row">
+                    <div class="mobile-item-name-box">
+                        <div class="mobile-item-title" id="mobileItemTitle">Select an item</div>
+                    </div>
+                    <div class="mobile-item-price-box">
+                        <div class="mobile-item-price" id="mobileItemPrice">--</div>
+                    </div>
+                </div>
                 <div class="mobile-item-change" id="mobileItemChange">--</div>
             </div>
             
@@ -1261,26 +1320,28 @@
 
         <!-- Feedback Section -->
         <section class="content-section" id="feedbackSection">
-            <div class="search-controls-wrapper">
-                <div class="search-controls" style="max-width: 800px; margin: 2rem auto;">
+            <div class="search-controls-wrapper" style="grid-template-columns: 1fr; max-width: 1200px;">
+                <div class="search-controls">
                     <h2 style="font-family: 'Trader Joes', cursive; color: #d41e36; margin-bottom: 1.5rem; text-align: center;">We'd Love Your Feedback!</h2>
                     
-                    <div class="control-group">
-                        <label for="feedbackName">Name (Optional)</label>
-                        <input type="text" id="feedbackName" placeholder="Your name">
-                    </div>
-                    
-                    <div class="control-group">
-                        <label for="feedbackEmail">Email (Optional)</label>
-                        <input type="email" id="feedbackEmail" placeholder="your@email.com">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label for="feedbackName">Name (Optional)</label>
+                            <input type="text" id="feedbackName" placeholder="Your name">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="feedbackEmail">Email (Optional)</label>
+                            <input type="email" id="feedbackEmail" placeholder="your@email.com">
+                        </div>
                     </div>
                     
                     <div class="control-group">
                         <label for="feedbackMessage">Message</label>
-                        <textarea id="feedbackMessage" placeholder="Share your thoughts, suggestions, or report any issues..." style="min-height: 150px; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 6px; font-size: 1rem; font-family: inherit; resize: vertical;"></textarea>
+                        <textarea id="feedbackMessage" placeholder="Share your thoughts, suggestions, or report any issues..." style="min-height: 150px;"></textarea>
                     </div>
                     
-                    <button class="btn-primary" onclick="submitFeedback()" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Send Feedback</button>
+                    <button class="btn-primary" onclick="submitFeedback()" style="width: 100%;">Send Feedback</button>
                     
                     <p style="text-align: center; color: #666; margin-top: 1.5rem; font-size: 0.9rem;">
                         Your feedback helps us improve the Trader Joe's Price Index experience!
@@ -1736,6 +1797,24 @@
             changeEl.className = `mobile-item-change ${changeClass}`;
             
             headerEl.classList.add('has-item');
+            
+            // Dynamically adjust font size to fit
+            adjustItemNameFontSize();
+        }
+        
+        function adjustItemNameFontSize() {
+            const titleEl = document.getElementById('mobileItemTitle');
+            const nameBox = titleEl.parentElement;
+            
+            // Reset to default size
+            let fontSize = 1.2;
+            titleEl.style.fontSize = fontSize + 'rem';
+            
+            // Reduce font size until it fits
+            while (titleEl.scrollWidth > nameBox.clientWidth && fontSize > 0.7) {
+                fontSize -= 0.05;
+                titleEl.style.fontSize = fontSize + 'rem';
+            }
         }
 
         let currentTimePeriod = '1Y';
@@ -2432,6 +2511,13 @@
         
         // Initialize ticker after a short delay to ensure data is loaded
         setTimeout(initializeTicker, 1000);
+        
+        // Re-adjust item name font size on window resize (for device rotation)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth <= 768 && document.getElementById('mobileItemHeader').classList.contains('has-item')) {
+                adjustItemNameFontSize();
+            }
+        });
     </script>
 </body>
 </html>
