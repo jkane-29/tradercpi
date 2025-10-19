@@ -1784,7 +1784,33 @@
         function updateMobileItemHeader(store, item, prices) {
             const itemName = itemNames[item];
             const currentPrice = prices[prices.length - 1];
-            const previousPrice = prices[0];
+            
+            // Calculate change based on selected time period
+            let previousPrice, periodLabel;
+            const pricesLength = prices.length;
+            
+            switch(currentTimePeriod) {
+                case '3M':
+                    previousPrice = prices[Math.max(0, pricesLength - 3)];
+                    periodLabel = 'Past 3 Months';
+                    break;
+                case '6M':
+                    previousPrice = prices[Math.max(0, pricesLength - 6)];
+                    periodLabel = 'Past 6 Months';
+                    break;
+                case '1Y':
+                    previousPrice = prices[0];
+                    periodLabel = 'Past Year';
+                    break;
+                case 'ALL':
+                    previousPrice = prices[0];
+                    periodLabel = 'All Time';
+                    break;
+                default:
+                    previousPrice = prices[0];
+                    periodLabel = 'Past Year';
+            }
+            
             const change = currentPrice - previousPrice;
             const changePercent = ((change / previousPrice) * 100).toFixed(2);
             
@@ -1798,7 +1824,7 @@
             
             const changeClass = change >= 0 ? 'up' : 'down';
             const changeSymbol = change >= 0 ? '+' : '';
-            changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%) Past Year`;
+            changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%) ${periodLabel}`;
             changeEl.className = `mobile-item-change ${changeClass}`;
             
             headerEl.classList.add('has-item');
@@ -1830,15 +1856,20 @@
             // Update button states
             document.querySelectorAll('.time-period-btn').forEach(btn => {
                 btn.classList.remove('active');
+                if (btn.textContent === period) {
+                    btn.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
             
-            // Adjust chart based on period
-            // For now, this is a placeholder - you can implement different date ranges
-            console.log('Time period changed to:', period);
-            
-            // Could filter data based on period here
+            // Re-render chart with new time period
             renderChart();
+            
+            // Update mobile header if on mobile and item is selected
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile && overlayData.length > 0) {
+                const data = overlayData[0]; // Mobile only shows one item
+                updateMobileItemHeader(data.store, data.item, data.prices);
+            }
         }
 
         function removeFromOverlay(index) {
@@ -1879,8 +1910,11 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            // Show the toggle button
-            document.getElementById('toggleHistoryBtn').style.display = 'block';
+            // Check if mobile
+            const isMobile = window.innerWidth <= 768;
+            
+            // Show the toggle button (desktop only)
+            document.getElementById('toggleHistoryBtn').style.display = isMobile ? 'none' : 'block';
             
             document.getElementById('chartContent').innerHTML = '<div style="height: 400px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
@@ -1895,6 +1929,24 @@
             const currentMonths = showFullHistory ? getMonthLabels(true) : months;
             const currentPriceData = showFullHistory ? priceDataFull : priceData;
             
+            // Calculate how many months to show based on time period (mobile only)
+            let monthsToShow = currentMonths.length;
+            if (isMobile) {
+                switch(currentTimePeriod) {
+                    case '3M':
+                        monthsToShow = 3;
+                        break;
+                    case '6M':
+                        monthsToShow = 6;
+                        break;
+                    case '1Y':
+                        monthsToShow = 12;
+                        break;
+                    case 'ALL':
+                        monthsToShow = currentMonths.length;
+                        break;
+                }
+            }
             
             // Find the earliest start index across all items
             let earliestStartIndex = currentMonths.length;
@@ -1934,7 +1986,7 @@
                 };
             });
             
-            // Trim datasets and labels based on selected end month
+            // Trim datasets and labels based on selected end month and time period
             let chartLabels = currentMonths;
             let trimmedRawMonths = currentRawMonths;
             
@@ -1943,6 +1995,13 @@
             
             // Apply trimming from start (if in full history mode) and up to end date
             let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
+            
+            // On mobile, apply time period filtering
+            if (isMobile && monthsToShow < currentMonths.length) {
+                // Show the most recent N months
+                trimStartIndex = Math.max(0, currentMonths.length - monthsToShow);
+                endIndex = currentMonths.length;
+            }
             
             if (endIndex < currentMonths.length || trimStartIndex > 0) {
                 chartLabels = currentMonths.slice(trimStartIndex, endIndex);
@@ -1973,58 +2032,98 @@
             } : {};
             
             
+            // Mobile-specific chart configuration
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: !isMobile,
+                interaction: {
+                    mode: isMobile ? 'nearest' : 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        display: !isMobile,
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        mode: isMobile ? 'nearest' : 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                if (isMobile) {
+                                    return '$' + context.parsed.y.toFixed(2);
+                                }
+                                return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
+                            },
+                            title: function(context) {
+                                const rawMonth = trimmedRawMonths[context[0].dataIndex];
+                                // Add indicator for gap months
+                                if (rawMonth && ['2025-07', '2025-08', '2025-09'].includes(rawMonth)) {
+                                    return context[0].label + ' (no data - using June price)';
+                                }
+                                return context[0].label;
+                            }
+                        }
+                    },
+                    annotation: annotation
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            font: {
+                                size: isMobile ? 10 : 12
+                            },
+                            callback: function(value) {
+                                return '$' + value.toFixed(2);
+                            }
+                        },
+                        grid: {
+                            color: isMobile ? 'rgba(0,0,0,0.05)' : '#e9ecef'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: isMobile ? 9 : 11
+                            },
+                            maxRotation: isMobile ? 0 : 45,
+                            minRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: isMobile ? 6 : 12
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            };
+            
+            // Update datasets for mobile - smaller points
+            if (isMobile) {
+                datasets.forEach(dataset => {
+                    dataset.pointRadius = 0;
+                    dataset.pointHoverRadius = 4;
+                    dataset.borderWidth = 2;
+                });
+            }
+            
             priceChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: chartLabels,
                     datasets: datasets
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                padding: 15,
-                                font: {
-                                    size: 12
-                                },
-                                usePointStyle: true,
-                                pointStyle: 'circle'
-                            }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
-                                },
-                                title: function(context) {
-                                    const rawMonth = trimmedRawMonths[context[0].dataIndex];
-                                    // Add indicator for gap months
-                                    if (rawMonth && ['2025-07', '2025-08', '2025-09'].includes(rawMonth)) {
-                                        return context[0].label + ' (no data - using June price)';
-                                    }
-                                    return context[0].label;
-                                }
-                            }
-                        },
-                        annotation: annotation
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + value.toFixed(2);
-                                }
-                            }
-                        }
-                    }
-                }
+                options: chartOptions
             });
         }
 
