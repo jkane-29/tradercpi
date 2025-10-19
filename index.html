@@ -819,6 +819,7 @@
             display: none;
             background: white;
             padding: 1rem;
+            padding-top: 0.5rem;
             border-bottom: 1px solid #f0f0f0;
         }
 
@@ -887,7 +888,7 @@
         }
 
         @media (max-width: 768px) {
-            /* Splash screen - smaller logo on mobile (30% smaller) */
+            /* Splash screen - larger logo on mobile (50% larger) */
             .splash-screen {
                 display: flex;
                 align-items: center;
@@ -899,8 +900,8 @@
             }
 
             .splash-screen .logo img {
-                max-width: 210px;
-                width: 70%;
+                max-width: 400px;
+                width: 90%;
             }
 
             /* Header - match splash screen red color, compact on mobile */
@@ -954,8 +955,12 @@
                 display: none !important;
             }
 
-            /* Show mobile item header */
+            /* Mobile item header - hidden by default, shown by JS when item selected */
             .mobile-item-header {
+                display: none !important;
+            }
+            
+            .mobile-item-header.has-item {
                 display: block !important;
             }
 
@@ -1019,6 +1024,7 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 padding: 0.75rem !important;
+                padding-bottom: 0.5rem !important;
                 border-radius: 0 !important;
             }
             
@@ -1729,7 +1735,7 @@
             changeEl.textContent = `${changeSymbol}$${change.toFixed(2)} (${changeSymbol}${changePercent}%) Past Year`;
             changeEl.className = `mobile-item-change ${changeClass}`;
             
-            headerEl.style.display = 'block';
+            headerEl.classList.add('has-item');
         }
 
         let currentTimePeriod = '1Y';
@@ -1757,6 +1763,7 @@
                 document.getElementById('overlayList').style.display = 'none';
                 document.getElementById('toggleHistoryBtn').style.display = 'none';
                 document.getElementById('chartContainer').style.display = 'none';
+                document.getElementById('mobileItemHeader').classList.remove('has-item');
                 if (priceChart) {
                     priceChart.destroy();
                     priceChart = null;
