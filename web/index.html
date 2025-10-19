@@ -871,9 +871,9 @@
             color: #FF3B30;
         }
 
-        /* Time Period Selector (Robinhood-style) */
+        /* Time Period Selector (Robinhood-style) - Mobile only */
         .time-period-selector {
-            display: flex;
+            display: none;
             background: white;
             padding: 0.75rem 1rem;
             border-top: 1px solid #f0f0f0;
@@ -1032,6 +1032,8 @@
                 width: 100% !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
             }
 
             #chartContent {
@@ -1042,17 +1044,45 @@
                 border-radius: 0 !important;
                 box-shadow: none !important;
                 padding: 1rem !important;
+                padding-bottom: 0.5rem !important;
                 margin: 0 !important;
+                height: auto !important;
             }
 
             #chartContent h3 {
                 display: none !important;
             }
 
+            /* Chart canvas on mobile - fixed height container */
+            #chartContent > div > div {
+                height: 50vh !important;
+                min-height: 300px !important;
+                max-height: 400px !important;
+                position: relative !important;
+            }
+
             #priceChart {
-                height: 70vh !important;
-                max-height: 70vh !important;
+                height: 100% !important;
+                max-height: 100% !important;
                 width: 100% !important;
+            }
+
+            /* Time period selector - positioned below chart */
+            .time-period-selector {
+                display: flex !important;
+                position: relative !important;
+                background: white !important;
+                border-top: 1px solid #f0f0f0 !important;
+                padding: 0.75rem 0.5rem !important;
+                margin: 0 !important;
+            }
+
+            .time-period-btn {
+                flex: 1;
+                padding: 0.6rem 0.5rem !important;
+                font-size: 0.85rem !important;
+                border-radius: 4px !important;
+                margin: 0 0.25rem !important;
             }
 
             .search-controls-wrapper,
@@ -1233,10 +1263,10 @@
 
                 <!-- Time Period Selector (Robinhood-style) -->
                 <div class="time-period-selector" id="timePeriodSelector">
-                    <button class="time-period-btn" onclick="setTimePeriod('3M')">3M</button>
-                    <button class="time-period-btn" onclick="setTimePeriod('6M')">6M</button>
-                    <button class="time-period-btn active" onclick="setTimePeriod('1Y')">1Y</button>
-                    <button class="time-period-btn" onclick="setTimePeriod('ALL')">All</button>
+                    <button class="time-period-btn" onclick="setTimePeriod('3M', event)">3M</button>
+                    <button class="time-period-btn" onclick="setTimePeriod('6M', event)">6M</button>
+                    <button class="time-period-btn active" onclick="setTimePeriod('1Y', event)">1Y</button>
+                    <button class="time-period-btn" onclick="setTimePeriod('ALL', event)">All</button>
                 </div>
             </div>
             
@@ -1808,14 +1838,16 @@
 
         let currentTimePeriod = '1Y';
 
-        function setTimePeriod(period) {
+        function setTimePeriod(period, event) {
             currentTimePeriod = period;
             
             // Update button states
             document.querySelectorAll('.time-period-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
             
             // Adjust chart based on period
             // For now, this is a placeholder - you can implement different date ranges
