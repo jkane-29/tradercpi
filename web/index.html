@@ -1044,8 +1044,8 @@
             #chartContent > div {
                 border-radius: 0 !important;
                 box-shadow: none !important;
-                padding: 1rem !important;
-                padding-bottom: 0.5rem !important;
+                padding: 0.5rem !important;
+                padding-bottom: 0.25rem !important;
                 margin: 0 !important;
                 height: auto !important;
             }
@@ -1054,11 +1054,11 @@
                 display: none !important;
             }
 
-            /* Chart canvas on mobile - fixed height container */
+            /* Chart canvas on mobile - taller height container */
             #chartContent > div > div {
-                height: 50vh !important;
-                min-height: 300px !important;
-                max-height: 400px !important;
+                height: 65vh !important;
+                min-height: 400px !important;
+                max-height: 600px !important;
                 position: relative !important;
             }
 
@@ -1066,6 +1066,15 @@
                 height: 100% !important;
                 max-height: 100% !important;
                 width: 100% !important;
+            }
+
+            /* Hide chart legend on mobile to maximize graph space */
+            #priceChart {
+                margin-bottom: 0 !important;
+            }
+
+            .chart-container canvas + div {
+                display: none !important;
             }
 
             /* Time period selector - positioned below chart */
@@ -2008,7 +2017,7 @@
                     maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            display: true,
+                            display: window.innerWidth > 768,
                             position: 'bottom',
                             labels: {
                                 padding: 15,
