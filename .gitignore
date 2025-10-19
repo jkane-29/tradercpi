@@ -1,6 +1,6 @@
-# Large data files
-traderjoes-dump-3.csv
-*.db
+# Backend data files (large datasets not needed for deployment)
+backend/data/*.csv
+backend/data/*.db
 traderjoes_inflation_tracker.csv
 
 # Log files
@@ -14,6 +14,8 @@ backups/
 # Temporary/test files
 fetch_log.txt
 SELECT
+*.tmp
+test_*.csv
 
 # Python cache
 __pycache__/
