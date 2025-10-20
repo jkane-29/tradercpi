@@ -850,6 +850,9 @@
             color: #333;
             margin-bottom: 0.75rem;
             padding-left: 2.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .item-stats-row {
@@ -1014,6 +1017,8 @@
                 margin-bottom: 0.5rem !important;
                 white-space: nowrap !important;
                 padding-left: 2rem !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
             }
 
             .mobile-back-btn {
@@ -1078,8 +1083,7 @@
             #chartContent > div {
                 border-radius: 0 !important;
                 box-shadow: none !important;
-                padding: 0.5rem !important;
-                padding-bottom: 0 !important;
+                padding: 0.5rem 0.5rem 0 0.5rem !important;
                 margin: 0 !important;
                 height: 450px !important;
             }
@@ -1117,6 +1121,7 @@
                 border-top: 1px solid #f0f0f0 !important;
                 padding: 0.25rem 0.5rem !important;
                 margin: 0 !important;
+                margin-top: -0.5rem !important;
             }
 
             .time-period-btn {
@@ -1140,19 +1145,19 @@
             .search-controls {
                 width: 100% !important;
                 max-width: 100% !important;
-                padding: 1rem !important;
+                padding: 0.5rem 1rem !important;
                 padding-bottom: 1rem !important;
                 border-radius: 0 !important;
             }
             
             /* Lighter padding for feedback section */
             #feedbackSection .search-controls {
-                padding: 1rem !important;
+                padding: 0.5rem 1rem !important;
                 margin: 0 !important;
             }
             
             #feedbackSection .search-controls-wrapper {
-                padding: 1rem !important;
+                padding: 0.5rem 1rem !important;
             }
             
             .control-row {
@@ -1873,26 +1878,6 @@
             percentChangeEl.className = `mobile-item-change ${changeClass}`;
             
             headerEl.classList.add('has-item');
-            
-            // Dynamically adjust font size to fit in one line on mobile
-            if (window.innerWidth <= 768) {
-                adjustTitleFontSize(titleEl);
-            }
-        }
-        
-        function adjustTitleFontSize(titleEl) {
-            // Start with a large font size and decrease until it fits
-            let fontSize = 1.4; // rem
-            const minFontSize = 0.9; // rem - minimum readable size
-            const containerWidth = titleEl.parentElement.offsetWidth - 32; // Subtract padding
-            
-            titleEl.style.fontSize = fontSize + 'rem';
-            
-            // Decrease font size until text fits in one line
-            while (titleEl.scrollWidth > containerWidth && fontSize > minFontSize) {
-                fontSize -= 0.05;
-                titleEl.style.fontSize = fontSize + 'rem';
-            }
         }
 
         let currentTimePeriod = '1Y';
