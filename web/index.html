@@ -854,9 +854,9 @@
             color: #333;
             margin-bottom: 0.5rem;
             padding-left: 2.5rem;
+            padding-right: 0.5rem;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .item-stats-row {
@@ -1027,8 +1027,8 @@
                 margin-bottom: 0.4rem !important;
                 white-space: nowrap !important;
                 padding-left: 2rem !important;
+                padding-right: 0.5rem !important;
                 overflow: hidden !important;
-                text-overflow: ellipsis !important;
             }
 
             .mobile-back-btn {
@@ -1888,8 +1888,59 @@
             // Update values
             updateMobileHeaderValues(currentPrice, previousPrice);
             
+            // Dynamically size the title to fit
+            dynamicallySizeTitle();
+            
             // Position back arrow dynamically based on title font size
             positionBackArrow();
+        }
+        
+        function dynamicallySizeTitle() {
+            const titleEl = document.getElementById('mobileItemTitle');
+            if (!titleEl) return;
+            
+            // Get the container width (subtract padding)
+            const containerWidth = titleEl.offsetWidth;
+            const paddingLeft = parseFloat(window.getComputedStyle(titleEl).paddingLeft);
+            const paddingRight = parseFloat(window.getComputedStyle(titleEl).paddingRight);
+            const availableWidth = containerWidth - paddingLeft - paddingRight;
+            
+            // Start with the default font size based on screen size
+            const isMobile = window.innerWidth <= 768;
+            let fontSize = isMobile ? 0.9 : 1.4; // rem units
+            const minFontSize = isMobile ? 0.65 : 1.0; // Don't go smaller than this
+            const maxFontSize = fontSize; // Store the starting size
+            
+            // Set initial font size
+            titleEl.style.fontSize = fontSize + 'rem';
+            
+            // Create a temporary span to measure text width
+            const tempSpan = document.createElement('span');
+            tempSpan.style.visibility = 'hidden';
+            tempSpan.style.position = 'absolute';
+            tempSpan.style.whiteSpace = 'nowrap';
+            tempSpan.style.fontFamily = window.getComputedStyle(titleEl).fontFamily;
+            tempSpan.style.fontWeight = window.getComputedStyle(titleEl).fontWeight;
+            tempSpan.textContent = titleEl.textContent;
+            document.body.appendChild(tempSpan);
+            
+            // Reduce font size until it fits
+            while (fontSize > minFontSize) {
+                tempSpan.style.fontSize = fontSize + 'rem';
+                const textWidth = tempSpan.offsetWidth;
+                
+                if (textWidth <= availableWidth) {
+                    break; // Text fits!
+                }
+                
+                fontSize -= 0.05; // Reduce by 0.05rem increments
+            }
+            
+            // Apply the final font size
+            titleEl.style.fontSize = fontSize + 'rem';
+            
+            // Clean up
+            document.body.removeChild(tempSpan);
         }
         
         function positionBackArrow() {
@@ -2691,6 +2742,20 @@
         
         // Initialize ticker after a short delay to ensure data is loaded
         setTimeout(initializeTicker, 1000);
+        
+        // Recalculate title sizing on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Only recalculate if there's an item showing
+                const headerEl = document.getElementById('mobileItemHeader');
+                if (headerEl && headerEl.classList.contains('has-item')) {
+                    dynamicallySizeTitle();
+                    positionBackArrow();
+                }
+            }, 250); // Debounce resize events
+        });
     </script>
 </body>
 </html>
