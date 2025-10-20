@@ -1865,8 +1865,10 @@
             const colors = ['#d41e36', '#003d7a', '#2ecc71', '#f39c12', '#9b59b6'];
             const color = colors[overlayData.length % colors.length];
             
+            // Store both 1-year and full history prices
             const prices = priceData[store][item];
-            overlayData.push({ store, item, prices, color });
+            const pricesFull = priceDataFull[store][item];
+            overlayData.push({ store, item, prices, pricesFull, color });
             
             // Update item header (mobile only)
             if (isMobile) {
@@ -2017,6 +2019,16 @@
             
             // Re-render chart with new time period
             renderChart();
+            
+            // Update mobile header with correct price range
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile && overlayData.length > 0) {
+                const data = overlayData[0];
+                const prices = showFullHistory ? (data.pricesFull || data.prices) : data.prices;
+                const currentPrice = prices[prices.length - 1];
+                const baselinePrice = prices[0];
+                updateMobileHeaderValues(currentPrice, baselinePrice);
+            }
         }
 
         function removeFromOverlay(index) {
@@ -2109,6 +2121,8 @@
             const currentMonths = showFullHistory ? getMonthLabels(true) : months;
             const currentPriceData = showFullHistory ? priceDataFull : priceData;
             
+            // Find the end month from the regular dataset (most recent month)
+            const targetEndMonth = rawMonths[rawMonths.length - 1];
             
             // Find the earliest start index across all items
             let earliestStartIndex = currentMonths.length;
@@ -2117,7 +2131,8 @@
                 // Get prices for the current view
                 let prices;
                 if (showFullHistory) {
-                    prices = currentPriceData[data.store][data.item];
+                    // Use the full history prices stored in overlayData
+                    prices = data.pricesFull || data.prices;
                 } else {
                     prices = data.prices;
                 }
@@ -2152,8 +2167,18 @@
             let chartLabels = currentMonths;
             let trimmedRawMonths = currentRawMonths;
             
-            // Use the selected end month index (slice up to this point)
-            let endIndex = selectedStartMonthIndex + 1; // +1 because slice is exclusive at end
+            // Find the end index - should always match the most recent month from regular dataset
+            let endIndex;
+            if (showFullHistory) {
+                // Find where targetEndMonth is in the full history
+                endIndex = currentRawMonths.indexOf(targetEndMonth) + 1;
+                if (endIndex === 0) {
+                    // If not found, default to end of array
+                    endIndex = currentMonths.length;
+                }
+            } else {
+                endIndex = currentMonths.length;
+            }
             
             // Apply trimming from start (if in full history mode) and up to end date
             let trimStartIndex = showFullHistory ? earliestStartIndex : 0;
@@ -2169,7 +2194,8 @@
                 trimStartIndex = periodStartIndex;
             }
             
-            if (endIndex < currentMonths.length || trimStartIndex > 0) {
+            // Apply trimming if needed
+            if (trimStartIndex > 0 || endIndex < currentMonths.length) {
                 chartLabels = currentMonths.slice(trimStartIndex, endIndex);
                 trimmedRawMonths = currentRawMonths.slice(trimStartIndex, endIndex);
                 
