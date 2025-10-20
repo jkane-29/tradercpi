@@ -1098,7 +1098,7 @@
                 box-shadow: none !important;
                 padding: 0.5rem 0.5rem 0 0.5rem !important;
                 margin: 0 !important;
-                height: 400px !important;
+                height: 350px !important;
             }
 
             #chartContent h3 {
@@ -1107,13 +1107,13 @@
 
             /* Chart canvas on mobile - fixed height container */
             #chartContent > div > div {
-                height: 400px !important;
+                height: 350px !important;
                 position: relative !important;
             }
 
             #priceChart {
-                height: 400px !important;
-                max-height: 400px !important;
+                height: 350px !important;
+                max-height: 350px !important;
                 width: 100% !important;
             }
 
@@ -1132,7 +1132,7 @@
                 position: relative !important;
                 background: white !important;
                 border-top: 1px solid #f0f0f0 !important;
-                padding: 0.75rem 0.5rem 0.25rem 0.5rem !important;
+                padding: 0.9rem 0.5rem 0.25rem 0.5rem !important;
                 margin: 0 !important;
                 margin-top: 0 !important;
             }
@@ -1888,11 +1888,11 @@
             // Update values
             updateMobileHeaderValues(currentPrice, previousPrice);
             
-            // Dynamically size the title to fit
-            dynamicallySizeTitle();
-            
-            // Position back arrow dynamically based on title font size
-            positionBackArrow();
+            // Dynamically size the title to fit (use requestAnimationFrame to ensure DOM is ready)
+            requestAnimationFrame(() => {
+                dynamicallySizeTitle();
+                positionBackArrow();
+            });
         }
         
         function dynamicallySizeTitle() {
@@ -1901,13 +1901,17 @@
             
             // Get the container width (subtract padding)
             const containerWidth = titleEl.offsetWidth;
+            
+            // If element has no width yet (not visible), skip sizing
+            if (containerWidth === 0) return;
+            
             const paddingLeft = parseFloat(window.getComputedStyle(titleEl).paddingLeft);
             const paddingRight = parseFloat(window.getComputedStyle(titleEl).paddingRight);
             const availableWidth = containerWidth - paddingLeft - paddingRight;
             
             // Start with the default font size based on screen size
             const isMobile = window.innerWidth <= 768;
-            let fontSize = isMobile ? 1.2 : 1.6; // rem units
+            let fontSize = isMobile ? 1.35 : 1.6; // rem units
             const minFontSize = isMobile ? 0.75 : 1.0; // Don't go smaller than this
             const maxFontSize = fontSize; // Store the starting size
             
@@ -2041,6 +2045,12 @@
             document.getElementById('mobileItemHeader').classList.remove('has-item');
             document.getElementById('overlayList').style.display = 'none';
             document.getElementById('toggleHistoryBtn').style.display = 'none';
+            
+            // Reset title font size
+            const titleEl = document.getElementById('mobileItemTitle');
+            if (titleEl) {
+                titleEl.style.fontSize = '';
+            }
             
             // Show search controls again
             document.querySelector('.search-controls-wrapper').style.display = 'grid';
