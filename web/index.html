@@ -1916,8 +1916,8 @@
             
             // Start with the default font size based on screen size
             const isMobile = window.innerWidth <= 768;
-            let fontSize = isMobile ? 1.35 : 1.6; // rem units
-            const minFontSize = isMobile ? 0.75 : 1.0; // Don't go smaller than this
+            let fontSize = isMobile ? 1.6 : 1.8; // rem units
+            const minFontSize = isMobile ? 0.85 : 1.0; // Don't go smaller than this
             const maxFontSize = fontSize; // Store the starting size
             
             // Set initial font size
@@ -2263,6 +2263,12 @@
                                     return '$' + value.toFixed(2);
                                 }
                             }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
                         }
                     }
                 }
@@ -2603,6 +2609,12 @@
                                 callback: function(value) {
                                     return '$' + value.toFixed(2);
                                 }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
                             }
                         }
                     }
