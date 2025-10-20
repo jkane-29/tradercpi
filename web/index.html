@@ -845,10 +845,10 @@
 
         .mobile-item-title {
             font-family: 'Trader Joes', cursive;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #333;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             padding-left: 2.5rem;
             white-space: nowrap;
             overflow: hidden;
@@ -856,36 +856,37 @@
         }
 
         .item-stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-left: 0.5rem;
         }
 
         .item-stat-box {
-            background: #fafafa;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
         }
 
         .item-stat-label {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 0.25rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .mobile-item-price {
-            font-size: 2rem;
-            font-weight: 600;
+            font-size: 1.8rem;
+            font-weight: 700;
             color: #333;
+            line-height: 1;
         }
 
         .mobile-item-change {
-            font-size: 1.5rem;
+            font-size: 0.95rem;
             font-weight: 600;
+            line-height: 1;
         }
 
         .mobile-item-change.up {
@@ -894,6 +895,10 @@
 
         .mobile-item-change.down {
             color: #FF3B30;
+        }
+        
+        .mobile-item-change.neutral {
+            color: #666;
         }
 
         /* Time Period Selector (Robinhood-style) - Mobile only */
@@ -1002,7 +1007,7 @@
 
             /* Mobile item header - shown by JS when item selected */
             .mobile-item-header {
-                padding: 1rem !important;
+                padding: 0.75rem 1rem !important;
             }
 
             .mobile-item-header.has-item {
@@ -1014,7 +1019,8 @@
             }
 
             .mobile-item-title {
-                margin-bottom: 0.5rem !important;
+                font-size: 1.1rem !important;
+                margin-bottom: 0.4rem !important;
                 white-space: nowrap !important;
                 padding-left: 2rem !important;
                 overflow: hidden !important;
@@ -1022,26 +1028,31 @@
             }
 
             .mobile-back-btn {
-                top: 0.5rem !important;
-                left: 0.5rem !important;
+                top: 0.75rem !important;
+                left: 0.75rem !important;
                 transform: translateY(0) !important;
-                font-size: 1.3rem !important;
+                font-size: 1.2rem !important;
+            }
+
+            .item-stats-row {
+                gap: 0.75rem !important;
+                padding-left: 0.5rem !important;
             }
 
             .item-stat-box {
-                padding: 0.35rem 0.5rem !important;
+                gap: 0.1rem !important;
             }
 
             .item-stat-label {
-                display: none !important;
+                font-size: 0.65rem !important;
             }
 
             .mobile-item-price {
-                font-size: 1.3rem !important;
+                font-size: 1.5rem !important;
             }
 
             .mobile-item-change {
-                font-size: 1rem !important;
+                font-size: 0.85rem !important;
             }
 
             /* Show time period selector on mobile */
@@ -1856,28 +1867,35 @@
             const itemName = itemNames[item];
             const currentPrice = prices[prices.length - 1];
             const previousPrice = prices[0];
-            const change = currentPrice - previousPrice;
-            const changePercent = ((change / previousPrice) * 100).toFixed(1);
             
             const titleEl = document.getElementById('mobileItemTitle');
-            const priceEl = document.getElementById('mobileItemPrice');
-            const dollarChangeEl = document.getElementById('mobileItemDollarChange');
-            const percentChangeEl = document.getElementById('mobileItemPercentChange');
             const headerEl = document.getElementById('mobileItemHeader');
             
             titleEl.textContent = itemName;
+            headerEl.classList.add('has-item');
+            
+            // Update values
+            updateMobileHeaderValues(currentPrice, previousPrice);
+        }
+        
+        function updateMobileHeaderValues(currentPrice, baselinePrice) {
+            const change = currentPrice - baselinePrice;
+            const changePercent = ((change / baselinePrice) * 100).toFixed(1);
+            
+            const priceEl = document.getElementById('mobileItemPrice');
+            const dollarChangeEl = document.getElementById('mobileItemDollarChange');
+            const percentChangeEl = document.getElementById('mobileItemPercentChange');
+            
             priceEl.textContent = `$${currentPrice.toFixed(2)}`;
             
-            const changeClass = change >= 0 ? 'up' : 'down';
-            const changeSymbol = change >= 0 ? '+' : '';
+            const changeClass = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
+            const changeSymbol = change > 0 ? '+' : '';
             
             dollarChangeEl.textContent = `${changeSymbol}$${change.toFixed(2)}`;
             dollarChangeEl.className = `mobile-item-change ${changeClass}`;
             
             percentChangeEl.textContent = `${changeSymbol}${changePercent}%`;
             percentChangeEl.className = `mobile-item-change ${changeClass}`;
-            
-            headerEl.classList.add('has-item');
         }
 
         let currentTimePeriod = '1Y';
@@ -2088,6 +2106,27 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    onHover: (event, activeElements) => {
+                        if (window.innerWidth <= 768 && activeElements.length > 0) {
+                            const dataIndex = activeElements[0].index;
+                            const datasetIndex = activeElements[0].datasetIndex;
+                            const currentPrice = datasets[datasetIndex].data[dataIndex];
+                            
+                            // Get first non-null price as baseline
+                            const allPrices = datasets[datasetIndex].data;
+                            let baselinePrice = null;
+                            for (let i = 0; i < allPrices.length; i++) {
+                                if (allPrices[i] !== null && allPrices[i] !== undefined) {
+                                    baselinePrice = allPrices[i];
+                                    break;
+                                }
+                            }
+                            
+                            if (currentPrice && baselinePrice) {
+                                updateMobileHeaderValues(currentPrice, baselinePrice);
+                            }
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: window.innerWidth > 768,
