@@ -1900,6 +1900,14 @@
         function setTimePeriod(period, event) {
             currentTimePeriod = period;
             
+            // If "ALL" is selected, enable full history view
+            if (period === 'ALL') {
+                showFullHistory = true;
+            } else {
+                // For other periods, use 1-year dataset
+                showFullHistory = false;
+            }
+            
             // Update button states - find button by text content instead of relying on event.target
             document.querySelectorAll('.time-period-btn').forEach(btn => {
                 btn.classList.remove('active');
