@@ -1093,17 +1093,15 @@
                 display: none !important;
             }
 
-            /* Chart canvas on mobile - taller height container to fill screen */
+            /* Chart canvas on mobile - fixed height container */
             #chartContent > div > div {
-                height: calc(100vh - 200px) !important;
-                min-height: 500px !important;
-                max-height: none !important;
+                height: 550px !important;
                 position: relative !important;
             }
 
             #priceChart {
-                height: 100% !important;
-                max-height: 100% !important;
+                height: 550px !important;
+                max-height: 550px !important;
                 width: 100% !important;
             }
 
@@ -2101,7 +2099,7 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: window.innerWidth > 768,
