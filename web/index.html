@@ -197,7 +197,7 @@
         .control-group label[for="startMonth"] {
             font-family: 'Trader Joes', cursive;
             font-weight: normal;
-            font-size: 13px;
+            font-size: 20px;
             color: #d41e36;
         }
 
@@ -1098,7 +1098,7 @@
                 box-shadow: none !important;
                 padding: 0.5rem 0.5rem 0 0.5rem !important;
                 margin: 0 !important;
-                height: 450px !important;
+                height: 400px !important;
             }
 
             #chartContent h3 {
@@ -1109,11 +1109,6 @@
             #chartContent > div > div {
                 height: 400px !important;
                 position: relative !important;
-            }
-            
-            /* Reduce bottom padding of chart wrapper on mobile */
-            #chartContent > div {
-                padding-bottom: 0.25rem !important;
             }
 
             #priceChart {
@@ -1139,7 +1134,7 @@
                 border-top: 1px solid #f0f0f0 !important;
                 padding: 0.25rem 0.5rem !important;
                 margin: 0 !important;
-                margin-top: -0.5rem !important;
+                margin-top: 0 !important;
             }
 
             .time-period-btn {
@@ -1192,6 +1187,15 @@
             .control-group label {
                 font-size: 0.85rem;
                 margin-bottom: 0.25rem;
+            }
+            
+            .control-group label[for="searchStore"],
+            .control-group label[for="basketStore"],
+            .control-group label[for="searchItem"],
+            .control-group label[for="basketItem"],
+            .control-group label[for="basketQuantity"],
+            .control-group label[for="startMonth"] {
+                font-size: 20px;
             }
 
             .control-group input,
