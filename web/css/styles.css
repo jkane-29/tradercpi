@@ -437,6 +437,10 @@ body {
         padding: 1rem;
     }
     
+    .back-btn {
+        top: 0.5rem;
+    }
+    
     .logo h1 {
         font-size: 2.5rem;
     }
