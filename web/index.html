@@ -195,9 +195,8 @@
         .control-group label[for="basketItem"],
         .control-group label[for="basketQuantity"],
         .control-group label[for="startMonth"] {
-            font-family: 'Trader Joes', cursive;
             font-weight: normal;
-            font-size: 1.1rem;
+            font-size: 13px;
             color: #d41e36;
         }
 
@@ -1019,7 +1018,7 @@
             }
 
             .mobile-item-title {
-                font-size: 1.1rem !important;
+                font-size: 0.9rem !important;
                 margin-bottom: 0.4rem !important;
                 white-space: nowrap !important;
                 padding-left: 2rem !important;
@@ -1028,10 +1027,8 @@
             }
 
             .mobile-back-btn {
-                top: 0.75rem !important;
                 left: 0.75rem !important;
-                transform: translateY(0) !important;
-                font-size: 1.2rem !important;
+                font-size: 1.1rem !important;
             }
 
             .item-stats-row {
@@ -1876,6 +1873,30 @@
             
             // Update values
             updateMobileHeaderValues(currentPrice, previousPrice);
+            
+            // Position back arrow dynamically based on title font size
+            positionBackArrow();
+        }
+        
+        function positionBackArrow() {
+            const titleEl = document.getElementById('mobileItemTitle');
+            const backBtn = document.querySelector('.mobile-back-btn');
+            
+            if (!titleEl || !backBtn) return;
+            
+            // Get the computed style and calculate midpoint
+            const titleStyles = window.getComputedStyle(titleEl);
+            const fontSize = parseFloat(titleStyles.fontSize);
+            const lineHeight = parseFloat(titleStyles.lineHeight) || fontSize * 1.2;
+            const marginBottom = parseFloat(titleStyles.marginBottom);
+            const paddingTop = parseFloat(window.getComputedStyle(titleEl.parentElement).paddingTop);
+            
+            // Calculate vertical center of title
+            const titleMidpoint = paddingTop + (lineHeight / 2);
+            
+            // Position arrow at midpoint (transform: translateY(-50%) centers the arrow itself)
+            backBtn.style.top = `${titleMidpoint}px`;
+            backBtn.style.transform = 'translateY(-50%)';
         }
         
         function updateMobileHeaderValues(currentPrice, baselinePrice) {
