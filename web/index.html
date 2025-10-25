@@ -2037,10 +2037,28 @@
         }
         
         function updateMobileHeaderValues(currentPrice, baselinePrice, prices) {
-            // Find the first non-zero price to avoid division by zero
-            const firstNonZeroPrice = prices.find(price => price > 0) || currentPrice;
-            const change = currentPrice - firstNonZeroPrice;
-            const changePercent = ((change / firstNonZeroPrice) * 100).toFixed(1);
+            // Calculate baseline based on selected time period
+            let periodBaselinePrice;
+            
+            if (currentTimePeriod === '3M') {
+                // Use price from 3 months ago (last 3 data points)
+                const startIndex = Math.max(0, prices.length - 3);
+                periodBaselinePrice = prices.find((price, index) => index >= startIndex && price > 0) || currentPrice;
+            } else if (currentTimePeriod === '6M') {
+                // Use price from 6 months ago (last 6 data points)
+                const startIndex = Math.max(0, prices.length - 6);
+                periodBaselinePrice = prices.find((price, index) => index >= startIndex && price > 0) || currentPrice;
+            } else if (currentTimePeriod === '1Y') {
+                // Use price from 12 months ago (last 12 data points)
+                const startIndex = Math.max(0, prices.length - 12);
+                periodBaselinePrice = prices.find((price, index) => index >= startIndex && price > 0) || currentPrice;
+            } else {
+                // For ALL view, use the first non-zero price
+                periodBaselinePrice = prices.find(price => price > 0) || currentPrice;
+            }
+            
+            const change = currentPrice - periodBaselinePrice;
+            const changePercent = ((change / periodBaselinePrice) * 100).toFixed(1);
             
             const priceEl = document.getElementById('mobileItemPrice');
             const dollarChangeEl = document.getElementById('mobileItemDollarChange');
@@ -2313,7 +2331,7 @@
                             }
                             
                             if (currentPrice && baselinePrice) {
-                                updateMobileHeaderValues(currentPrice, baselinePrice, prices);
+                                updateMobileHeaderValues(currentPrice, baselinePrice, allPrices);
                             }
                         }
                     },
