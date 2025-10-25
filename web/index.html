@@ -255,6 +255,23 @@
             border-color: #d41e36;
         }
 
+        .control-group input[type="email"] {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.3s ease;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #d41e36;
+            height: 50px;
+        }
+
+        .control-group input[type="email"]:focus {
+            outline: none;
+            border-color: #d41e36;
+        }
+
         #searchItem {
             border: 2px solid #d41e36 !important;
             background: #fef5f5 !important;
@@ -1448,7 +1465,7 @@
         <section class="content-section" id="feedbackSection">
             <div class="search-controls-wrapper">
                 <div class="search-controls">
-                    <h2 style="font-family: 'Trader Joes', cursive; color: #d41e36; margin-bottom: 1.5rem; text-align: center;">We'd Love Your Feedback!</h2>
+                    <h2 style="font-family: 'Trader Joes', cursive; color: #d41e36; margin-bottom: 1.5rem; text-align: center; font-weight: normal;">Submit Feedback Below!</h2>
                     
                     <div class="control-group">
                         <label for="feedbackName">Name (Optional)</label>
