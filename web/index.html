@@ -1332,7 +1332,7 @@
         <nav class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
             <button class="nav-tab basket-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
-            <button id="downloadBtn" class="nav-tab" onclick="downloadPriceHistory()" style="display: none;">📥 Download CSV</button>
+            <button id="downloadBtn" class="nav-tab" onclick="downloadPriceHistory()">📥 Download CSV</button>
             <button class="nav-tab" onclick="switchTab('feedback')">Feedback</button>
         </nav>
 
@@ -2114,7 +2114,6 @@
             if (overlayData.length === 0) {
                 document.getElementById('overlayList').style.display = 'none';
                 document.getElementById('toggleHistoryBtn').style.display = 'none';
-                document.getElementById('downloadBtn').style.display = 'none';
                 document.getElementById('chartContainer').style.display = 'none';
                 document.getElementById('mobileItemHeader').classList.remove('has-item');
                 // Show search controls again on mobile when chart is cleared
@@ -2141,7 +2140,6 @@
             document.getElementById('mobileItemHeader').classList.remove('has-item');
             document.getElementById('overlayList').style.display = 'none';
             document.getElementById('toggleHistoryBtn').style.display = 'none';
-            document.getElementById('downloadBtn').style.display = 'none';
             
             // Reset title font size
             const titleEl = document.getElementById('mobileItemTitle');
@@ -2165,28 +2163,31 @@
         }
 
         function downloadPriceHistory() {
-            if (overlayData.length === 0) {
-                alert('No data available to download');
-                return;
-            }
-
-            const data = overlayData[0];
-            const store = data.store;
-            const item = data.item;
-            const itemName = itemNames[item];
-            const storeName = storeNames[store];
+            // Create CSV content with all price data
+            let csvContent = `Store,Item,Date,Price\n`;
             
-            // Get full price history
-            const prices = data.pricesFull || data.prices;
-            const months = showFullHistory ? getMonthLabels(true) : months;
+            // Get all available data
+            const allStores = Object.keys(priceDataFull || priceData);
+            const allItems = Object.keys(itemNames);
+            const months = getMonthLabels(true);
             
-            // Create CSV content
-            let csvContent = `Date,Price\n`;
-            
-            for (let i = 0; i < prices.length; i++) {
-                if (prices[i] !== null && prices[i] !== undefined) {
-                    const date = months[i] || `Month ${i + 1}`;
-                    csvContent += `${date},${prices[i].toFixed(2)}\n`;
+            // Iterate through all stores and items
+            for (const store of allStores) {
+                const storeName = storeNames[store];
+                for (const item of allItems) {
+                    const itemName = itemNames[item];
+                    
+                    // Check if this item exists for this store
+                    if (priceDataFull && priceDataFull[store] && priceDataFull[store][item]) {
+                        const prices = priceDataFull[store][item];
+                        
+                        for (let i = 0; i < prices.length; i++) {
+                            if (prices[i] !== null && prices[i] !== undefined) {
+                                const date = months[i] || `Month ${i + 1}`;
+                                csvContent += `${storeName},${itemName},${date},${prices[i].toFixed(2)}\n`;
+                            }
+                        }
+                    }
                 }
             }
             
@@ -2195,7 +2196,7 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${itemName.replace(/[^a-zA-Z0-9]/g, '_')}_${storeName.replace(/[^a-zA-Z0-9]/g, '_')}_price_history.csv`;
+            a.download = `trader_joes_complete_price_data.csv`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2223,9 +2224,8 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            // Show the toggle and download buttons
+            // Show the toggle button
             document.getElementById('toggleHistoryBtn').style.display = 'block';
-            document.getElementById('downloadBtn').style.display = 'block';
             
             document.getElementById('chartContent').innerHTML = '<div style="height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
