@@ -1445,7 +1445,7 @@
                                 <div class="search-suggestions" id="basketItemSuggestions"></div>
                             </div>
                         </div>
-                        <div class="basket-add-row" style="display: flex; gap: 1rem; align-items: flex-end;">
+                        <div class="basket-add-row" style="display: flex; gap: 1rem; align-items: center;">
                             <div class="control-group" style="margin-bottom: 0;">
                                 <label for="basketQuantity">Quantity</label>
                                 <select id="basketQuantity" style="height: 45px;">
@@ -1513,6 +1513,10 @@
                     
                     <p style="text-align: center; color: #666; margin-top: 1.5rem; font-size: 0.9rem;">
                         Your feedback helps us improve the Trader Joe's Price Index experience!
+                    </p>
+                    
+                    <p style="text-align: center; color: #666; margin-top: 2rem; font-size: 0.9rem; border-top: 1px solid #e9ecef; padding-top: 1rem;">
+                        Made by <a href="https://your-website.com" target="_blank" style="color: #d41e36; text-decoration: none; font-weight: 600;">Your Name</a>
                     </p>
                 </div>
             </div>
@@ -2033,9 +2037,9 @@
         }
         
         function updateMobileHeaderValues(currentPrice, baselinePrice, prices) {
-            const change = currentPrice - baselinePrice;
             // Find the first non-zero price to avoid division by zero
             const firstNonZeroPrice = prices.find(price => price > 0) || currentPrice;
+            const change = currentPrice - firstNonZeroPrice;
             const changePercent = ((change / firstNonZeroPrice) * 100).toFixed(1);
             
             const priceEl = document.getElementById('mobileItemPrice');
