@@ -1332,6 +1332,7 @@
         <nav class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('itemSearch')">Item Search</button>
             <button class="nav-tab basket-tab" onclick="switchTab('basketBuilder')">Basket Builder</button>
+            <button id="downloadBtn" class="nav-tab" onclick="downloadPriceHistory()" style="display: none;">📥 Download CSV</button>
             <button class="nav-tab" onclick="switchTab('feedback')">Feedback</button>
         </nav>
 
@@ -1365,7 +1366,6 @@
                     </div>
                     <div class="button-group">
                         <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">Show Full History</button>
-                        <button id="downloadBtn" class="btn-secondary" onclick="downloadPriceHistory()" style="display: none; margin-left: 0.5rem;">📥 Download CSV</button>
                     </div>
                     
                     <div class="last-update-date">
