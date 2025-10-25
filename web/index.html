@@ -1365,6 +1365,7 @@
                     </div>
                     <div class="button-group">
                         <button id="toggleHistoryBtn" class="btn-secondary" onclick="toggleHistoryView()" style="display: none;">Show Full History</button>
+                        <button id="downloadBtn" class="btn-secondary" onclick="downloadPriceHistory()" style="display: none; margin-left: 0.5rem;">📥 Download CSV</button>
                     </div>
                     
                     <div class="last-update-date">
@@ -1516,7 +1517,7 @@
                     </p>
                     
                     <p style="text-align: center; color: #666; margin-top: 2rem; font-size: 0.9rem; border-top: 1px solid #e9ecef; padding-top: 1rem;">
-                        Made by <a href="https://your-website.com" target="_blank" style="color: #d41e36; text-decoration: none; font-weight: 600;">Your Name</a>
+                        Made by <a href="https://jkane-29.github.io" target="_blank" style="color: #d41e36; text-decoration: none; font-weight: 600;">Jack Kane</a>
                     </p>
                 </div>
             </div>
@@ -2117,6 +2118,7 @@
             if (overlayData.length === 0) {
                 document.getElementById('overlayList').style.display = 'none';
                 document.getElementById('toggleHistoryBtn').style.display = 'none';
+                document.getElementById('downloadBtn').style.display = 'none';
                 document.getElementById('chartContainer').style.display = 'none';
                 document.getElementById('mobileItemHeader').classList.remove('has-item');
                 // Show search controls again on mobile when chart is cleared
@@ -2143,6 +2145,7 @@
             document.getElementById('mobileItemHeader').classList.remove('has-item');
             document.getElementById('overlayList').style.display = 'none';
             document.getElementById('toggleHistoryBtn').style.display = 'none';
+            document.getElementById('downloadBtn').style.display = 'none';
             
             // Reset title font size
             const titleEl = document.getElementById('mobileItemTitle');
@@ -2163,6 +2166,44 @@
                 priceChart.destroy();
                 priceChart = null;
             }
+        }
+
+        function downloadPriceHistory() {
+            if (overlayData.length === 0) {
+                alert('No data available to download');
+                return;
+            }
+
+            const data = overlayData[0];
+            const store = data.store;
+            const item = data.item;
+            const itemName = itemNames[item];
+            const storeName = storeNames[store];
+            
+            // Get full price history
+            const prices = data.pricesFull || data.prices;
+            const months = showFullHistory ? getMonthLabels(true) : months;
+            
+            // Create CSV content
+            let csvContent = `Date,Price\n`;
+            
+            for (let i = 0; i < prices.length; i++) {
+                if (prices[i] !== null && prices[i] !== undefined) {
+                    const date = months[i] || `Month ${i + 1}`;
+                    csvContent += `${date},${prices[i].toFixed(2)}\n`;
+                }
+            }
+            
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${itemName.replace(/[^a-zA-Z0-9]/g, '_')}_${storeName.replace(/[^a-zA-Z0-9]/g, '_')}_price_history.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         }
 
         function toggleHistoryView() {
@@ -2186,8 +2227,9 @@
         function renderChart() {
             if (overlayData.length === 0) return;
             
-            // Show the toggle button
+            // Show the toggle and download buttons
             document.getElementById('toggleHistoryBtn').style.display = 'block';
+            document.getElementById('downloadBtn').style.display = 'block';
             
             document.getElementById('chartContent').innerHTML = '<div style="height: 600px; position: relative;"><canvas id="priceChart"></canvas></div>';
             
