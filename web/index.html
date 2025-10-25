@@ -1950,7 +1950,7 @@
             headerEl.classList.add('has-item');
             
             // Update values
-            updateMobileHeaderValues(currentPrice, previousPrice);
+            updateMobileHeaderValues(currentPrice, previousPrice, prices);
             
             // Dynamically size the title to fit (use requestAnimationFrame to ensure DOM is ready)
             requestAnimationFrame(() => {
@@ -2032,9 +2032,11 @@
             backBtn.style.transform = 'translateY(-50%)';
         }
         
-        function updateMobileHeaderValues(currentPrice, baselinePrice) {
+        function updateMobileHeaderValues(currentPrice, baselinePrice, prices) {
             const change = currentPrice - baselinePrice;
-            const changePercent = ((change / baselinePrice) * 100).toFixed(1);
+            // Find the first non-zero price to avoid division by zero
+            const firstNonZeroPrice = prices.find(price => price > 0) || currentPrice;
+            const changePercent = ((change / firstNonZeroPrice) * 100).toFixed(1);
             
             const priceEl = document.getElementById('mobileItemPrice');
             const dollarChangeEl = document.getElementById('mobileItemDollarChange');
@@ -2084,7 +2086,7 @@
                 const prices = showFullHistory ? (data.pricesFull || data.prices) : data.prices;
                 const currentPrice = prices[prices.length - 1];
                 const baselinePrice = prices[0];
-                updateMobileHeaderValues(currentPrice, baselinePrice);
+                updateMobileHeaderValues(currentPrice, baselinePrice, prices);
             }
         }
 
@@ -2307,7 +2309,7 @@
                             }
                             
                             if (currentPrice && baselinePrice) {
-                                updateMobileHeaderValues(currentPrice, baselinePrice);
+                                updateMobileHeaderValues(currentPrice, baselinePrice, prices);
                             }
                         }
                     },
